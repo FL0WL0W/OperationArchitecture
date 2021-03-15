@@ -16,29 +16,29 @@ namespace OperationArchitecture
 			switch(x.Type)
 			{
 				case UINT8:
-					return Variable(static_cast<uint8_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<uint8_t>(_config->DefaultValue));
 				case UINT16:
-					return Variable(static_cast<uint16_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<uint16_t>(_config->DefaultValue));
 				case UINT32:
-					return Variable(static_cast<uint32_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<uint32_t>(_config->DefaultValue));
 				case UINT64:
-					return Variable(static_cast<uint64_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<uint64_t>(_config->DefaultValue));
 				case INT8:
-					return Variable(static_cast<int8_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<int8_t>(_config->DefaultValue));
 				case INT16:
-					return Variable(static_cast<int16_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<int16_t>(_config->DefaultValue));
 				case INT32:
-					return Variable(static_cast<int32_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<int32_t>(_config->DefaultValue));
 				case INT64:
-					return Variable(static_cast<int64_t>(_config->DefaultValue));
+					return Variable::Create(static_cast<int64_t>(_config->DefaultValue));
 				case FLOAT:
-					return Variable(_config->DefaultValue);
+					return Variable::Create(_config->DefaultValue);
 				case DOUBLE:
-					return Variable(static_cast<double>(_config->DefaultValue));
+					return Variable::Create(static_cast<double>(_config->DefaultValue));
 				case BOOLEAN:
-					return Variable(static_cast<bool>(_config->DefaultValue));
+					return Variable::Create(static_cast<bool>(_config->DefaultValue));
 				case VariableType::VOID: 
-					return 0;
+					return Variable();
 					//this would be useless to use
 			}
 		}

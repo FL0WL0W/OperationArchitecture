@@ -1,4 +1,6 @@
-#include <stdint.h>
+#include <cstring>
+#include <stdlib.h>
+#include <type_traits>
 #include "VariableType.h"
 
 #ifndef VARIABLE_H
@@ -10,6 +12,7 @@ namespace OperationArchitecture
         VariableType Type;
         uint64_t Value;
     };
+    struct Variable;
 
     template<typename K>
     K VariableBaseTo(VariableBase *variable)
@@ -35,11 +38,20 @@ namespace OperationArchitecture
     {
         switch(variable->Type)
         {
+            case VariableType::POINTER:
+                if(!std::is_pointer<K>::value) //if typename is not a pointer, return the value stored in the pointer
+                    return **reinterpret_cast<K **>(&variable->Value);
+                return *reinterpret_cast<K *>(&variable->Value);
+            case VariableType::OTHER:
+                return *reinterpret_cast<K *>(&variable->Value);
+            case VariableType::BIGOTHER:
+                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer to the BIGOTHER
+                    return *reinterpret_cast<K *>(&variable->Value);
+                return **reinterpret_cast<K **>(&variable->Value); //otherwise, return the value stored in the pointer
             default: 
                 break;
                 //this is bad 
         }
-        return 0;
     }
     template<>
     uint8_t VariableTo<uint8_t>(VariableBase *variable);
@@ -63,85 +75,88 @@ namespace OperationArchitecture
     double VariableTo<double>(VariableBase *variable);
     template<>
     bool VariableTo<bool>(VariableBase *variable);
+    template<>
+    VariableBase VariableTo<VariableBase>(VariableBase *variable);
+    template<>
+    Variable VariableTo<Variable>(VariableBase *variable);
+
+    template<typename K>
+    void VariableSet(VariableBase *variable, K value)
+    {
+        if(std::is_pointer<K>::value)
+        {
+            variable->Type = VariableType::POINTER;
+            variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        }
+        else if(sizeof(K) <= sizeof(uint64_t))
+        {
+            variable->Type = VariableType::OTHER;
+            variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        }
+        else
+        {
+            if(variable->Type != VariableType::BIGOTHER)
+            {
+                void * dyn = malloc(sizeof(K));
+                variable->Value = *reinterpret_cast<uint64_t *>(&dyn);
+            }
+            variable->Type = VariableType::BIGOTHER;
+            std::memcpy(reinterpret_cast<K *>(variable->Value), &value, sizeof(K));
+        }
+    }
+    template<>
+    void VariableSet<uint8_t>(VariableBase *variable, uint8_t value);
+    template<>
+    void VariableSet<uint16_t>(VariableBase *variable, uint16_t value);
+    template<>
+    void VariableSet<uint32_t>(VariableBase *variable, uint32_t value);
+    template<>
+    void VariableSet<uint64_t>(VariableBase *variable, uint64_t value);
+    template<>
+    void VariableSet<int8_t>(VariableBase *variable, int8_t value);
+    template<>
+    void VariableSet<int16_t>(VariableBase *variable, int16_t value);
+    template<>
+    void VariableSet<int32_t>(VariableBase *variable, int32_t value);
+    template<>
+    void VariableSet<int64_t>(VariableBase *variable, int64_t value);
+    template<>
+    void VariableSet<float>(VariableBase *variable, float value);
+    template<>
+    void VariableSet<double>(VariableBase *variable, double value);
+    template<>
+    void VariableSet<bool>(VariableBase *variable, bool value);
+    template<>
+    void VariableSet<VariableBase>(VariableBase *variable, VariableBase value);
+    template<>
+    void VariableSet<Variable>(VariableBase *variable, Variable value);
 
     struct Variable : public VariableBase
     {
         Variable()
         {
-            Set(static_cast<uint8_t>(0));
+            Type = VOID;
+            Value = 0;
         }
-        Variable(uint8_t variable) { Set(variable); }
-        Variable(uint16_t variable) { Set(variable); }
-        Variable(uint32_t variable) { Set(variable); }
-        Variable(uint64_t variable) { Set(variable); }
-        Variable(int8_t variable) { Set(variable); }
-        Variable(int16_t variable) { Set(variable); }
-        Variable(int32_t variable) { Set(variable); }
-        Variable(int64_t variable) { Set(variable); }
-        Variable(float variable) { Set(variable); }
-        Variable(double variable) { Set(variable); }
-        Variable(bool variable) { Set(variable); }
-        Variable(void * variable) { Set(variable); }
+        Variable(VariableBase variable) { Set(variable); }
 
-        void Set(uint8_t variable)
-        {
-            Type = VariableType::UINT8;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
+        template<typename K>
+        static Variable Create(K value) 
+        { 
+            Variable variable;
+            variable.Set(value); 
+            return variable;
         }
-        void Set(uint16_t variable)
+
+        template<typename K>
+        void Set(K value)
         {
-            Type = VariableType::UINT16;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(uint32_t variable)
-        {
-            Type = VariableType::UINT32;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(uint64_t variable)
-        {
-            Type = VariableType::UINT64;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(int8_t variable)
-        {
-            Type = VariableType::INT8;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(int16_t variable)
-        {
-            Type = VariableType::INT16;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(int32_t variable)
-        {
-            Type = VariableType::INT32;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(int64_t variable)
-        {
-            Type = VariableType::INT64;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(float variable)
-        {
-            Type = VariableType::FLOAT;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(double variable)
-        {
-            Type = VariableType::DOUBLE;
-            Value = *reinterpret_cast<uint64_t *>(&variable);
-        }
-        void Set(bool variable)
-        {
-            Type = VariableType::BOOLEAN;
-            Value = variable;
-        }
-        void Set(Variable variable)
-        {
-            Type = variable.Type;
-            Value = variable.Value;
+            K* pointer = 0;
+            if(Type == VariableType::BIGOTHER)
+                pointer = *reinterpret_cast<K **>(&value);
+            VariableSet(this, value);
+            if(Type != VariableType::BIGOTHER && pointer != 0)
+                free(pointer);
         }
 
         template<typename K>
@@ -156,66 +171,66 @@ namespace OperationArchitecture
             {
                 case UINT8:
                     if(result > static_cast<int64_t>(4294967295))
-                        return Variable(static_cast<uint64_t>(result));
+                        return Create(static_cast<uint64_t>(result));
                     if(result > 65535)
-                        return Variable(static_cast<uint32_t>(result));
+                        return Create(static_cast<uint32_t>(result));
                     if(result > 255)
-                        return Variable(static_cast<uint16_t>(result));
+                        return Create(static_cast<uint16_t>(result));
                     if(result < -static_cast<int64_t>(2147483648))
-                        return Variable(static_cast<int64_t>(result));
+                        return Create(static_cast<int64_t>(result));
                     if(result < -32768)
-                        return Variable(static_cast<int32_t>(result));
+                        return Create(static_cast<int32_t>(result));
                     if(result < -128)
-                        return Variable(static_cast<int16_t>(result));
+                        return Create(static_cast<int16_t>(result));
                     if(result < 0)
-                        return Variable(static_cast<int8_t>(result));
-                    return Variable(static_cast<uint8_t>(result));
+                        return Create(static_cast<int8_t>(result));
+                    return Create(static_cast<uint8_t>(result));
                 case INT8:
                     if(result > static_cast<int64_t>(2147483648) || result < -static_cast<int64_t>(2147483648))
-                        return Variable(result);
+                        return Create(result);
                     if(result > 32767 || result < -32768)
-                        return Variable(static_cast<int32_t>(result));
+                        return Create(static_cast<int32_t>(result));
                     if(result > 127 || result < -128)
-                        return Variable(static_cast<int16_t>(result));
-                    return Variable(static_cast<int8_t>(result));
+                        return Create(static_cast<int16_t>(result));
+                    return Create(static_cast<int8_t>(result));
                 case UINT16:
                     if(result > static_cast<int64_t>(4294967295))
-                        return Variable(static_cast<uint64_t>(result));
+                        return Create(static_cast<uint64_t>(result));
                     if(result < -static_cast<int64_t>(2147483648))
-                        return Variable(static_cast<int64_t>(result));
+                        return Create(static_cast<int64_t>(result));
                     if(result > 65535)
-                        return Variable(static_cast<uint32_t>(result));
+                        return Create(static_cast<uint32_t>(result));
                     if(result < -32768)
-                        return Variable(static_cast<int32_t>(result));
+                        return Create(static_cast<int32_t>(result));
                     if(result < 0)
-                        return Variable(static_cast<int16_t>(result));
-                    return Variable(static_cast<uint16_t>(result));
+                        return Create(static_cast<int16_t>(result));
+                    return Create(static_cast<uint16_t>(result));
                 case INT16:
                     if(result > static_cast<int64_t>(2147483648) || result < -static_cast<int64_t>(2147483648))
-                        return Variable(result);
+                        return Create(result);
                     if(result > 32767 || result < -32768)
-                        return Variable(static_cast<int32_t>(result));
-                    return Variable(static_cast<int16_t>(result));
+                        return Create(static_cast<int32_t>(result));
+                    return Create(static_cast<int16_t>(result));
                 case UINT32:
                     if(result > static_cast<int64_t>(4294967295))
-                        return Variable(static_cast<uint64_t>(result));
+                        return Create(static_cast<uint64_t>(result));
                     if(result < -static_cast<int64_t>(2147483648))
-                        return Variable(static_cast<int64_t>(result));
+                        return Create(static_cast<int64_t>(result));
                     if(result < 0)
-                        return Variable(static_cast<int32_t>(result));
-                    return Variable(static_cast<uint32_t>(result));
+                        return Create(static_cast<int32_t>(result));
+                    return Create(static_cast<uint32_t>(result));
                 case INT32:
                     if(result > static_cast<int64_t>(2147483648) || result < -static_cast<int64_t>(2147483648))
-                        return Variable(result);
-                    return Variable(static_cast<int32_t>(result));
+                        return Create(result);
+                    return Create(static_cast<int32_t>(result));
                 case UINT64:
                     if(result < 0)
-                        return Variable(static_cast<int64_t>(result));
-                    return Variable(static_cast<uint64_t>(result));
+                        return Create(static_cast<int64_t>(result));
+                    return Create(static_cast<uint64_t>(result));
                 case INT64:
-                    return Variable(result);
+                    return Create(result);
                 default:
-                    return 0;//its bad if this happens
+                    return Variable();//its bad if this happens
             }
         }
 
@@ -225,20 +240,20 @@ namespace OperationArchitecture
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Variable(To<bool>() || a.To<bool>());
+                    return Create(To<bool>() || a.To<bool>());
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Variable(To<double>() + a.To<double>());
+                return Create(To<double>() + a.To<double>());
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Variable(To<float>() + a.To<float>());
+                return Create(To<float>() + a.To<float>());
             }
             uint64_t preResult = To<uint64_t>() + a.To<uint64_t>();
             if(preResult > 9223372036854775807)
-                return Variable(static_cast<uint64_t>(preResult));
+                return Create(static_cast<uint64_t>(preResult));
             int64_t result = To<int64_t>() + a.To<int64_t>();
             return Int64ToVariable(result, Type);
         }
@@ -248,22 +263,22 @@ namespace OperationArchitecture
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Variable(To<bool>() || !a.To<bool>());
+                    return Create(To<bool>() || !a.To<bool>());
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Variable(To<double>() - a.To<double>());
+                return Create(To<double>() - a.To<double>());
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Variable(To<float>() - a.To<float>());
+                return Create(To<float>() - a.To<float>());
             }
             if(To<uint64_t>() > a.To<uint64_t>())
             {
                 uint64_t preResult = To<uint64_t>() - a.To<uint64_t>();
                 if(preResult > 9223372036854775807)
-                    return Variable(static_cast<uint64_t>(preResult));
+                    return Create(static_cast<uint64_t>(preResult));
             }
             int64_t result = To<int64_t>() - a.To<int64_t>();
             return Int64ToVariable(result, Type);
@@ -274,20 +289,20 @@ namespace OperationArchitecture
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Variable(To<bool>() && a.To<bool>());
+                    return Create(To<bool>() && a.To<bool>());
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Variable(To<double>() * a.To<double>());
+                return Create(To<double>() * a.To<double>());
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Variable(To<float>() * a.To<float>());
+                return Create(To<float>() * a.To<float>());
             }
             uint64_t preResult = To<uint64_t>() * a.To<uint64_t>();
             if(preResult > 9223372036854775807)
-                return Variable(static_cast<uint64_t>(preResult));
+                return Create(static_cast<uint64_t>(preResult));
             int64_t result = To<int64_t>() * a.To<int64_t>();
             return Int64ToVariable(result, Type);
         }
@@ -297,25 +312,25 @@ namespace OperationArchitecture
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Variable(To<bool>() && !a.To<bool>());
+                    return Create(To<bool>() && !a.To<bool>());
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Variable(To<double>() / a.To<double>());
+                return Create(To<double>() / a.To<double>());
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Variable(To<float>() / a.To<float>());
+                return Create(To<float>() / a.To<float>());
             }
             if(a.To<uint64_t>() != 0)
             {
                 uint64_t preResult = To<uint64_t>() / a.To<uint64_t>();
                 if(preResult > 9223372036854775807)
-                    return Variable(static_cast<uint64_t>(preResult));
+                    return Create(static_cast<uint64_t>(preResult));
             }
             if(a.To<int64_t>() == 0)
-                return Variable(false);
+                return Create(false);
             int64_t result = To<int64_t>() / a.To<int64_t>();
             return Int64ToVariable(result, Type);
         }

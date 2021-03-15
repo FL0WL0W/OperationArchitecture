@@ -19,7 +19,7 @@ namespace OperationArchitecture
 			val = _config->MinValue;
 		else if (val > _config->MaxValue)
 			val = _config->MaxValue;
-		return Variable(val);
+		return Variable::Create(val);
 	}
 
 	IOperationBase *Operation_Polynomial::Create(const void *config, unsigned int &sizeOut)

@@ -13,32 +13,32 @@ namespace OperationArchitecture
 		switch(_config->TableType)
 		{
 			case VariableType::UINT8:
-				return Variable(Interpolation::InterpolateTable2<uint8_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint8_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<uint8_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint8_t*>(_config->Table())));
 			case VariableType::UINT16:
-				return Variable(Interpolation::InterpolateTable2<uint16_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<uint16_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
 			case VariableType::UINT32:
-				return Variable(Interpolation::InterpolateTable2<uint32_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint32_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<uint32_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint32_t*>(_config->Table())));
 			case VariableType::UINT64:
-				return Variable(Interpolation::InterpolateTable2<uint64_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint64_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<uint64_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const uint64_t*>(_config->Table())));
 			case VariableType::INT8:
-				return Variable(Interpolation::InterpolateTable2<int8_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int8_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<int8_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int8_t*>(_config->Table())));
 			case VariableType::INT16:
-				return Variable(Interpolation::InterpolateTable2<int16_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int16_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<int16_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int16_t*>(_config->Table())));
 			case VariableType::INT32:
-				return Variable(Interpolation::InterpolateTable2<int32_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int32_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<int32_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int32_t*>(_config->Table())));
 			case VariableType::INT64:
-				return Variable(Interpolation::InterpolateTable2<int64_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int64_t*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<int64_t>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const int64_t*>(_config->Table())));
 			case VariableType::FLOAT:
-				return Variable(Interpolation::InterpolateTable2<float>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const float*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<float>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const float*>(_config->Table())));
 			case VariableType::DOUBLE:
-				return Variable(Interpolation::InterpolateTable2<double>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const double*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<double>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const double*>(_config->Table())));
 			case VariableType::BOOLEAN:
-				return Variable(Interpolation::InterpolateTable2<bool>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const bool*>(_config->Table())));
+				return Variable::Create(Interpolation::InterpolateTable2<bool>(x.To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, y.To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, reinterpret_cast<const bool*>(_config->Table())));
 			case VariableType::VOID: 
-				return 0;
+				return Variable();
 				//this would be useless to use
 		}
-		return Variable(static_cast<uint8_t>(0));
+		return Variable();
 	}
 
 	IOperationBase * Operation_2AxisTable::Create(const void *config, unsigned int &sizeOut)

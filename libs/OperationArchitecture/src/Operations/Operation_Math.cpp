@@ -26,17 +26,17 @@ namespace OperationArchitecture
 			case OR:
 				return x | y;
 			case GREATERTHAN:
-				return Variable((x > y));
+				return Variable::Create((x > y));
 			case LESSTHAN:
-				return Variable((x < y));
+				return Variable::Create((x < y));
 			case GREATERTHANOREQUAL:
-				return Variable((x >= y));
+				return Variable::Create((x >= y));
 			case EQUAL:
-				return Variable((x == y));
+				return Variable::Create((x == y));
 			case LESSTHANOREQUAL:
-				return Variable((x <= y));
+				return Variable::Create((x <= y));
 		}
-		return Variable(static_cast<uint8_t>(0));
+		return Variable();
 	}
 
 	IOperationBase * Operation_Math::Create(const void *config, unsigned int &sizeOut)

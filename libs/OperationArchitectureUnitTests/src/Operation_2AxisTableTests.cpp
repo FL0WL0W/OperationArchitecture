@@ -81,23 +81,23 @@ namespace UnitTests
 
 	TEST_F(Operation_2AxisTableTest, WhenGettingValueInTable_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(-10, _operation->Execute(Variable(static_cast<uint8_t>(0)), Variable(static_cast<int8_t>(0))).To<int8_t>());
-		ASSERT_EQ(20, _operation->Execute(Variable(static_cast<float>(0.99f)), Variable(static_cast<uint16_t>(0))).To<uint8_t>());
-		ASSERT_EQ(0, _operation->Execute(Variable(static_cast<double>(0.33f)), Variable(static_cast<int16_t>(0))).To<uint16_t>());
-		ASSERT_NEAR(-1.25f, _operation->Execute(Variable(static_cast<float>(0.28875f)), Variable(static_cast<uint32_t>(0))).To<float>(), 0.001f);
-		ASSERT_EQ(0, _operation->Execute(Variable(static_cast<int32_t>(0)), Variable(static_cast<float>(1.1f))).To<int16_t>());
-		ASSERT_EQ(30, _operation->Execute(Variable(static_cast<float>(0.99f)), Variable(static_cast<float>(1.1f))).To<uint32_t>());
-		ASSERT_EQ(10, _operation->Execute(Variable(static_cast<float>(0.33f)), Variable(static_cast<float>(1.1f))).To<int32_t>());
-		ASSERT_NEAR(8.75f, _operation->Execute(Variable(static_cast<float>(0.28875f)), Variable(static_cast<float>(1.1f))).To<float>(), 0.001f);
+		ASSERT_EQ(-10, _operation->Execute(Variable::Create(static_cast<uint8_t>(0)), Variable::Create(static_cast<int8_t>(0))).To<int8_t>());
+		ASSERT_EQ(20, _operation->Execute(Variable::Create(static_cast<float>(0.99f)), Variable::Create(static_cast<uint16_t>(0))).To<uint8_t>());
+		ASSERT_EQ(0, _operation->Execute(Variable::Create(static_cast<double>(0.33f)), Variable::Create(static_cast<int16_t>(0))).To<uint16_t>());
+		ASSERT_NEAR(-1.25f, _operation->Execute(Variable::Create(static_cast<float>(0.28875f)), Variable::Create(static_cast<uint32_t>(0))).To<float>(), 0.001f);
+		ASSERT_EQ(0, _operation->Execute(Variable::Create(static_cast<int32_t>(0)), Variable::Create(static_cast<float>(1.1f))).To<int16_t>());
+		ASSERT_EQ(30, _operation->Execute(Variable::Create(static_cast<float>(0.99f)), Variable::Create(static_cast<float>(1.1f))).To<uint32_t>());
+		ASSERT_EQ(10, _operation->Execute(Variable::Create(static_cast<float>(0.33f)), Variable::Create(static_cast<float>(1.1f))).To<int32_t>());
+		ASSERT_NEAR(8.75f, _operation->Execute(Variable::Create(static_cast<float>(0.28875f)), Variable::Create(static_cast<float>(1.1f))).To<float>(), 0.001f);
 	}
 
 	TEST_F(Operation_2AxisTableTest, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(80, _operation->Execute(Variable(static_cast<float>(100.0f)), Variable(static_cast<uint64_t>(0))).To<uint64_t>());
+		ASSERT_EQ(80, _operation->Execute(Variable::Create(static_cast<float>(100.0f)), Variable::Create(static_cast<uint64_t>(0))).To<uint64_t>());
 	}
 
 	TEST_F(Operation_2AxisTableTest, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(-10, _operation->Execute(Variable(static_cast<float>(-1.0f)), Variable(static_cast<int64_t>(0))).To<int64_t>());
+		ASSERT_EQ(-10, _operation->Execute(Variable::Create(static_cast<float>(-1.0f)), Variable::Create(static_cast<int64_t>(0))).To<int64_t>());
 	}
 }

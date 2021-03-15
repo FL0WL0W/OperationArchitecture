@@ -17,7 +17,10 @@ namespace OperationArchitecture
         INT64 = 8,
         FLOAT = 9,
         DOUBLE = 10,
-        BOOLEAN = 11
+        BOOLEAN = 11,
+        POINTER = 12,
+        OTHER = 13,
+        BIGOTHER = 14
     };
     constexpr uint8_t VariableTypeSizeOf(VariableType type)
     {
@@ -34,6 +37,9 @@ namespace OperationArchitecture
             case VariableType::FLOAT: return sizeof(float);
             case VariableType::DOUBLE: return sizeof(double);
             case VariableType::BOOLEAN: return sizeof(bool);
+            case VariableType::POINTER: return sizeof(void *);
+            case VariableType::OTHER: return sizeof(uint64_t);
+            case VariableType::BIGOTHER:
             case VariableType::VOID: 
                 break;
                 //this is bad 
