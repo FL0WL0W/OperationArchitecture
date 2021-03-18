@@ -1,18 +1,10 @@
-#include "Variable.h"
+#include "Operations/IOperationBase.h"
 #include <utility>
 
 #ifndef IOPERATION_H
 #define IOPERATION_H
 namespace OperationArchitecture
 {
-    class IOperationBase
-    {
-        public:
-        char NumberOfParameters : 7;
-        bool ReturnsVariable;
-        virtual void AbstractExecute(Variable &ret, Variable *params) = 0;
-    };
-
     template<typename RET, typename... PARAMS>
     class IOperation : public IOperationBase
     {
@@ -63,6 +55,11 @@ namespace OperationArchitecture
             bool _operation;
             void *_location;
         public:
+            OperationOrVariable()
+            {
+                _operation = false;
+                _location = 0;
+            }
             OperationOrVariable(Variable *variable)
             {
                 _operation = false;

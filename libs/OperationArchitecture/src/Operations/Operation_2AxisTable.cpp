@@ -1,4 +1,5 @@
 #include "Operations/Operation_2AxisTable.h"
+#include "Config.h"
 
 #ifdef OPERATION_2AXISTABLE_H
 namespace OperationArchitecture
@@ -43,8 +44,8 @@ namespace OperationArchitecture
 
 	IOperationBase * Operation_2AxisTable::Create(const void *config, unsigned int &sizeOut)
 	{
-		const Operation_2AxisTableConfig *tableConfig = reinterpret_cast<const Operation_2AxisTableConfig *>(config);
-		sizeOut += tableConfig->Size();
+		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
+		const Operation_2AxisTableConfig *tableConfig = Config::CastConfigAndOffset<const Operation_2AxisTableConfig>(config, sizeOut);
 		return new Operation_2AxisTable(tableConfig);
 	}
 }

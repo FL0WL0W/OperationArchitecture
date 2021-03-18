@@ -1,10 +1,10 @@
-#include "Config.h"
 #include "Operations/Operation_Math.h"
+#include "Config.h"
 
 #ifdef OPERATION_MATH_H
 namespace OperationArchitecture
 {
-	Operation_Math::Operation_Math(MathOperation operation)
+	Operation_Math::Operation_Math(const MathOperation operation)
 	{
 		_operation = operation;
 	}
@@ -41,6 +41,7 @@ namespace OperationArchitecture
 
 	IOperationBase * Operation_Math::Create(const void *config, unsigned int &sizeOut)
 	{
+		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
 		return new Operation_Math(Config::CastAndOffset<MathOperation>(config, sizeOut));
 	}
 }

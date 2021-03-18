@@ -1,4 +1,5 @@
 #include "Operations/Operation_LookupTable.h"
+#include "Config.h"
 
 #ifdef OPERATION_LOOKUPTABLE_H
 namespace OperationArchitecture
@@ -43,8 +44,8 @@ namespace OperationArchitecture
 
 	IOperationBase *Operation_LookupTable::Create(const void *config, unsigned int &sizeOut)
 	{
-		const Operation_LookupTableConfig *tableConfig = reinterpret_cast<const Operation_LookupTableConfig *>(config);
-		sizeOut += tableConfig->Size();
+		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
+		const Operation_LookupTableConfig *tableConfig = Config::CastConfigAndOffset<const Operation_LookupTableConfig>(config, sizeOut);
 		return new Operation_LookupTable(tableConfig);
 	}
 }

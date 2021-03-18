@@ -27,7 +27,7 @@ namespace OperationArchitecture
 	protected:
 		MathOperation _operation;
 	public:		
-        Operation_Math(MathOperation operation);
+        Operation_Math(const MathOperation operation);
 
 		Variable Execute(Variable x, Variable y) override;
 

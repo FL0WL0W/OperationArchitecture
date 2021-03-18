@@ -68,13 +68,24 @@ namespace UnitTests
 			Table[38] = 100;
 			Table[39] = 110;
 
-			_operation = static_cast<IOperation<Variable, Variable, Variable> *>(Operation_2AxisTable::Create(_config, _size));
+			void *config = malloc(_config->Size() + 4);
+			void *buildConfig = config;
+
+			//Factory ID doesn't matter
+			*((uint32_t *)buildConfig) = 1337;
+			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+
+			memcpy(buildConfig, _config, _config->Size());
+			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
+
+			_operation = static_cast<IOperation<Variable, Variable, Variable> *>(Operation_2AxisTable::Create(config, _size));
 		}
 	};
 
 	TEST_F(Operation_2AxisTableTest, ConfigsAreCorrect)
 	{
 		ASSERT_EQ(179, _config->Size());
+		ASSERT_EQ(183, _size);
 		ASSERT_EQ((float *)(_config + 1), _config->Table());
 		ASSERT_EQ(-10, ((float *)_config->Table())[0]);
 	}

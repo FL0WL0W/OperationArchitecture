@@ -1,21 +1,22 @@
 #include "Config.h"
-#include "Operations/Operation_StaticScalar.h"
+#include "Operations/Operation_StaticVariable.h"
 
-#ifdef OPERATION_STATICSCALAR_H
+#ifdef OPERATION_STATICVARIABLE_H
 namespace OperationArchitecture
 {
-	Operation_StaticScalar::Operation_StaticScalar(const Variable &staticValue)
+	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue)
 	{
 		_staticValue = staticValue;
 	}
 
-	Variable Operation_StaticScalar::Execute()
+	Variable Operation_StaticVariable::Execute()
 	{
 		return _staticValue;
 	}
 
-	IOperationBase * Operation_StaticScalar::Create(const void *config, unsigned int &sizeOut)
+	IOperationBase * Operation_StaticVariable::Create(const void *config, unsigned int &sizeOut)
 	{
+		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
 		const VariableType staticValueType = Config::CastAndOffset<VariableType>(config, sizeOut);
 		Variable staticValue;
 		switch (staticValueType)
@@ -53,13 +54,19 @@ namespace OperationArchitecture
 			case VariableType::BOOLEAN:
 				staticValue = Variable::Create(Config::CastAndOffset<bool>(config, sizeOut));
 				break;
+			case VariableType::OTHER:
+				staticValue = Variable::Create(Config::CastAndOffset<uint64_t>(config, sizeOut));
+				break;
+        	case VariableType::BIGOTHER:
+				//TODO
+        	case VariableType::POINTER:
 			case VariableType::VOID: 
 				staticValue = Variable();
 				//this would be useless to create
 				break;
 		}
 		
-		Operation_StaticScalar *variableService = new Operation_StaticScalar(staticValue);
+		Operation_StaticVariable *variableService = new Operation_StaticVariable(staticValue);
 
 		return variableService;
 	}

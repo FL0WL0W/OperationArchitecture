@@ -37,13 +37,24 @@ namespace UnitTests
 			Table[9] = 80;
 			Table[10] = 90;
 
-			_operation = static_cast<IOperation<Variable, Variable> *>(Operation_LookupTable::Create(_config, _size));
+			void *config = malloc(_config->Size() + 4);
+			void *buildConfig = config;
+
+			//Factory ID doesn't matter
+			*((uint32_t *)buildConfig) = 1337;
+			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+
+			memcpy(buildConfig, _config, _config->Size());
+			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
+
+			_operation = static_cast<IOperation<Variable, Variable> *>(Operation_LookupTable::Create(config, _size));
 		}
 	};
 
 	TEST_F(Operation_LookupTableTests, ConfigsAreCorrect)
 	{
 		ASSERT_EQ(54, _config->Size());
+		ASSERT_EQ(58, _size);
 		ASSERT_EQ((float *)(_config + 1), _config->Table());
 		ASSERT_EQ(-10, reinterpret_cast<const float*>(_config->Table())[0]);
 	}

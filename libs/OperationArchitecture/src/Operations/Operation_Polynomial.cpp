@@ -1,4 +1,5 @@
 #include "Operations/Operation_Polynomial.h"
+#include "Config.h"
 
 #ifdef OPERATION_POLYNOMIAL_H
 namespace OperationArchitecture
@@ -24,8 +25,8 @@ namespace OperationArchitecture
 
 	IOperationBase *Operation_Polynomial::Create(const void *config, unsigned int &sizeOut)
 	{
-		const Operation_PolynomialConfig *polynomialConfig = reinterpret_cast<const Operation_PolynomialConfig *>(config);
-		sizeOut += polynomialConfig->Size();
+		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
+		const Operation_PolynomialConfig *polynomialConfig = Config::CastConfigAndOffset<const Operation_PolynomialConfig>(config, sizeOut);
 		return new Operation_Polynomial(polynomialConfig);
 	}
 }

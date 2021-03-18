@@ -29,14 +29,24 @@ namespace UnitTests
 			_config->MinValue = -40;
 			_config->Degree = 4;
 
-			_operation = static_cast<IOperation<Variable, Variable> *>(Operation_Polynomial::Create(_config, _size));
+			void *config = malloc(_config->Size() + 4);
+			void *buildConfig = config;
+
+			//Factory ID doesn't matter
+			*((uint32_t *)buildConfig) = 1337;
+			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+
+			memcpy(buildConfig, _config, _config->Size());
+			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
+
+			_operation = static_cast<IOperation<Variable, Variable> *>(Operation_Polynomial::Create(config, _size));
 		}
 	};
 
 	TEST_F(Operation_PolynomialTest, ConfigsAreCorrect)
 	{
 		ASSERT_EQ(29, _config->Size());
-		//ASSERT_EQ(31, _size);
+		ASSERT_EQ(33, _size);
 	}
 
 	TEST_F(Operation_PolynomialTest, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)

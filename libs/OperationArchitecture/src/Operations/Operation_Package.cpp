@@ -1,10 +1,9 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation_Package.h"
 
-#ifdef IOPERATION_H
+#ifdef OPERATION_PACKAGE_H
 
 namespace OperationArchitecture
 {
-    
     Operation_Package::Operation_Package(IOperationBase *operation, OperationOrVariable *parameters)
     {
         _operation = operation;

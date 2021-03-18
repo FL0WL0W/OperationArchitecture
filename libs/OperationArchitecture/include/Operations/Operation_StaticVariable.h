@@ -3,16 +3,16 @@
 #include "Interpolation.h"
 #include "Variable.h"
 
-#ifndef OPERATION_STATICSCALAR_H
-#define OPERATION_STATICSCALAR_H
+#ifndef OPERATION_STATICVARIABLE_H
+#define OPERATION_STATICVARIABLE_H
 namespace OperationArchitecture
 {
-	class Operation_StaticScalar : public IOperation<Variable>
+	class Operation_StaticVariable : public IOperation<Variable>
 	{
 	protected:
         Variable _staticValue;
 	public:		
-        Operation_StaticScalar(const Variable &staticValue);
+        Operation_StaticVariable(const Variable &staticValue);
 
 		Variable Execute() override;
 
