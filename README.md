@@ -1,15 +1,15 @@
 # OperationArchitecture
-An architecture that is based on individual operations to create configurable systems
+An architecture that is based on individual operations to create configurable systems<br/>
 
 
-TODO
-Write Unit Tests for
-  Operation_FaultDetection
-  Operation_Math
-  Operation_Package
-  Operation_StaticVariable
-  Operation_StoreVariable
-  OperationFactory
-  OperationPackager
-  
+TODO<br/>
+Write Unit Tests for<br/>
+  Operation_FaultDetection<br/>
+  Operation_Math<br/>
+  Operation_Package<br/>
+  Operation_StaticVariable<br/>
+  Operation_StoreVariable<br/>
+  OperationFactory<br/>
+  OperationPackager<br/>
+  <br/>
 Implement BIGOTHER in Operation_StaticVariable
