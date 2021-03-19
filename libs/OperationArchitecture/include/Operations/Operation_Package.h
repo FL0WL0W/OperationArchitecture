@@ -11,6 +11,11 @@ namespace OperationArchitecture
             bool _operation;
             void *_location;
         public:
+            OperationOrVariable()
+            {
+                _operation = false;
+                _location = 0;
+            }
             OperationOrVariable(Variable *variable)
             {
                 _operation = false;
