@@ -12,7 +12,7 @@ namespace UnitTests
 	{
 		protected:
 		Operation_LookupTableConfig *_config;
-		IOperation<Variable, Variable> *_operation;
+		IOperationBase *_operation;
 		unsigned int _size = 0;
 
 		Operation_LookupTableTests() 
@@ -47,7 +47,7 @@ namespace UnitTests
 			memcpy(buildConfig, _config, _config->Size());
 			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
 
-			_operation = static_cast<IOperation<Variable, Variable> *>(Operation_LookupTable::Create(config, _size));
+			_operation = Operation_LookupTable::Create(config, _size);
 		}
 	};
 
@@ -61,22 +61,22 @@ namespace UnitTests
 
 	TEST_F(Operation_LookupTableTests, WhenGettingValueInTable_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(-10, _operation->Execute(Variable::Create(0.0f)).To<float>());
+		ASSERT_FLOAT_EQ(-10, _operation->Execute<float>(0.0f));
 
-		ASSERT_FLOAT_EQ(20, _operation->Execute(Variable::Create(0.99f)).To<float>());
+		ASSERT_FLOAT_EQ(20, _operation->Execute<float>(0.99f));
 
-		ASSERT_NEAR(0, _operation->Execute(Variable::Create(0.33f)).To<float>(), 0.001f);
+		ASSERT_NEAR(0, _operation->Execute<float>(0.33f), 0.001f);
 
-		ASSERT_NEAR(-1.25f, _operation->Execute(Variable::Create(0.28875f)).To<float>(), 0.001f);
+		ASSERT_NEAR(-1.25f, _operation->Execute<float>(0.28875f), 0.001f);
 	}
 
 	TEST_F(Operation_LookupTableTests, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(90, _operation->Execute(Variable::Create(100.0f)).To<float>());
+		ASSERT_FLOAT_EQ(90, _operation->Execute<float>(100.0f));
 	}
 
 	TEST_F(Operation_LookupTableTests, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(-10, _operation->Execute(Variable::Create(-1.0f)).To<float>());
+		ASSERT_FLOAT_EQ(-10, _operation->Execute<float>(-1.0f));
 	}
 }

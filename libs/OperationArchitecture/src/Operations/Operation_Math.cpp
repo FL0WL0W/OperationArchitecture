@@ -6,37 +6,50 @@ namespace OperationArchitecture
 {
 	Operation_Math::Operation_Math(const MathOperation operation)
 	{
+        NumberOfParameters = 2;
+        ReturnsVariable = true;
 		_operation = operation;
 	}
 
-	Variable Operation_Math::Execute(Variable x, Variable y)
+
+	void Operation_Math::AbstractExecute(Variable &ret, Variable *params)
 	{
 		switch (_operation)
 		{
 			case ADD:
-				return x + y;
+				ret.Set(params[0] + params[1]);
+				break;
 			case SUBTRACT:
-				return x - y;
+				ret.Set(params[0] - params[1]);
+				break;
 			case MULTIPLY:
-				return x * y;
+				ret.Set(params[0] * params[1]);
+				break;
 			case DIVIDE:
-				return x / y;
+				ret.Set(params[0] / params[1]);
+				break;
 			case AND:
-				return x & y;
+				ret.Set(params[0] & params[1]);
+				break;
 			case OR:
-				return x | y;
+				ret.Set(params[0] | params[1]);
+				break;
 			case GREATERTHAN:
-				return Variable::Create((x > y));
+				ret.Set(params[0] > params[1]);
+				break;
 			case LESSTHAN:
-				return Variable::Create((x < y));
+				ret.Set(params[0] < params[1]);
+				break;
 			case GREATERTHANOREQUAL:
-				return Variable::Create((x >= y));
+				ret.Set(params[0] >= params[1]);
+				break;
 			case EQUAL:
-				return Variable::Create((x == y));
+				ret.Set(params[0] == params[1]);
+				break;
 			case LESSTHANOREQUAL:
-				return Variable::Create((x <= y));
+				ret.Set(params[0] <= params[1]);
+				break;
 		}
-		return Variable();
 	}
 
 	IOperationBase * Operation_Math::Create(const void *config, unsigned int &sizeOut)

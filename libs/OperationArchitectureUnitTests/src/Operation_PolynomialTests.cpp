@@ -12,7 +12,7 @@ namespace UnitTests
 	{
 		protected:
 		Operation_PolynomialConfig *_config;
-		IOperation<Variable, Variable> *_operation;
+		IOperationBase *_operation;
 		unsigned int _size = 0;
 
 		Operation_PolynomialTest() 
@@ -39,7 +39,7 @@ namespace UnitTests
 			memcpy(buildConfig, _config, _config->Size());
 			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
 
-			_operation = static_cast<IOperation<Variable, Variable> *>(Operation_Polynomial::Create(config, _size));
+			_operation = Operation_Polynomial::Create(config, _size);
 		}
 	};
 
@@ -51,20 +51,20 @@ namespace UnitTests
 
 	TEST_F(Operation_PolynomialTest, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(-10, _operation->Execute(Variable::Create(0.0f)).To<float>());
+		ASSERT_FLOAT_EQ(-10, _operation->Execute<float>(0.0f));
 
-		ASSERT_FLOAT_EQ(20, _operation->Execute(Variable::Create(1.0f)).To<float>());
+		ASSERT_FLOAT_EQ(20, _operation->Execute<float>(1.0f));
 
-		ASSERT_FLOAT_EQ(-1.25f, _operation->Execute(Variable::Create(0.5f)).To<float>());
+		ASSERT_FLOAT_EQ(-1.25f, _operation->Execute<float>(0.5f));
 	}
 
 	TEST_F(Operation_PolynomialTest, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(150, _operation->Execute(Variable::Create(100.0f)).To<float>());
+		ASSERT_FLOAT_EQ(150, _operation->Execute<float>(100.0f));
 	}
 
 	TEST_F(Operation_PolynomialTest, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(-40, _operation->Execute(Variable::Create(-100.0f)).To<float>());
+		ASSERT_FLOAT_EQ(-40, _operation->Execute<float>(-100.0f));
 	}
 }

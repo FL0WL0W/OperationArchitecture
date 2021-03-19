@@ -6,44 +6,46 @@ namespace OperationArchitecture
 {
 	Operation_FaultDetection::Operation_FaultDetection(const Operation_FaultDetectionConfig * const &config)
 	{
+        NumberOfParameters = 1;
+        ReturnsVariable = true;
 		_config = config;
 	}
 
-	Variable Operation_FaultDetection::Execute(Variable x)
+	void Operation_FaultDetection::AbstractExecute(Variable &ret, Variable *params)
 	{
-		float test = x.To<float>();
+		float test = params[0].To<float>();
 		if(test < _config->MinValue || test > _config->MaxValue)
 		{
-			switch(x.Type)
+			switch(params[0].Type)
 			{
 				case UINT8:
-					return Variable::Create(static_cast<uint8_t>(_config->DefaultValue));
+					ret.Set(static_cast<uint8_t>(_config->DefaultValue));
 				case UINT16:
-					return Variable::Create(static_cast<uint16_t>(_config->DefaultValue));
+					ret.Set(static_cast<uint16_t>(_config->DefaultValue));
 				case UINT32:
-					return Variable::Create(static_cast<uint32_t>(_config->DefaultValue));
+					ret.Set(static_cast<uint32_t>(_config->DefaultValue));
 				case UINT64:
-					return Variable::Create(static_cast<uint64_t>(_config->DefaultValue));
+					ret.Set(static_cast<uint64_t>(_config->DefaultValue));
 				case INT8:
-					return Variable::Create(static_cast<int8_t>(_config->DefaultValue));
+					ret.Set(static_cast<int8_t>(_config->DefaultValue));
 				case INT16:
-					return Variable::Create(static_cast<int16_t>(_config->DefaultValue));
+					ret.Set(static_cast<int16_t>(_config->DefaultValue));
 				case INT32:
-					return Variable::Create(static_cast<int32_t>(_config->DefaultValue));
+					ret.Set(static_cast<int32_t>(_config->DefaultValue));
 				case INT64:
-					return Variable::Create(static_cast<int64_t>(_config->DefaultValue));
+					ret.Set(static_cast<int64_t>(_config->DefaultValue));
 				case FLOAT:
-					return Variable::Create(_config->DefaultValue);
+					ret.Set(_config->DefaultValue);
 				case DOUBLE:
-					return Variable::Create(static_cast<double>(_config->DefaultValue));
+					ret.Set(static_cast<double>(_config->DefaultValue));
 				case BOOLEAN:
-					return Variable::Create(static_cast<bool>(_config->DefaultValue));
-				case VariableType::VOID: 
-					return Variable();
-					//this would be useless to use
+					ret.Set(static_cast<bool>(_config->DefaultValue));
+				default:
+					//should throw here
+					break;
 			}
 		}
-		return x;
+		ret.Set(params[0]);
 	}
 
 	IOperationBase *Operation_FaultDetection::Create(const void *config, unsigned int &sizeOut)

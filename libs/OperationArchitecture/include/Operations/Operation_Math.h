@@ -22,14 +22,14 @@ namespace OperationArchitecture
 		LESSTHANOREQUAL = 10
 	};
 
-	class Operation_Math : public IOperation<Variable, Variable, Variable>
+	class Operation_Math : public IOperationBase
 	{
 	protected:
 		MathOperation _operation;
 	public:		
         Operation_Math(const MathOperation operation);
 
-		Variable Execute(Variable x, Variable y) override;
+		void AbstractExecute(Variable &ret, Variable *params) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

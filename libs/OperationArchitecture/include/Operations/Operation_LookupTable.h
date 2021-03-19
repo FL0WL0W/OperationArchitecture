@@ -31,14 +31,14 @@ namespace OperationArchitecture
 		VariableType TableType;
 	});
 
-	class Operation_LookupTable : public IOperation<Variable, Variable>
+	class Operation_LookupTable : public IOperationBase
 	{
 	protected:
 		const Operation_LookupTableConfig *_config;
 	public:		
         Operation_LookupTable(const Operation_LookupTableConfig * const &config);
 
-		Variable Execute(Variable x) override;
+		void AbstractExecute(Variable &ret, Variable *params) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

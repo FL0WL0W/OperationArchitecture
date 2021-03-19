@@ -21,14 +21,14 @@ namespace OperationArchitecture
 		float DefaultValue;
 	});
 
-	class Operation_FaultDetection : public IOperation<Variable, Variable>
+	class Operation_FaultDetection : public IOperationBase
 	{
 	protected:
 		const Operation_FaultDetectionConfig *_config;
 	public:		
         Operation_FaultDetection(const Operation_FaultDetectionConfig * const &config);
 
-		Variable Execute(Variable x) override;
+		void AbstractExecute(Variable &ret, Variable *params) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

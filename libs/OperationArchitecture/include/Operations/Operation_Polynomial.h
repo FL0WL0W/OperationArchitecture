@@ -29,14 +29,14 @@ namespace OperationArchitecture
 		uint8_t Degree;
 	});
 
-	class Operation_Polynomial : public IOperation<Variable, Variable>
+	class Operation_Polynomial : public IOperationBase
 	{
 	protected:
 		const Operation_PolynomialConfig *_config;
 	public:		
         Operation_Polynomial(const Operation_PolynomialConfig * const &config);
 
-		Variable Execute(Variable x) override;
+		void AbstractExecute(Variable &ret, Variable *params) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

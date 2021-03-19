@@ -6,6 +6,8 @@ namespace OperationArchitecture
 {
     Operation_StoreVariable::Operation_StoreVariable(Variable *variable, IOperationBase *operation)
     {
+        NumberOfParameters = 0;
+        ReturnsVariable = true;
         _variable = variable;
         _operation = operation;
     }

@@ -18,7 +18,7 @@ namespace OperationArchitecture
         void AbstractExecute(Variable &ret, Variable *params) override
         {
             auto sequence = std::index_sequence_for<PARAMS...>{};
-            return AbstractExecuteImpl(ret, sequence, params);
+            AbstractExecuteImpl(ret, sequence, params);
         }
 
         template<std::size_t... S>

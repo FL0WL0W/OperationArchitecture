@@ -10,6 +10,15 @@ namespace OperationArchitecture
         char NumberOfParameters : 7;
         bool ReturnsVariable;
         virtual void AbstractExecute(Variable &ret, Variable *params) = 0;
+
+        template<typename RET, typename... PARAMS>
+        RET Execute(PARAMS... params)
+        {
+            Variable ret;
+            Variable parameters[sizeof...(PARAMS)] = {Variable::Create(params)...};
+            AbstractExecute(ret, parameters);
+            return ret.To<RET>();
+        }
     };
 }
 #endif

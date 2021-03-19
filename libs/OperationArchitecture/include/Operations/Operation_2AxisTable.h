@@ -34,14 +34,14 @@ namespace OperationArchitecture
 		VariableType TableType;
 	});
 
-	class Operation_2AxisTable : public IOperation<Variable, Variable, Variable>
+	class Operation_2AxisTable : public IOperationBase
 	{
 	protected:
 		const Operation_2AxisTableConfig *_config;
 	public:		
         Operation_2AxisTable(const Operation_2AxisTableConfig * const &config);
 
-		Variable Execute(Variable x, Variable y) override;
+		void AbstractExecute(Variable &ret, Variable *params) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};
