@@ -8,14 +8,14 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_PolynomialTest : public ::testing::Test 
+	class Operation_PolynomialTests : public ::testing::Test 
 	{
 		protected:
 		Operation_PolynomialConfig *_config;
 		IOperationBase *_operation;
 		unsigned int _size = 0;
 
-		Operation_PolynomialTest() 
+		Operation_PolynomialTests() 
 		{			
 			unsigned int expectedSize = sizeof(Operation_PolynomialConfig) + 4 * 4;
 			_config = (Operation_PolynomialConfig *)malloc(expectedSize);
@@ -43,13 +43,13 @@ namespace UnitTests
 		}
 	};
 
-	TEST_F(Operation_PolynomialTest, ConfigsAreCorrect)
+	TEST_F(Operation_PolynomialTests, ConfigsAreCorrect)
 	{
 		ASSERT_EQ(29, _config->Size());
 		ASSERT_EQ(33, _size);
 	}
 
-	TEST_F(Operation_PolynomialTest, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)
+	TEST_F(Operation_PolynomialTests, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)
 	{
 		ASSERT_FLOAT_EQ(-10, _operation->Execute<float>(0.0f));
 
@@ -58,12 +58,12 @@ namespace UnitTests
 		ASSERT_FLOAT_EQ(-1.25f, _operation->Execute<float>(0.5f));
 	}
 
-	TEST_F(Operation_PolynomialTest, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
+	TEST_F(Operation_PolynomialTests, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
 		ASSERT_FLOAT_EQ(150, _operation->Execute<float>(100.0f));
 	}
 
-	TEST_F(Operation_PolynomialTest, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
+	TEST_F(Operation_PolynomialTests, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
 		ASSERT_FLOAT_EQ(-40, _operation->Execute<float>(-100.0f));
 	}

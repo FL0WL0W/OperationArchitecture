@@ -8,14 +8,14 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_2AxisTableTest : public ::testing::Test 
+	class Operation_2AxisTableTests : public ::testing::Test 
 	{
 		protected:
 		Operation_2AxisTableConfig *_config;
 		IOperationBase *_operation;
 		unsigned int _size = 0;
 
-		Operation_2AxisTableTest() 
+		Operation_2AxisTableTests() 
 		{			
 			_config = (Operation_2AxisTableConfig *)malloc(sizeof(Operation_2AxisTableConfig) + 4 * 40);
 			
@@ -82,7 +82,7 @@ namespace UnitTests
 		}
 	};
 
-	TEST_F(Operation_2AxisTableTest, ConfigsAreCorrect)
+	TEST_F(Operation_2AxisTableTests, ConfigsAreCorrect)
 	{
 		ASSERT_EQ(179, _config->Size());
 		ASSERT_EQ(183, _size);
@@ -90,7 +90,7 @@ namespace UnitTests
 		ASSERT_EQ(-10, ((float *)_config->Table())[0]);
 	}
 
-	TEST_F(Operation_2AxisTableTest, WhenGettingValueInTable_ThenCorrectValueIsReturned)
+	TEST_F(Operation_2AxisTableTests, WhenGettingValueInTable_ThenCorrectValueIsReturned)
 	{
 		ASSERT_EQ(-10, _operation->Execute<int8_t>(static_cast<uint8_t>(0), static_cast<int8_t>(0)));
 		ASSERT_EQ(20, _operation->Execute<uint8_t>(static_cast<float>(0.99f), static_cast<uint16_t>(0)));
@@ -102,12 +102,12 @@ namespace UnitTests
 		ASSERT_NEAR(8.75f, _operation->Execute<float>(static_cast<float>(0.28875f), static_cast<float>(1.1f)), 0.001f);
 	}
 
-	TEST_F(Operation_2AxisTableTest, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
+	TEST_F(Operation_2AxisTableTests, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
 		ASSERT_EQ(80, _operation->Execute<uint64_t>(static_cast<float>(100.0f), static_cast<uint64_t>(0)));
 	}
 
-	TEST_F(Operation_2AxisTableTest, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
+	TEST_F(Operation_2AxisTableTests, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
 		ASSERT_EQ(-10, _operation->Execute<int64_t>(static_cast<float>(-1.0f), static_cast<uint64_t>(0)));
 	}
