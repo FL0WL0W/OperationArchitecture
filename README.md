@@ -4,7 +4,6 @@ An architecture that is based on individual operations to create configurable sy
 
 TODO<br/>
 Write Unit Tests for<br/>
-  Operation_FaultDetection<br/>
   Operation_Package<br/>
   Operation_StaticVariable<br/>
   Operation_StoreVariable<br/>

@@ -20,32 +20,46 @@ namespace OperationArchitecture
 			{
 				case UINT8:
 					ret.Set(static_cast<uint8_t>(_config->DefaultValue));
+					break;
 				case UINT16:
 					ret.Set(static_cast<uint16_t>(_config->DefaultValue));
+					break;
 				case UINT32:
 					ret.Set(static_cast<uint32_t>(_config->DefaultValue));
+					break;
 				case UINT64:
 					ret.Set(static_cast<uint64_t>(_config->DefaultValue));
+					break;
 				case INT8:
 					ret.Set(static_cast<int8_t>(_config->DefaultValue));
+					break;
 				case INT16:
 					ret.Set(static_cast<int16_t>(_config->DefaultValue));
+					break;
 				case INT32:
 					ret.Set(static_cast<int32_t>(_config->DefaultValue));
+					break;
 				case INT64:
 					ret.Set(static_cast<int64_t>(_config->DefaultValue));
+					break;
 				case FLOAT:
 					ret.Set(_config->DefaultValue);
+					break;
 				case DOUBLE:
 					ret.Set(static_cast<double>(_config->DefaultValue));
+					break;
 				case BOOLEAN:
 					ret.Set(static_cast<bool>(_config->DefaultValue));
+					break;
 				default:
 					//should throw here
 					break;
 			}
 		}
-		ret.Set(params[0]);
+		else
+		{
+			ret.Set(params[0]);
+		}
 	}
 
 	IOperationBase *Operation_FaultDetection::Create(const void *config, unsigned int &sizeOut)
