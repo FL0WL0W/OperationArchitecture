@@ -7,14 +7,7 @@ using ::testing::Return;
 using namespace OperationArchitecture;
 
 namespace UnitTests
-{
-		// GREATERTHAN = 6,
-		// LESSTHAN = 7,
-		// EQUAL = 8,
-		// GREATERTHANOREQUAL = 9,
-		// LESSTHANOREQUAL = 10
-
-	
+{	
 	IOperationBase *CreateOperationMath(MathOperation operation, unsigned int &size)
 	{
 		void *config = malloc(sizeof(MathOperation) + 4);
@@ -46,6 +39,16 @@ namespace UnitTests
 		unsigned int _sizeAnd = 0;
 		IOperationBase *_operationOr;
 		unsigned int _sizeOr = 0;
+		IOperationBase *_operationGreaterThan;
+		unsigned int _sizeGreaterThan = 0;
+		IOperationBase *_operationLessThan;
+		unsigned int _sizeLessThan = 0;
+		IOperationBase *_operationEqual;
+		unsigned int _sizeEqual = 0;
+		IOperationBase *_operationGreaterThanOrEqual;
+		unsigned int _sizeGreaterThanOrEqual = 0;
+		IOperationBase *_operationLessThanOrEqual;
+		unsigned int _sizeLessThanOrEqual = 0;
 
 		Operation_MathTests() 
 		{
@@ -55,6 +58,11 @@ namespace UnitTests
 			_operationDivide = CreateOperationMath(DIVIDE, _sizeDivide);
 			_operationAnd = CreateOperationMath(AND, _sizeAnd);
 			_operationOr = CreateOperationMath(OR, _sizeOr);
+			_operationGreaterThan = CreateOperationMath(GREATERTHAN, _sizeGreaterThan);
+			_operationLessThan = CreateOperationMath(LESSTHAN, _sizeLessThan);
+			_operationEqual = CreateOperationMath(EQUAL, _sizeEqual);
+			_operationGreaterThanOrEqual = CreateOperationMath(GREATERTHANOREQUAL, _sizeGreaterThanOrEqual);
+			_operationLessThanOrEqual = CreateOperationMath(LESSTHANOREQUAL, _sizeLessThanOrEqual);
 		}
 	};
 
@@ -66,6 +74,11 @@ namespace UnitTests
 		ASSERT_EQ(5, _sizeDivide);
 		ASSERT_EQ(5, _sizeAnd);
 		ASSERT_EQ(5, _sizeOr);
+		ASSERT_EQ(5, _sizeGreaterThan);
+		ASSERT_EQ(5, _sizeLessThan);
+		ASSERT_EQ(5, _sizeEqual);
+		ASSERT_EQ(5, _sizeGreaterThanOrEqual);
+		ASSERT_EQ(5, _sizeLessThanOrEqual);
 	}
 
 	TEST_F(Operation_MathTests, WhenAdding_OperationAdds)
@@ -98,5 +111,40 @@ namespace UnitTests
 	{
 		ASSERT_EQ(7, _operationOr->Execute<int>(5, 2));
 		ASSERT_EQ(6, _operationOr->Execute<int>(6, 2));
+	}
+
+	TEST_F(Operation_MathTests, WhenGreaterThan_OperationReturnsGreaterThan)
+	{
+		ASSERT_EQ(true, _operationGreaterThan->Execute<bool>(5, 2));
+		ASSERT_EQ(false, _operationGreaterThan->Execute<bool>(5, 5));
+		ASSERT_EQ(false, _operationGreaterThan->Execute<bool>(2, 5));
+	}
+
+	TEST_F(Operation_MathTests, WhenLessThan_OperationReturnsLessThan)
+	{
+		ASSERT_EQ(false, _operationLessThan->Execute<bool>(5, 2));
+		ASSERT_EQ(false, _operationLessThan->Execute<bool>(5, 5));
+		ASSERT_EQ(true, _operationLessThan->Execute<bool>(2, 5));
+	}
+
+	TEST_F(Operation_MathTests, WhenEqual_OperationReturnsEqual)
+	{
+		ASSERT_EQ(false, _operationEqual->Execute<bool>(5, 2));
+		ASSERT_EQ(true, _operationEqual->Execute<bool>(5, 5));
+		ASSERT_EQ(false, _operationEqual->Execute<bool>(2, 5));
+	}
+
+	TEST_F(Operation_MathTests, WhenGreaterThanOrEqual_OperationReturnsGreaterThanOrEqual)
+	{
+		ASSERT_EQ(true, _operationGreaterThanOrEqual->Execute<bool>(5, 2));
+		ASSERT_EQ(true, _operationGreaterThanOrEqual->Execute<bool>(5, 5));
+		ASSERT_EQ(false, _operationGreaterThanOrEqual->Execute<bool>(2, 5));
+	}
+
+	TEST_F(Operation_MathTests, WhenLessThanOrEqual_OperationReturnsLessThanOrEqual)
+	{
+		ASSERT_EQ(false, _operationLessThanOrEqual->Execute<bool>(5, 2));
+		ASSERT_EQ(true, _operationLessThanOrEqual->Execute<bool>(5, 5));
+		ASSERT_EQ(true, _operationLessThanOrEqual->Execute<bool>(2, 5));
 	}
 }
