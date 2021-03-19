@@ -8,25 +8,27 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {	
-	IOperationBase *CreateOperationMath(MathOperation operation, unsigned int &size)
-	{
-		void *config = malloc(sizeof(MathOperation) + 4);
-		void *buildConfig = config;
-
-		//Factory ID doesn't matter
-		*((uint32_t *)buildConfig) = 1337;
-		buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
-
-		*((MathOperation *)buildConfig) = operation;
-		buildConfig = (void *)((MathOperation *)buildConfig + 1);
-
-		return Operation_Math::Create(config, size);
-	}
 
 	//actual math verification done in VariableTests, This is to verify the functionality of the Operation_Math Only
 	class Operation_MathTests : public ::testing::Test 
 	{
 		protected:
+
+		IOperationBase *CreateOperationMath(MathOperation operation, unsigned int &size)
+		{
+			void *config = malloc(sizeof(MathOperation) + 4);
+			void *buildConfig = config;
+
+			//Factory ID doesn't matter
+			*((uint32_t *)buildConfig) = 1337;
+			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+
+			*((MathOperation *)buildConfig) = operation;
+			buildConfig = (void *)((MathOperation *)buildConfig + 1);
+
+			return Operation_Math::Create(config, size);
+		}
+		
 		IOperationBase *_operationAdd;
 		unsigned int _sizeAdd = 0;
 		IOperationBase *_operationSubtract;

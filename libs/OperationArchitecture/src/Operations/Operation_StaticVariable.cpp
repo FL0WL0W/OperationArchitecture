@@ -58,12 +58,18 @@ namespace OperationArchitecture
 				break;
 			case VariableType::OTHER:
 				staticValue = Variable::Create(Config::CastAndOffset<uint64_t>(config, sizeOut));
+				staticValue.Type = OTHER;
 				break;
         	case VariableType::BIGOTHER:
-				//TODO
+			{
+				uint32_t length = Config::CastAndOffset<uint32_t>(config, sizeOut);
+				staticValue.Value = *reinterpret_cast<uint64_t *>(&config);
+				staticValue.Type = BIGOTHER;
+				Config::OffsetConfig(config, sizeOut, length);
+				break;
+			}
         	case VariableType::POINTER:
 			case VariableType::VOID: 
-				staticValue = Variable();
 				//this would be useless to create
 				break;
 		}

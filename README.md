@@ -9,4 +9,3 @@ Write Unit Tests for<br/>
   OperationFactory<br/>
   OperationPackager<br/>
   <br/>
-Implement BIGOTHER in Operation_StaticVariable
