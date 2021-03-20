@@ -1,7 +1,6 @@
 #include "Operations/OperationPackager.h"
 #include "Operations/Operation_StoreVariable.h"
 #include "Config.h"
-#include "Packed.h"
 
 #ifdef OPERATIONPACKAGER_H
 
@@ -32,14 +31,7 @@ namespace OperationArchitecture
 
     IOperationBase *OperationPackager::Package(const void *config, unsigned int &sizeOut)
     {
-        PACK(
-        struct Options 
-        {
-            bool OperationImmediate : 1;
-            bool StoreVariable : 1;
-        });
-
-        const Options options = Config::CastAndOffset<Options>(config, sizeOut);
+        const PackageOptions options = Config::CastAndOffset<PackageOptions>(config, sizeOut);
 
         Variable * variable = 0;
         if(options.StoreVariable)
@@ -51,7 +43,9 @@ namespace OperationArchitecture
         IOperationBase *operation;
     	if(options.OperationImmediate)
     	{
-            operation = _factory->Create(config, sizeOut);
+            unsigned int size = 0;
+            operation = _factory->Create(config, size);
+            Config::OffsetConfig(config, sizeOut, size);
         }
         else
         {
@@ -76,7 +70,9 @@ namespace OperationArchitecture
         OperationOrVariable *parameters = new OperationOrVariable[numberOfParameters];
         for(int i = 0; i < numberOfParameters; i++)
         {
-            parameters[i] = CreateParameter(config, sizeOut);
+            unsigned int size = 0;
+            parameters[i] = CreateParameter(config, size);
+            Config::OffsetConfig(config, sizeOut, size);
         }
         return parameters;
     }

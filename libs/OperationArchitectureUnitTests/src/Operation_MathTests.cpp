@@ -16,7 +16,7 @@ namespace UnitTests
 
 		IOperationBase *CreateOperationMath(MathOperation operation, unsigned int &size)
 		{
-			void *config = malloc(sizeof(MathOperation) + 4);
+			void *config = malloc(sizeof(MathOperation) + sizeof(uint32_t));
 			void *buildConfig = config;
 
 			//Factory ID doesn't matter
@@ -28,7 +28,7 @@ namespace UnitTests
 
 			return Operation_Math::Create(config, size);
 		}
-		
+
 		IOperationBase *_operationAdd;
 		unsigned int _sizeAdd = 0;
 		IOperationBase *_operationSubtract;

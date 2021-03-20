@@ -33,7 +33,7 @@ namespace UnitTests
 
 		Operation_StaticVariableTests() 
 		{			
-			void *config = malloc(sizeof(Variable) + 4);
+			void *config = malloc(sizeof(Variable) + sizeof(uint32_t));
 			void *buildConfig = config;
 
 			//Factory ID doesn't matter
@@ -48,7 +48,7 @@ namespace UnitTests
 
 			_operation = Operation_StaticVariable::Create(config, _size);
 						
-			config = malloc(sizeof(Variable) + 4);
+			config = malloc(sizeof(Variable) + sizeof(uint32_t));
 			buildConfig = config;
 
 			//Factory ID doesn't matter
@@ -68,7 +68,7 @@ namespace UnitTests
 			_operationOther = Operation_StaticVariable::Create(config, _sizeOther);
 
 						
-			config = malloc(sizeof(Variable) + 4);
+			config = malloc(sizeof(Variable) + sizeof(uint32_t));
 			buildConfig = config;
 
 			//Factory ID doesn't matter

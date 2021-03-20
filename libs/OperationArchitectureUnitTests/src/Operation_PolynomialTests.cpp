@@ -17,7 +17,7 @@ namespace UnitTests
 
 		Operation_PolynomialTests() 
 		{			
-			unsigned int expectedSize = sizeof(Operation_PolynomialConfig) + 4 * 4;
+			unsigned int expectedSize = sizeof(Operation_PolynomialConfig) + sizeof(float) * 4;
 			_config = (Operation_PolynomialConfig *)malloc(expectedSize);
 			
 			((float *)(_config + 1))[0] = -10;
@@ -29,7 +29,7 @@ namespace UnitTests
 			_config->MinValue = -40;
 			_config->Degree = 4;
 
-			void *config = malloc(_config->Size() + 4);
+			void *config = malloc(_config->Size() + sizeof(uint32_t));
 			void *buildConfig = config;
 
 			//Factory ID doesn't matter

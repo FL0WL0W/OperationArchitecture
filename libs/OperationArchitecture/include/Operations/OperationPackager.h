@@ -1,10 +1,18 @@
 #include "Operations/OperationFactory.h"
 #include "Operations/Operation_Package.h"
+#include "Packed.h"
 
 #ifndef OPERATIONPACKAGER_H
 #define OPERATIONPACKAGER_H
 namespace OperationArchitecture
 {
+	PACK(
+	struct PackageOptions 
+	{
+		bool OperationImmediate : 1;
+		bool StoreVariable : 1;
+	});
+
 	class SystemBus
 	{
 	public:

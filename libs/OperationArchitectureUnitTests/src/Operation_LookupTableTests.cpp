@@ -37,7 +37,7 @@ namespace UnitTests
 			Table[9] = 80;
 			Table[10] = 90;
 
-			void *config = malloc(_config->Size() + 4);
+			void *config = malloc(_config->Size() + sizeof(uint32_t));
 			void *buildConfig = config;
 
 			//Factory ID doesn't matter

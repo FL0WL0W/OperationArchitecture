@@ -24,7 +24,7 @@ namespace UnitTests
 			_config->MinValue = -40;
 			_config->DefaultValue = 4;
 
-			void *config = malloc(_config->Size() + 4);
+			void *config = malloc(_config->Size() + sizeof(uint32_t));
 			void *buildConfig = config;
 
 			//Factory ID doesn't matter

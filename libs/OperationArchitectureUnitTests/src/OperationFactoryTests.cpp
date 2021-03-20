@@ -21,7 +21,7 @@ namespace UnitTests
 			_factory = new OperationFactory(64);
 			_factory->Register(2, Operation_Math::Create);
 
-			void *config = malloc(sizeof(MathOperation) + 4);
+			void *config = malloc(sizeof(MathOperation) + sizeof(uint32_t));
 			void *buildConfig = config;
 
 			//Factory ID 2 + 64 = 66
