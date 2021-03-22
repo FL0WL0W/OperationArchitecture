@@ -1,9 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "Operations/Operation_Polynomial.h"
-using ::testing::AtLeast;
-using ::testing::Return;
-
+using namespace testing;
 using namespace OperationArchitecture;
 
 namespace UnitTests

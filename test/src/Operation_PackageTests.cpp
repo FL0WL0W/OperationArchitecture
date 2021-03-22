@@ -2,9 +2,7 @@
 #include "gtest/gtest.h"
 #include "Operations/Operation_Package.h"
 #include "Operations/Operation_Math.h"
-using ::testing::AtLeast;
-using ::testing::Return;
-
+using namespace testing;
 using namespace OperationArchitecture;
 
 namespace UnitTests

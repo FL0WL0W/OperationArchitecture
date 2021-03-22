@@ -4,9 +4,7 @@
 #include "Operations/OperationFactory.h"
 #include "Operations/Operation_Math.h"
 #include "Operations/Operation_StaticVariable.h"
-using ::testing::AtLeast;
-using ::testing::Return;
-
+using namespace testing;
 using namespace OperationArchitecture;
 
 namespace UnitTests

@@ -26,6 +26,19 @@ namespace OperationArchitecture
             AbstractExecute(variables);
             return ret.To<RET>();
         }
+
+        template<typename... PARAMS>
+        void Execute(PARAMS... params)
+        {
+            Variable parameters[sizeof...(PARAMS)] = {Variable::Create(params)...};
+            Variable *variables[sizeof...(PARAMS)];
+            for(int i = 0; i < sizeof...(PARAMS); i++)
+            {
+                variables[i] = &parameters[i];
+            } 
+
+            AbstractExecute(variables);
+        }
     };
 }
 #endif
