@@ -30,6 +30,7 @@ namespace OperationArchitecture
             {
                 if(_operation)
                 {
+                    //TODO Multiple Return Variables
                     Variable *operationRet = &ret;
                     reinterpret_cast<IOperationBase *>(_location)->AbstractExecute(&operationRet);
                 }

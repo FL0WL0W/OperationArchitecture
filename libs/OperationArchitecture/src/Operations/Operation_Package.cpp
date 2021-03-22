@@ -26,7 +26,6 @@ namespace OperationArchitecture
             variables[i + _operation->NumberOfReturnVariables] = &params[i];
         }
 
-
         _operation->AbstractExecute(variables);
 
         delete params;
