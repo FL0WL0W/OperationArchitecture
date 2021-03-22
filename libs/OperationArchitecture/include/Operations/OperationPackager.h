@@ -10,7 +10,7 @@ namespace OperationArchitecture
 	struct PackageOptions 
 	{
 		bool OperationImmediate : 1;
-		bool StoreVariable : 1;
+		bool StoreVariables : 1;
 	});
 
 	class SystemBus

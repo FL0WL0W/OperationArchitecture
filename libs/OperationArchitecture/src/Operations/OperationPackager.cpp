@@ -33,15 +33,6 @@ namespace OperationArchitecture
     {
         const PackageOptions options = Config::CastAndOffset<PackageOptions>(config, sizeOut);
 
-        Variable **variables = 0;
-        if(options.StoreVariable)
-        {
-            //TODO store multiple variables
-            const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
-            variables = new Variable*[0];
-            variables[0] = _systemBus->GetOrCreateVariable(variableId);
-        }
-
         IOperationBase *operation;
     	if(options.OperationImmediate)
     	{
@@ -58,6 +49,17 @@ namespace OperationArchitecture
                 //this is bad, do something 
             }
             operation = it->second;
+        }
+
+        Variable **variables = 0;
+        if(options.StoreVariables)
+        {
+            //TODO store multiple variables
+            variables = new Variable*[operation->NumberOfReturnVariables];
+            for(int i = 0; i < operation->NumberOfReturnVariables; i++)
+            {
+                variables[i] = _systemBus->GetOrCreateVariable(Config::CastAndOffset<uint32_t>(config, sizeOut));
+            }
         }
         IOperationBase * const package = new Operation_Package(operation, CreateParameters(operation->NumberOfParameters, config, sizeOut));
 

@@ -40,16 +40,8 @@ namespace UnitTests
 
 			//options
 			((PackageOptions *)buildConfig)->OperationImmediate = operationImmediate;
-			((PackageOptions *)buildConfig)->StoreVariable = storeVariableId > 0;
+			((PackageOptions *)buildConfig)->StoreVariables = storeVariableId > 0;
 			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
-
-			//if storing variable, set the id for the result to be stored into
-			if(storeVariableId > 0)
-			{
-				//VariableId
-				*((uint32_t *)buildConfig) = storeVariableId;
-				buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
-			}
 
 			//if operation is to be created, add the config for creating an operation add
 			if(operationImmediate)
@@ -69,12 +61,20 @@ namespace UnitTests
 				buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 			}
 
+			//if storing variables, set the id for the result to be stored into
+			if(storeVariableId > 0)
+			{
+				//VariableId
+				*((uint32_t *)buildConfig) = storeVariableId;
+				buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+			}
+
 			//add first paramater as a package
 			*((bool *)buildConfig) = true;
 			buildConfig = (void *)(((bool *)buildConfig) + 1);
 
 			((PackageOptions *)buildConfig)->OperationImmediate = false;
-			((PackageOptions *)buildConfig)->StoreVariable = false;
+			((PackageOptions *)buildConfig)->StoreVariables = false;
 			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
 
 			//operation id for static variable
