@@ -6,47 +6,47 @@ namespace OperationArchitecture
 {
 	Operation_LookupTable::Operation_LookupTable(const Operation_LookupTableConfig * const &config)
 	{
+        NumberOfReturnVariables = 1;
         NumberOfParameters = 1;
-        ReturnsVariable = true;
 		_config = config;
 	}
 
-	void Operation_LookupTable::AbstractExecute(Variable &ret, Variable *params)
+	void Operation_LookupTable::AbstractExecute(Variable **variables)
 	{
 		switch(_config->TableType)
 		{
 			case VariableType::UINT8:
-				ret.Set(Interpolation::InterpolateTable1<uint8_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint8_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<uint8_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint8_t*>(_config->Table())));
 				break;
 			case VariableType::UINT16:
-				ret.Set(Interpolation::InterpolateTable1<uint16_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<uint16_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
 				break;
 			case VariableType::UINT32:
-				ret.Set(Interpolation::InterpolateTable1<uint16_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<uint16_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
 				break;
 			case VariableType::UINT64:
-				ret.Set(Interpolation::InterpolateTable1<uint64_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint64_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<uint64_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint64_t*>(_config->Table())));
 				break;
 			case VariableType::INT8:
-				ret.Set(Interpolation::InterpolateTable1<int8_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int8_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<int8_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int8_t*>(_config->Table())));
 				break;
 			case VariableType::INT16:
-				ret.Set(Interpolation::InterpolateTable1<int16_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int16_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<int16_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int16_t*>(_config->Table())));
 				break;
 			case VariableType::INT32:
-				ret.Set(Interpolation::InterpolateTable1<int32_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int32_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<int32_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int32_t*>(_config->Table())));
 				break;
 			case VariableType::INT64:
-				ret.Set(Interpolation::InterpolateTable1<int64_t>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int64_t*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<int64_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int64_t*>(_config->Table())));
 				break;
 			case VariableType::FLOAT:
-				ret.Set(Interpolation::InterpolateTable1<float>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const float*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<float>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const float*>(_config->Table())));
 				break;
 			case VariableType::DOUBLE:
-				ret.Set(Interpolation::InterpolateTable1<double>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const double*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<double>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const double*>(_config->Table())));
 				break;
 			case VariableType::BOOLEAN:
-				ret.Set(Interpolation::InterpolateTable1<bool>(params[0].To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const bool*>(_config->Table())));
+				variables[0]->Set(Interpolation::InterpolateTable1<bool>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const bool*>(_config->Table())));
 				break;
 			default:
 				//should throw here

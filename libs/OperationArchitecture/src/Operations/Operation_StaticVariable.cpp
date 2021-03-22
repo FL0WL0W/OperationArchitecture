@@ -6,14 +6,14 @@ namespace OperationArchitecture
 {
 	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue)
 	{
+		NumberOfReturnVariables = 1;
         NumberOfParameters = 0;
-        ReturnsVariable = true;
 		_staticValue = staticValue;
 	}
 
-	void Operation_StaticVariable::AbstractExecute(Variable &ret, Variable *params)
+	void Operation_StaticVariable::AbstractExecute(Variable **variables)
 	{
-		ret.Set(_staticValue);
+		variables[0]->Set(_staticValue);
 	}
 
 	IOperationBase * Operation_StaticVariable::Create(const void *config, unsigned int &sizeOut)

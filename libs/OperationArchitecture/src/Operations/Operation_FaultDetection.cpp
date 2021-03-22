@@ -6,50 +6,50 @@ namespace OperationArchitecture
 {
 	Operation_FaultDetection::Operation_FaultDetection(const Operation_FaultDetectionConfig * const &config)
 	{
+		NumberOfReturnVariables = 1;
         NumberOfParameters = 1;
-        ReturnsVariable = true;
 		_config = config;
 	}
 
-	void Operation_FaultDetection::AbstractExecute(Variable &ret, Variable *params)
+	void Operation_FaultDetection::AbstractExecute(Variable **variables)
 	{
-		float test = params[0].To<float>();
+		float test = variables[1]->To<float>();
 		if(test < _config->MinValue || test > _config->MaxValue)
 		{
-			switch(params[0].Type)
+			switch(variables[1]->Type)
 			{
 				case UINT8:
-					ret.Set(static_cast<uint8_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<uint8_t>(_config->DefaultValue));
 					break;
 				case UINT16:
-					ret.Set(static_cast<uint16_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<uint16_t>(_config->DefaultValue));
 					break;
 				case UINT32:
-					ret.Set(static_cast<uint32_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<uint32_t>(_config->DefaultValue));
 					break;
 				case UINT64:
-					ret.Set(static_cast<uint64_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<uint64_t>(_config->DefaultValue));
 					break;
 				case INT8:
-					ret.Set(static_cast<int8_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<int8_t>(_config->DefaultValue));
 					break;
 				case INT16:
-					ret.Set(static_cast<int16_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<int16_t>(_config->DefaultValue));
 					break;
 				case INT32:
-					ret.Set(static_cast<int32_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<int32_t>(_config->DefaultValue));
 					break;
 				case INT64:
-					ret.Set(static_cast<int64_t>(_config->DefaultValue));
+					variables[0]->Set(static_cast<int64_t>(_config->DefaultValue));
 					break;
 				case FLOAT:
-					ret.Set(_config->DefaultValue);
+					variables[0]->Set(_config->DefaultValue);
 					break;
 				case DOUBLE:
-					ret.Set(static_cast<double>(_config->DefaultValue));
+					variables[0]->Set(static_cast<double>(_config->DefaultValue));
 					break;
 				case BOOLEAN:
-					ret.Set(static_cast<bool>(_config->DefaultValue));
+					variables[0]->Set(static_cast<bool>(_config->DefaultValue));
 					break;
 				default:
 					//should throw here
@@ -58,7 +58,7 @@ namespace OperationArchitecture
 		}
 		else
 		{
-			ret.Set(params[0]);
+			variables[0]->Set(*variables[1]);
 		}
 	}
 

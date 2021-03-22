@@ -14,7 +14,7 @@ namespace OperationArchitecture
 	public:		
         Operation_StaticVariable(const Variable &staticValue);
 
-		void AbstractExecute(Variable &ret, Variable *params) override;
+		void AbstractExecute(Variable **variables) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

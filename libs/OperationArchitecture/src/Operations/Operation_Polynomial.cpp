@@ -6,14 +6,14 @@ namespace OperationArchitecture
 {
 	Operation_Polynomial::Operation_Polynomial(const Operation_PolynomialConfig * const &config)
 	{
+		NumberOfReturnVariables = 1;
         NumberOfParameters = 1;
-        ReturnsVariable = true;
 		_config = config;
 	}
 
-	void Operation_Polynomial::AbstractExecute(Variable &ret, Variable *params)
+	void Operation_Polynomial::AbstractExecute(Variable **variables)
 	{
-		const float x = params[0].To<float>();
+		const float x = variables[1]->To<float>();
 		const float * a = _config->A();
 		float val = a[0];
 		for (uint8_t i = 1; i <= _config->Degree; i++)
@@ -22,7 +22,7 @@ namespace OperationArchitecture
 			val = _config->MinValue;
 		else if (val > _config->MaxValue)
 			val = _config->MaxValue;
-		ret.Set(val);
+		variables[0]->Set(val);
 	}
 
 	IOperationBase *Operation_Polynomial::Create(const void *config, unsigned int &sizeOut)

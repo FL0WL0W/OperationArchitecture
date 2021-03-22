@@ -28,7 +28,7 @@ namespace OperationArchitecture
 	public:		
         Operation_FaultDetection(const Operation_FaultDetectionConfig * const &config);
 
-		void AbstractExecute(Variable &ret, Variable *params) override;
+		void AbstractExecute(Variable **variables) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

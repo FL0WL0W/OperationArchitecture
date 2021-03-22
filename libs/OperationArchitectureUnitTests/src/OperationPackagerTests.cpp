@@ -118,10 +118,7 @@ namespace UnitTests
 	TEST_F(OperationPackagerTests, OperationPackagedandExecutable)
 	{
 		ASSERT_EQ(0, _operationImmediateStore->NumberOfParameters);
-		ASSERT_EQ(true, _operationImmediateStore->ReturnsVariable);
 		ASSERT_EQ(0, _operation->NumberOfParameters);
-		ASSERT_EQ(true, _operation->ReturnsVariable);
-
 		//5 + 2
 		_secondParameter.Set(2);
 		ASSERT_EQ(7, _operationImmediateStore->Execute<int>());

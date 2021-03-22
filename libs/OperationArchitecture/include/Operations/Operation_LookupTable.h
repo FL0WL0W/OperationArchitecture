@@ -38,7 +38,7 @@ namespace OperationArchitecture
 	public:		
         Operation_LookupTable(const Operation_LookupTableConfig * const &config);
 
-		void AbstractExecute(Variable &ret, Variable *params) override;
+		void AbstractExecute(Variable **variables) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

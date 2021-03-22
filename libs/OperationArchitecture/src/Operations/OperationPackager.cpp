@@ -1,5 +1,5 @@
 #include "Operations/OperationPackager.h"
-#include "Operations/Operation_StoreVariable.h"
+#include "Operations/Operation_StoreVariables.h"
 #include "Config.h"
 
 #ifdef OPERATIONPACKAGER_H
@@ -33,11 +33,13 @@ namespace OperationArchitecture
     {
         const PackageOptions options = Config::CastAndOffset<PackageOptions>(config, sizeOut);
 
-        Variable * variable = 0;
+        Variable **variables = 0;
         if(options.StoreVariable)
         {
+            //TODO store multiple variables
             const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
-            variable = _systemBus->GetOrCreateVariable(variableId);
+            variables = new Variable*[0];
+            variables[0] = _systemBus->GetOrCreateVariable(variableId);
         }
 
         IOperationBase *operation;
@@ -59,8 +61,8 @@ namespace OperationArchitecture
         }
         IOperationBase * const package = new Operation_Package(operation, CreateParameters(operation->NumberOfParameters, config, sizeOut));
 
-        if(variable != 0)
-            return new Operation_StoreVariable(variable, package);
+        if(variables != 0)
+            return new Operation_StoreVariables(variables, package);
 
         return package;
     }

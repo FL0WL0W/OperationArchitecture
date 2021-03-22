@@ -8,21 +8,29 @@ namespace OperationArchitecture
     {
         _operation = operation;
         _parameters = parameters;
+        NumberOfReturnVariables = _operation->NumberOfReturnVariables;
         NumberOfParameters = 0;
-        ReturnsVariable = _operation->ReturnsVariable;
     }
 
-    void Operation_Package::AbstractExecute(Variable &ret, Variable *params)
+    void Operation_Package::AbstractExecute(Variable **variablesIn)
     {
-        params = new Variable[_operation->NumberOfParameters];
+        Variable **variables = new Variable*[_operation->NumberOfParameters + _operation->NumberOfReturnVariables];
+        for(int i = 0; i < _operation->NumberOfReturnVariables; i++)
+        {
+            variables[i] = variablesIn[i];
+        }
+        Variable *params = new Variable[_operation->NumberOfParameters];
         for(int i = 0; i < _operation->NumberOfParameters; i++)
         {
             _parameters[i].GetValue(params[i]);
+            variables[i + _operation->NumberOfReturnVariables] = &params[i];
         }
 
-        _operation->AbstractExecute(ret, params);
+
+        _operation->AbstractExecute(variables);
 
         delete params;
+        delete variables;
     }
 }
 

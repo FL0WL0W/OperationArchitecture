@@ -7,16 +7,23 @@ namespace OperationArchitecture
     class IOperationBase
     {
         public:
-        char NumberOfParameters : 7;
-        bool ReturnsVariable;
-        virtual void AbstractExecute(Variable &ret, Variable *params) = 0;
+        char NumberOfReturnVariables;
+        char NumberOfParameters;
+        virtual void AbstractExecute(Variable **variables) = 0;
 
         template<typename RET, typename... PARAMS>
         RET Execute(PARAMS... params)
         {
             Variable ret;
             Variable parameters[sizeof...(PARAMS)] = {Variable::Create(params)...};
-            AbstractExecute(ret, parameters);
+            Variable *variables[sizeof...(PARAMS) + 1];
+            variables[0] = &ret;
+            for(int i = 0; i < sizeof...(PARAMS); i++)
+            {
+                variables[i+1] = &parameters[i];
+            } 
+
+            AbstractExecute(variables);
             return ret.To<RET>();
         }
     };

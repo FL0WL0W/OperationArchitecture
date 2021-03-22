@@ -11,19 +11,19 @@ namespace OperationArchitecture
         public:
         IOperation() 
         {
-            NumberOfParameters = sizeof...(PARAMS);
-            ReturnsVariable = true;
+            NumberOfParameters = sizeof...(PARAMS) + 1;
+            NumberOfReturnVariables = 0;
         }
         virtual RET Execute(PARAMS...) = 0;
-        void AbstractExecute(Variable &ret, Variable *params) override
+        void AbstractExecute(Variable **variables) override
         {
             auto sequence = std::index_sequence_for<PARAMS...>{};
-            AbstractExecuteImpl(ret, sequence, params);
+            AbstractExecuteImpl(sequence, variables);
         }
 
         template<std::size_t... S>
-        void AbstractExecuteImpl(Variable &ret, std::index_sequence<S...>, Variable *params) {
-            ret.Set(Execute(params[S].To<PARAMS>()...));
+        void AbstractExecuteImpl(std::index_sequence<S...>, Variable **variables) {
+            variables[0]->Set(Execute(variables[S + 1]->To<PARAMS>()...));
         }
     };
     
@@ -34,18 +34,18 @@ namespace OperationArchitecture
         IOperation() 
         {
             NumberOfParameters = sizeof...(PARAMS);
-            ReturnsVariable = false;
+            NumberOfReturnVariables = 0;
         }
         virtual void Execute(PARAMS...) = 0;
-        void AbstractExecute(Variable &ret, Variable *params) override
+        void AbstractExecute(Variable **variables) override
         {
             auto sequence = std::index_sequence_for<PARAMS...>{};
-            AbstractExecuteImpl(sequence, params);
+            AbstractExecuteImpl(sequence, variables);
         }
 
         template<std::size_t... S>
-        void AbstractExecuteImpl(std::index_sequence<S...>, Variable *params) {
-            Execute(params[S].To<PARAMS>()...);
+        void AbstractExecuteImpl(std::index_sequence<S...>, Variable **variables) {
+            Execute(variables[S]->To<PARAMS>()...);
         }
     };
 }

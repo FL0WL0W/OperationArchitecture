@@ -41,7 +41,7 @@ namespace OperationArchitecture
 	public:		
         Operation_2AxisTable(const Operation_2AxisTableConfig * const &config);
 
-		void AbstractExecute(Variable &ret, Variable *params) override;
+		void AbstractExecute(Variable **variables) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};

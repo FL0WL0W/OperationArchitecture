@@ -30,7 +30,8 @@ namespace OperationArchitecture
             {
                 if(_operation)
                 {
-                    reinterpret_cast<IOperationBase *>(_location)->AbstractExecute(ret, 0);
+                    Variable *operationRet = &ret;
+                    reinterpret_cast<IOperationBase *>(_location)->AbstractExecute(&operationRet);
                 }
                 else
                 {
@@ -46,7 +47,7 @@ namespace OperationArchitecture
         OperationOrVariable *_parameters;
         public:
         Operation_Package(IOperationBase *operation, OperationOrVariable *parameters);
-        void AbstractExecute(Variable &ret, Variable *params) override;
+        void AbstractExecute(Variable **variables) override;
     };
 }
 #endif

@@ -6,48 +6,48 @@ namespace OperationArchitecture
 {
 	Operation_Math::Operation_Math(const MathOperation operation)
 	{
+		NumberOfReturnVariables = 1;
         NumberOfParameters = 2;
-        ReturnsVariable = true;
 		_operation = operation;
 	}
 
 
-	void Operation_Math::AbstractExecute(Variable &ret, Variable *params)
+	void Operation_Math::AbstractExecute(Variable **variables)
 	{
 		switch (_operation)
 		{
 			case ADD:
-				ret.Set(params[0] + params[1]);
+				variables[0]->Set(*variables[1] + *variables[2]);
 				break;
 			case SUBTRACT:
-				ret.Set(params[0] - params[1]);
+				variables[0]->Set(*variables[1] - *variables[2]);
 				break;
 			case MULTIPLY:
-				ret.Set(params[0] * params[1]);
+				variables[0]->Set(*variables[1] * *variables[2]);
 				break;
 			case DIVIDE:
-				ret.Set(params[0] / params[1]);
+				variables[0]->Set(*variables[1] / *variables[2]);
 				break;
 			case AND:
-				ret.Set(params[0] & params[1]);
+				variables[0]->Set(*variables[1] & *variables[2]);
 				break;
 			case OR:
-				ret.Set(params[0] | params[1]);
+				variables[0]->Set(*variables[1] | *variables[2]);
 				break;
 			case GREATERTHAN:
-				ret.Set(params[0] > params[1]);
+				variables[0]->Set(*variables[1] > *variables[2]);
 				break;
 			case LESSTHAN:
-				ret.Set(params[0] < params[1]);
+				variables[0]->Set(*variables[1] < *variables[2]);
 				break;
 			case GREATERTHANOREQUAL:
-				ret.Set(params[0] >= params[1]);
+				variables[0]->Set(*variables[1] >= *variables[2]);
 				break;
 			case EQUAL:
-				ret.Set(params[0] == params[1]);
+				variables[0]->Set(*variables[1] == *variables[2]);
 				break;
 			case LESSTHANOREQUAL:
-				ret.Set(params[0] <= params[1]);
+				variables[0]->Set(*variables[1] <= *variables[2]);
 				break;
 		}
 	}

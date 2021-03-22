@@ -29,7 +29,7 @@ namespace OperationArchitecture
 	public:		
         Operation_Math(const MathOperation operation);
 
-		void AbstractExecute(Variable &ret, Variable *params) override;
+		void AbstractExecute(Variable **params) override;
 
 		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
 	};
