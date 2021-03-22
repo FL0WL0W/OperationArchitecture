@@ -2,6 +2,7 @@
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)
+option(OperationArchitecture_build_tests "Build all of OperationArchitecture tests" OFF)
 
 set(TARGET		OperationArchitecture)
 
@@ -21,7 +22,9 @@ target_include_directories(${TARGET} PUBLIC ${HDR_DIR})
 
 
 
-# Include google tests
-add_subdirectory (libs/googletest)
-# include tests
-add_subdirectory (tests)
+if(OperationArchitecture_build_tests)
+    # Include google tests
+    add_subdirectory (libs/googletest)
+    # include tests
+    add_subdirectory (tests)
+endif()
