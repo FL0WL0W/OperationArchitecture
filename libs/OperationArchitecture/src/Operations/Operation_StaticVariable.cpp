@@ -74,9 +74,9 @@ namespace OperationArchitecture
 				break;
 		}
 		
-		Operation_StaticVariable *variableService = new Operation_StaticVariable(staticValue);
+		Operation_StaticVariable *operation = new Operation_StaticVariable(staticValue);
 
-		return variableService;
+		return operation;
 	}
 }
 #endif

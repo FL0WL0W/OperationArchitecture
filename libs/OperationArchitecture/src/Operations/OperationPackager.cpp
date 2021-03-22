@@ -33,6 +33,7 @@ namespace OperationArchitecture
     {
         const PackageOptions options = Config::CastAndOffset<PackageOptions>(config, sizeOut);
 
+        //Create operation
         IOperationBase *operation;
     	if(options.OperationImmediate)
     	{
@@ -51,53 +52,59 @@ namespace OperationArchitecture
             operation = it->second;
         }
 
-        Variable **variables = 0;
+        //Create Storage Variables
+        Variable **storageVariables = 0;
         if(options.StoreVariables)
         {
-            //TODO store multiple variables
-            variables = new Variable*[operation->NumberOfReturnVariables];
+            storageVariables = new Variable*[operation->NumberOfReturnVariables];
             for(int i = 0; i < operation->NumberOfReturnVariables; i++)
             {
-                variables[i] = _systemBus->GetOrCreateVariable(Config::CastAndOffset<uint32_t>(config, sizeOut));
+                const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
+                storageVariables[i] = _systemBus->GetOrCreateVariable(variableId);
             }
         }
-        IOperationBase * const package = new Operation_Package(operation, CreateParameters(operation->NumberOfParameters, config, sizeOut));
 
-        if(variables != 0)
-            return new Operation_StoreVariables(variables, package);
+        //Create Parameters
+        uint8_t numberOfSubOperations = 0;
+        OperationOrVariable *parameters = new OperationOrVariable[operation->NumberOfParameters];
+        for(int i = 0; i < operation->NumberOfParameters; i++)
+        {
+            const uint8_t operationReturnId = Config::CastAndOffset<uint8_t>(config, sizeOut);
 
-        return package;
-    }
+            if(operationReturnId > 0)
+            {
+                if(operationReturnId > numberOfSubOperations)
+                {
+                    numberOfSubOperations = operationReturnId;
+                }
 
-    OperationOrVariable *OperationPackager::CreateParameters(const uint8_t numberOfParameters, const void *config, unsigned int &sizeOut)
-    {
-        OperationOrVariable *parameters = new OperationOrVariable[numberOfParameters];
-        for(int i = 0; i < numberOfParameters; i++)
+                const uint8_t operationReturnVariableId = Config::CastAndOffset<uint8_t>(config, sizeOut);
+                parameters[i] = OperationOrVariable(operationReturnId, operationReturnVariableId);
+            }
+            else
+            {
+                const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
+                parameters[i] = OperationOrVariable(_systemBus->GetOrCreateVariable(variableId));
+            }
+        }
+
+        //Create sub operations
+        IOperationBase **subOperations = new IOperationBase*[numberOfSubOperations];
+        for(int i = 0; i < numberOfSubOperations; i++)
         {
             unsigned int size = 0;
-            parameters[i] = CreateParameter(config, size);
+            subOperations[i] = Package(config, size);
             Config::OffsetConfig(config, sizeOut, size);
         }
-        return parameters;
-    }
 
-    OperationOrVariable OperationPackager::CreateParameter(const void *config, unsigned int &sizeOut)
-    {
-        OperationOrVariable ov;
+        //Create Package
+        IOperationBase * const package = new Operation_Package(operation, subOperations, parameters);
 
-        const bool operation = Config::CastAndOffset<bool>(config, sizeOut);
+        //wrap package in Operation_StoreVariables if storing variables
+        if(storageVariables != 0)
+            return new Operation_StoreVariables(storageVariables, package);
 
-        if(operation)
-        {
-            return OperationOrVariable(Package(config, sizeOut));
-        }
-        else
-        {
-            const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
-           return OperationOrVariable(_systemBus->GetOrCreateVariable(variableId));
-        }         
-
-        return ov;
+        return package;
     }
 }
 

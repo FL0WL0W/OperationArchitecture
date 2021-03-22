@@ -29,7 +29,6 @@ namespace OperationArchitecture
 		SystemBus *_systemBus;
 
     	OperationOrVariable CreateParameter(const void *config, unsigned int &sizeOut);
-    	OperationOrVariable* CreateParameters(const uint8_t numberOfParameters, const void *config, unsigned int &sizeOut);
 	public:
         OperationPackager(OperationFactory *factory, SystemBus *systemBus);
 

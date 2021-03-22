@@ -27,8 +27,8 @@ namespace UnitTests
 		IOperationBase *CreateOperation(bool operationImmediate, uint32_t storeVariableId, unsigned int &size)
 		{
 			unsigned int configSize = sizeof(PackageOptions) + 
-				sizeof(bool) + sizeof(PackageOptions) + sizeof(uint32_t) + //first parameter
-				sizeof(bool) + sizeof(uint32_t);//second parameter
+				sizeof(uint8_t) + sizeof(uint8_t) + sizeof(PackageOptions) + sizeof(uint32_t) + //first parameter
+				sizeof(uint8_t) + sizeof(uint32_t);//second parameter
 			if(operationImmediate)
 				configSize += sizeof(MathOperation) + sizeof(uint32_t);
 			else
@@ -70,24 +70,26 @@ namespace UnitTests
 			}
 
 			//add first paramater as a package
-			*((bool *)buildConfig) = true;
-			buildConfig = (void *)(((bool *)buildConfig) + 1);
+			*((uint8_t *)buildConfig) = 1;
+			buildConfig = (void *)(((uint8_t *)buildConfig) + 1);
+			*((uint8_t *)buildConfig) = 0;
+			buildConfig = (void *)(((uint8_t *)buildConfig) + 1);
 
+			//add second paramater as a variable
+			*((uint8_t *)buildConfig) = 0;
+			buildConfig = (void *)(((uint8_t *)buildConfig) + 1);
+
+			//id of variable is 5
+			*((uint32_t *)buildConfig) = 5;
+			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+
+			//add configuration for pacakge parameter
 			((PackageOptions *)buildConfig)->OperationImmediate = false;
 			((PackageOptions *)buildConfig)->StoreVariables = false;
 			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
 
 			//operation id for static variable
 			*((uint32_t *)buildConfig) = 24;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
-
-
-			//add second paramater as a variable
-			*((bool *)buildConfig) = false;
-			buildConfig = (void *)(((bool *)buildConfig) + 1);
-
-			//id of variable is 5
-			*((uint32_t *)buildConfig) = 5;
 			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 			return _packager->Package(config, size);
@@ -111,8 +113,8 @@ namespace UnitTests
 
 	TEST_F(OperationPackagerTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(21, _sizeImmediateStore);
-		ASSERT_EQ(16, _size);
+		ASSERT_EQ(22, _sizeImmediateStore);
+		ASSERT_EQ(17, _size);
 	}
 
 	TEST_F(OperationPackagerTests, OperationPackagedandExecutable)
