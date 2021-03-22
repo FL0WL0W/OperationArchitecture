@@ -1,19 +1,27 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
+﻿# CMakeList.txt : CMake project for OperationArchitecture, include source and define
+# project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-set(LIBRARIES	libs)
+set(TARGET		OperationArchitecture)
 
-project(TopLevelBuild CXX)
+project(${TARGET} CXX)
 
-# Include sub-projects.
-add_subdirectory (${LIBRARIES}/OperationArchitecture)
+# headers are always in include/
+set(HDR_DIR		include)
+file(GLOB_RECURSE HDRS ${HDR_DIR}/*.h)
+include_directories(${HDR_DIR})
+# sources are always in src/
+set(SRCS_DIR	src)
+file(GLOB_RECURSE SRCS ${SRCS_DIR}/*.cpp)
 
-add_subdirectory (${LIBRARIES}/googletest)
-enable_testing()
+# create library
+add_library(${TARGET} STATIC ${HDRS} ${SRCS})
+target_include_directories(${TARGET} PUBLIC ${HDR_DIR})
 
-add_subdirectory (${LIBRARIES}/OperationArchitectureUnitTests)
 
-# Compile all the abstractions
+
+# Include google tests
+add_subdirectory (libs/googletest)
+# include tests
+add_subdirectory (tests)
