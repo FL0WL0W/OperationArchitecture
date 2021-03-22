@@ -35,10 +35,12 @@ namespace OperationArchitecture
         protected:
         IOperationBase *_operation;
         IOperationBase **_subOperations;
-        OperationOrVariable *_parameters;
         uint8_t _numberOfSubOperations;
+        Variable ***_operationVariables;
+        Variable **_variables;
         public:
         Operation_Package(IOperationBase *operation, IOperationBase **subOperations, OperationOrVariable *parameters);
+        ~Operation_Package();
         void AbstractExecute(Variable **variables) override;
     };
 }
