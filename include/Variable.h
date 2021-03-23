@@ -139,6 +139,17 @@ namespace OperationArchitecture
             Value = 0;
         }
         Variable(VariableBase variable) { Set(variable); }
+        Variable(uint8_t variable) { Set(variable); }
+        Variable(uint16_t variable) { Set(variable); }
+        Variable(uint32_t variable) { Set(variable); }
+        Variable(uint64_t variable) { Set(variable); }
+        Variable(int8_t variable) { Set(variable); }
+        Variable(int16_t variable) { Set(variable); }
+        Variable(int32_t variable) { Set(variable); }
+        Variable(int64_t variable) { Set(variable); }
+        Variable(float variable) { Set(variable); }
+        Variable(double variable) { Set(variable); }
+        Variable(bool variable) { Set(variable); }
 
         template<typename K>
         static Variable Create(K value) 
