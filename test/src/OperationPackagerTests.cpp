@@ -9,7 +9,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class OperationPackagerTests : public ::testing::Test 
+	class OperationPackagerTests : public Test
 	{
 		protected:
 		SystemBus *_systemBus;

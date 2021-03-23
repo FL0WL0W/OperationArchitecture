@@ -8,7 +8,7 @@ namespace UnitTests
 {	
 
 	//actual math verification done in VariableTests, This is to verify the functionality of the Operation_Math Only
-	class Operation_MathTests : public ::testing::Test 
+	class Operation_MathTests : public Test
 	{
 		protected:
 

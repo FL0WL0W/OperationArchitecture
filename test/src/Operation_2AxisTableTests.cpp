@@ -6,7 +6,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_2AxisTableTests : public ::testing::Test 
+	class Operation_2AxisTableTests : public Test
 	{
 		protected:
 		Operation_2AxisTableConfig *_config;

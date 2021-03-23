@@ -6,7 +6,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_FaultDetectionTests : public ::testing::Test 
+	class Operation_FaultDetectionTests : public Test
 	{
 		protected:
 		Operation_FaultDetectionConfig *_config;

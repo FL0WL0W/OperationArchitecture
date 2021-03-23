@@ -7,7 +7,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_StoreVariablesTests : public ::testing::Test 
+	class Operation_StoreVariablesTests : public Test
 	{
 		protected:
 		IOperationBase *_operation;

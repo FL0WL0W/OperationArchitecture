@@ -7,7 +7,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class OperationFactoryTests : public ::testing::Test 
+	class OperationFactoryTests : public Test
 	{
 		protected:
 		OperationFactory *_factory;

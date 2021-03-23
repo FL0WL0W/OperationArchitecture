@@ -6,7 +6,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_LookupTableTests : public ::testing::Test 
+	class Operation_LookupTableTests : public Test
 	{
 		protected:
 		Operation_LookupTableConfig *_config;

@@ -6,7 +6,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_StaticVariableTests : public ::testing::Test 
+	class Operation_StaticVariableTests : public Test
 	{
 		protected:
 		struct Test

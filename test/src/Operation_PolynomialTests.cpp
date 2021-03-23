@@ -6,7 +6,7 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
-	class Operation_PolynomialTests : public ::testing::Test 
+	class Operation_PolynomialTests : public Test
 	{
 		protected:
 		Operation_PolynomialConfig *_config;
