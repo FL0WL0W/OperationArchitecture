@@ -24,7 +24,7 @@ target_include_directories(${TARGET} PUBLIC ${HDR_DIR})
 
 if(OperationArchitecture_build_tests)
     # Include google tests
-    if (EXISTS "libs/googletest/CMakeLists.txt")
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/libs/googletest/CMakeLists.txt)
         add_subdirectory (libs/googletest)
     endif()
     # include tests
