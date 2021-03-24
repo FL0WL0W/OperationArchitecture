@@ -11,6 +11,7 @@ namespace OperationArchitecture
 	{
 		bool OperationImmediate : 1;
 		bool StoreVariables : 1;
+		bool ReturnVariables : 1;
 	});
 
 	class SystemBus

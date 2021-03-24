@@ -7,13 +7,14 @@ namespace OperationArchitecture
     Operation_Package::Operation_Package(IOperationBase *operation, IOperationBase **subOperations, OperationOrVariable *parameters)
     {
         _operation = operation;
-        _subOperations = subOperations;
         _numberOfSubOperations = 0;
         for(int i = 0; i < _operation->NumberOfParameters; i++)
         {
             if(parameters[i].OperationId > _numberOfSubOperations)
                 _numberOfSubOperations = parameters[i].OperationId;
         }
+        _subOperations = new IOperationBase*[_numberOfSubOperations];
+        std::memcpy(_subOperations, subOperations, sizeof(IOperationBase *) * _numberOfSubOperations);
         _operationVariables = new Variable**[_numberOfSubOperations];
         for(int i = 0; i < _numberOfSubOperations; i++)
         {
@@ -52,6 +53,7 @@ namespace OperationArchitecture
         }
         delete _operationVariables;
         delete _variables;
+        delete _subOperations;
     }
 
     void Operation_Package::AbstractExecute(Variable **variablesIn)

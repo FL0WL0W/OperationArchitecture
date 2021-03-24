@@ -11,6 +11,7 @@ namespace UnitTests
 	{
 		protected:
 		IOperationBase *_operation;
+		IOperationBase *_operationNoReturn;
 		IOperationBase *_operationAdd;
 		Variable *_variables;
 
@@ -19,7 +20,8 @@ namespace UnitTests
 			_variables = new Variable[1];
 			_variables[0].Set(0);
 			_operationAdd = new Operation_Math(ADD);
-			_operation = new Operation_StoreVariables(&_variables, _operationAdd);
+			_operation = new Operation_StoreVariables(_operationAdd, &_variables, true);
+			_operationNoReturn = new Operation_StoreVariables(_operationAdd, &_variables, false);
 		}
 	};
 
@@ -32,5 +34,8 @@ namespace UnitTests
 
 		ASSERT_EQ(7, _operation->Execute<int>(5, 2));
 		ASSERT_EQ(7, _variables[0].To<int>());
+
+		_operationNoReturn->Execute(5, 10);
+		ASSERT_EQ(15, _variables[0].To<int>());
 	}
 }

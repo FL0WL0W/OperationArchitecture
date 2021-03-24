@@ -16,6 +16,11 @@ namespace OperationArchitecture
         NumberOfParameters = _operation->NumberOfParameters;
     }
 
+    Operation_Execute::~Operation_Execute()
+    {
+        delete _variables;
+    }
+
     void Operation_Execute::AbstractExecute(Variable **variables)
     {
         for(int i = 0; i < _operation->NumberOfParameters; i++)

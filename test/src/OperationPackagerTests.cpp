@@ -39,6 +39,7 @@ namespace UnitTests
 			//options
 			((PackageOptions *)buildConfig)->OperationImmediate = operationImmediate;
 			((PackageOptions *)buildConfig)->StoreVariables = storeVariableId > 0;
+			((PackageOptions *)buildConfig)->ReturnVariables = 1;
 			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
 
 			//if operation is to be created, add the config for creating an operation add
@@ -84,6 +85,7 @@ namespace UnitTests
 			//add configuration for pacakge parameter
 			((PackageOptions *)buildConfig)->OperationImmediate = false;
 			((PackageOptions *)buildConfig)->StoreVariables = false;
+			((PackageOptions *)buildConfig)->ReturnVariables = 1;
 			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
 
 			//operation id for static variable

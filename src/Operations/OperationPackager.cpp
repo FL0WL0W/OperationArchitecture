@@ -1,5 +1,6 @@
 #include "Operations/OperationPackager.h"
 #include "Operations/Operation_StoreVariables.h"
+#include "Operations/Operation_Execute.h"
 #include "Config.h"
 
 #ifdef OPERATIONPACKAGER_H
@@ -98,11 +99,18 @@ namespace OperationArchitecture
         }
 
         //Create Package
-        IOperationBase * const package = new Operation_Package(operation, subOperations, parameters);
+        IOperationBase * package = new Operation_Package(operation, subOperations, parameters);
+        delete subOperations;
+        delete parameters;
 
         //wrap package in Operation_StoreVariables if storing variables
         if(storageVariables != 0)
-            return new Operation_StoreVariables(storageVariables, package);
+        {
+            package = new Operation_StoreVariables(package, storageVariables, options.ReturnVariables);
+            delete storageVariables;
+        }
+        else if(!options.ReturnVariables)
+            package = new Operation_Execute(package);
 
         return package;
     }

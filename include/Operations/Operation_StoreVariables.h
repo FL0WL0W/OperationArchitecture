@@ -9,11 +9,13 @@ namespace OperationArchitecture
         protected:
         Variable **_variables;
         IOperationBase *_operation;
+        bool _returnVariables;
         
         public:
-        void AbstractExecute(Variable **variables) override;
+        Operation_StoreVariables(IOperationBase *operation, Variable **variables, bool returnVariables);
+        ~Operation_StoreVariables();
 
-        Operation_StoreVariables(Variable **variables, IOperationBase *operation);
+        void AbstractExecute(Variable **variables) override;
     };
 }
 #endif
