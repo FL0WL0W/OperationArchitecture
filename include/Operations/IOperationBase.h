@@ -39,6 +39,8 @@ namespace OperationArchitecture
 
             AbstractExecute(variables);
         }
+
+        void Execute();
     };
 }
 #endif
