@@ -6,12 +6,12 @@ namespace OperationArchitecture
 {
     Operation_Execute::Operation_Execute(IOperationBase *operation)
     {
+        _operation = operation;
         _variables = new Variable*[_operation->NumberOfParameters + _operation->NumberOfReturnVariables];
         for(int i = 0; i < _operation->NumberOfReturnVariables; i++)
         {
             _variables[i] = new Variable();
         }
-        _operation = operation;
         NumberOfReturnVariables = 0;
         NumberOfParameters = _operation->NumberOfParameters;
     }
