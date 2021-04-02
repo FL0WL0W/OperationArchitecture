@@ -1,4 +1,5 @@
 #include "Operations/OperationFactory.h"
+#include "Config.h"
 
 #ifdef OPERATIONFACTORY_H
 
@@ -20,6 +21,11 @@ namespace OperationArchitecture
 			Unregister(id);
 		_factories.insert(std::pair<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>(id, factory));
     }
+    
+    void OperationFactory::RegisterSubFactory(IOperationFactory *subFactory)
+    {
+        _subFactories.push_back(subFactory);
+    }
 
 	void OperationFactory::Unregister(const uint32_t id)
 	{
@@ -34,11 +40,20 @@ namespace OperationArchitecture
         IOperationBase*(*factory)(const void *, unsigned int &);
 		const std::map<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>::iterator it = _factories.find(factoryId);
 		if (it != _factories.end())
-			factory = it->second;
+            return it->second(config, sizeOut);
         else 
-            return 0;
-
-        return factory(config, sizeOut);
+        {
+            for (IOperationFactory *subFactory : _subFactories) 
+            {
+                unsigned int size = 0;
+                IOperationBase* ret = subFactory->Create(config, size);
+                if(size > 0)
+                {
+                    Config::OffsetConfig(config, sizeOut, size);
+                    return ret;
+                }
+            }
+        }
     }
 }
 

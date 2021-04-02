@@ -7,6 +7,7 @@ namespace OperationArchitecture
 {
 	class OperationFactoryRegister
 	{
+		public:
 		static void Register(OperationFactory *factory);
 	};
 }
