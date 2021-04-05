@@ -31,7 +31,7 @@ namespace OperationArchitecture
             //copy parameters
             std::memcpy(operationVariables + _operations[i]->NumberOfReturnVariables, variables + NumberOfReturnVariables, sizeof(Variable *) * _operations[i]->NumberOfParameters);
 
-            _operations[i]->AbstractExecute(variables);
+            _operations[i]->AbstractExecute(operationVariables);
         }
         delete operationVariables;
     }

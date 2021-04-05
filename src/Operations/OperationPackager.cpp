@@ -1,4 +1,5 @@
 #include "Operations/OperationPackager.h"
+#include "Operations/Operation_Group.h"
 #include "Operations/Operation_StoreVariables.h"
 #include "Config.h"
 
@@ -35,14 +36,8 @@ namespace OperationArchitecture
 
         //Create operation
         IOperationBase *operation;
-    	if(options.OperationImmediate)
+    	if(!options.OperationImmediate)
     	{
-            unsigned int size = 0;
-            operation = _factory->Create(config, size);
-            Config::OffsetConfig(config, sizeOut, size);
-        }
-        else
-        {
             const uint32_t operationId = Config::CastAndOffset<uint32_t>(config, sizeOut);
             std::map<uint32_t, IOperationBase*>::iterator it = _systemBus->Operations.find(operationId);
             if (it == _systemBus->Operations.end())
@@ -50,6 +45,26 @@ namespace OperationArchitecture
                 //this is bad, do something 
             }
             operation = it->second;
+        }
+        else if(options.Group)
+        {
+            const uint16_t numberOfOperations = Config::CastAndOffset<uint32_t>(config, sizeOut);
+            IOperationBase **operations = new IOperationBase*[numberOfOperations];
+
+            for(int i = 0; i < numberOfOperations; i++)
+            {
+                unsigned int size = 0;
+                operations[i] = Package(config, size);
+                Config::OffsetConfig(config, sizeOut, size);
+            }
+
+            operation = new Operation_Group(operations, numberOfOperations);
+        }
+        else
+        {
+            unsigned int size = 0;
+            operation = _factory->Create(config, size);
+            Config::OffsetConfig(config, sizeOut, size);
         }
 
         //Create Storage Variables
