@@ -36,17 +36,7 @@ namespace OperationArchitecture
 
         //Create operation
         IOperationBase *operation;
-    	if(!options.OperationImmediate)
-    	{
-            const uint32_t operationId = Config::CastAndOffset<uint32_t>(config, sizeOut);
-            std::map<uint32_t, IOperationBase*>::iterator it = _systemBus->Operations.find(operationId);
-            if (it == _systemBus->Operations.end())
-            {
-                //this is bad, do something 
-            }
-            operation = it->second;
-        }
-        else if(options.Group)
+        if(options.Group)
         {
             const uint16_t numberOfOperations = Config::CastAndOffset<uint16_t>(config, sizeOut);
             IOperationBase **operations = new IOperationBase*[numberOfOperations];
@@ -59,6 +49,16 @@ namespace OperationArchitecture
             }
 
             operation = new Operation_Group(operations, numberOfOperations);
+        }
+    	else if(!options.OperationImmediate)
+    	{
+            const uint32_t operationId = Config::CastAndOffset<uint32_t>(config, sizeOut);
+            std::map<uint32_t, IOperationBase*>::iterator it = _systemBus->Operations.find(operationId);
+            if (it == _systemBus->Operations.end())
+            {
+                //this is bad, do something 
+            }
+            operation = it->second;
         }
         else
         {
