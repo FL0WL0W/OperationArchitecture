@@ -42,7 +42,7 @@ namespace OperationArchitecture
         }
         else
         {
-            std::memcpy(_variables + NumberOfReturnVariables, variables, sizeof(Variable *) * NumberOfParameters);
+            std::memcpy(_variables + _operation->NumberOfReturnVariables, variables, sizeof(Variable *) * NumberOfParameters);
             _operation->AbstractExecute(_variables);
         }
     }
