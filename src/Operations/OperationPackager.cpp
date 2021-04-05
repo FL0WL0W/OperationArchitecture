@@ -48,7 +48,7 @@ namespace OperationArchitecture
         }
         else if(options.Group)
         {
-            const uint16_t numberOfOperations = Config::CastAndOffset<uint32_t>(config, sizeOut);
+            const uint16_t numberOfOperations = Config::CastAndOffset<uint16_t>(config, sizeOut);
             IOperationBase **operations = new IOperationBase*[numberOfOperations];
 
             for(int i = 0; i < numberOfOperations; i++)

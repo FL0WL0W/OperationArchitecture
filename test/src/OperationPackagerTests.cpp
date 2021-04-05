@@ -21,8 +21,10 @@ namespace UnitTests
 		IOperationBase *_operationImmediateStore;//add with Operation_StaticVariable for the first parameter and variable for the second
 		unsigned int _sizeImmediateStore = 0;
 		Variable *_storedResult;
+		IOperationBase *_operationGroup;//operation group add then subtract;
+		unsigned int _sizeGroup = 0;
 
-		IOperationBase *CreateOperation(bool operationImmediate, uint32_t storeVariableId, unsigned int &size)
+		void *CreateOperationConfig(bool operationImmediate, uint32_t storeVariableId)
 		{
 			unsigned int configSize = sizeof(PackageOptions) + 
 				sizeof(uint8_t) + sizeof(uint8_t) + sizeof(PackageOptions) + sizeof(uint32_t) + //first parameter
@@ -92,7 +94,7 @@ namespace UnitTests
 			*((uint32_t *)buildConfig) = 24;
 			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
-			return _packager->Package(config, size);
+			return config;
 		}
 
 		OperationPackagerTests() 
@@ -105,9 +107,31 @@ namespace UnitTests
 			_factory->Register(2, Operation_Math::Create);
 			_packager = new OperationPackager(_factory, _systemBus);
 
-			_operationImmediateStore = CreateOperation(true, 4, _sizeImmediateStore);
+			_operationImmediateStore = _packager->Package(CreateOperationConfig(true, 4), _sizeImmediateStore);
 			_storedResult = _systemBus->Variables.find(4)->second;
-			_operation = CreateOperation(false, 0, _size);
+			_operation = _packager->Package(CreateOperationConfig(false, 0), _size);
+
+			void *configGroup = malloc(42);
+			void *buildConfig = configGroup;
+
+			//options
+			((PackageOptions *)buildConfig)->OperationImmediate = true;
+			((PackageOptions *)buildConfig)->StoreVariables = false;
+			((PackageOptions *)buildConfig)->ReturnVariables = true;
+			((PackageOptions *)buildConfig)->Group = true;
+			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
+
+			//2 operations
+			*((uint16_t *)buildConfig) = 2;
+			buildConfig = (void *)(((uint16_t *)buildConfig) + 1);
+
+            std::memcpy(buildConfig, CreateOperationConfig(true, 4), 22);
+			buildConfig = (void *)(((uint8_t *)buildConfig) + 22);
+
+            std::memcpy(buildConfig, CreateOperationConfig(false, 0), 17);
+			buildConfig = (void *)(((uint8_t *)buildConfig) + 17);
+
+			_operationGroup = _packager->Package(configGroup, _sizeGroup);
 		}
 	};
 
@@ -115,6 +139,7 @@ namespace UnitTests
 	{
 		ASSERT_EQ(22, _sizeImmediateStore);
 		ASSERT_EQ(17, _size);
+		ASSERT_EQ(42, _sizeGroup);
 	}
 
 	TEST_F(OperationPackagerTests, OperationPackagedandExecutable)
@@ -138,5 +163,19 @@ namespace UnitTests
 		//5 - 3
 		ASSERT_EQ(2, _operation->Execute<int>());
 		ASSERT_EQ(8, _storedResult->To<int>());
+
+		_secondParameter.Set(4);
+
+		Variable **variables = new Variable*[2];
+		for(int i = 0; i < 2; i++)
+			variables[i] = new Variable();
+		_operationGroup->AbstractExecute(variables);
+
+		//5 + 4
+		ASSERT_EQ(9, variables[0]->To<int>());
+		ASSERT_EQ(9, _storedResult->To<int>());
+
+		//5 - 4
+		ASSERT_EQ(1, variables[1]->To<int>());
 	}
 }
