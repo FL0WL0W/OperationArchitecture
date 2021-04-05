@@ -1,6 +1,6 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "Operations/Operation_Execute.h"
+#include "Operations/Operation_StoreVariables.h"
 #include "Operations/Operation_Math.h"
 using namespace testing;
 using namespace OperationArchitecture;
@@ -16,7 +16,7 @@ namespace UnitTests
 		Operation_ExecuteTests() 
 		{	
 			_operationAdd = new Operation_Math(ADD);
-			_operation = new Operation_Execute(_operationAdd);
+			_operation = new Operation_StoreVariables(_operationAdd, 0, false);
 		}
 	};
 

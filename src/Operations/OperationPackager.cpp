@@ -1,6 +1,5 @@
 #include "Operations/OperationPackager.h"
 #include "Operations/Operation_StoreVariables.h"
-#include "Operations/Operation_Execute.h"
 #include "Config.h"
 
 #ifdef OPERATIONPACKAGER_H
@@ -103,14 +102,12 @@ namespace OperationArchitecture
         delete subOperations;
         delete parameters;
 
-        //wrap package in Operation_StoreVariables if storing variables
-        if(storageVariables != 0)
+        //wrap package in Operation_StoreVariables if storing variables or not returning variables
+        if(storageVariables != 0 || !options.ReturnVariables)
         {
             package = new Operation_StoreVariables(package, storageVariables, options.ReturnVariables);
             delete storageVariables;
         }
-        else if(!options.ReturnVariables)
-            package = new Operation_Execute(package);
 
         return package;
     }

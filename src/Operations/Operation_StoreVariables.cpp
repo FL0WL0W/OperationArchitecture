@@ -7,12 +7,22 @@ namespace OperationArchitecture
     Operation_StoreVariables::Operation_StoreVariables(IOperationBase *operation, Variable **variables, bool returnVariables)
     {
         _operation = operation;
-        NumberOfReturnVariables = _operation->NumberOfReturnVariables;
+        _returnVariables = returnVariables;
+        NumberOfReturnVariables = _returnVariables? _operation->NumberOfReturnVariables : 0;
         NumberOfParameters = _operation->NumberOfParameters;
 
-        _returnVariables = returnVariables;
-        _variables = new Variable*[NumberOfReturnVariables + _returnVariables? 0 : NumberOfParameters];
-        std::memcpy(_variables, variables, sizeof(Variable *) * NumberOfReturnVariables);
+        _variables = new Variable*[_operation->NumberOfParameters + _operation->NumberOfReturnVariables];
+        if(variables == 0)
+        {
+            for(int i = 0; i < _operation->NumberOfReturnVariables; i++)
+            {
+                _variables[i] = new Variable();
+            }
+        }
+        else
+        {
+            std::memcpy(_variables, variables, sizeof(Variable *) * _operation->NumberOfReturnVariables);
+        }
     }
 
     Operation_StoreVariables::~Operation_StoreVariables()
@@ -25,7 +35,7 @@ namespace OperationArchitecture
         if(_returnVariables)
         {
             _operation->AbstractExecute(variables);
-            for(int i = 0; i < NumberOfReturnVariables; i++)
+            for(int i = 0; i < _operation->NumberOfReturnVariables; i++)
             {
                _variables[i]->Set(*variables[i]);
             }
