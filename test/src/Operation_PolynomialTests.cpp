@@ -27,12 +27,8 @@ namespace UnitTests
 			_config->MinValue = -40;
 			_config->Degree = 4;
 
-			void *config = malloc(_config->Size() + sizeof(uint32_t));
+			void *config = malloc(_config->Size());
 			void *buildConfig = config;
-
-			//Factory ID doesn't matter
-			*((uint32_t *)buildConfig) = 1337;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 			memcpy(buildConfig, _config, _config->Size());
 			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
@@ -44,7 +40,7 @@ namespace UnitTests
 	TEST_F(Operation_PolynomialTests, ConfigsAreCorrect)
 	{
 		ASSERT_EQ(29, _config->Size());
-		ASSERT_EQ(33, _size);
+		ASSERT_EQ(29, _size);
 	}
 
 	TEST_F(Operation_PolynomialTests, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)

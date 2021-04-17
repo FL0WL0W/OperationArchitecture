@@ -31,12 +31,8 @@ namespace UnitTests
 
 		Operation_StaticVariableTests() 
 		{			
-			void *config = malloc(sizeof(Variable) + sizeof(uint32_t));
+			void *config = malloc(sizeof(VariableType) + sizeof(int16_t));
 			void *buildConfig = config;
-
-			//Factory ID doesn't matter
-			*((uint32_t *)buildConfig) = 1337;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 			*((VariableType *)buildConfig) = VariableType::INT16;
 			buildConfig = (void *)((VariableType *)buildConfig + 1);
@@ -46,12 +42,8 @@ namespace UnitTests
 
 			_operation = Operation_StaticVariable::Create(config, _size);
 						
-			config = malloc(sizeof(Variable) + sizeof(uint32_t));
+			config = malloc(sizeof(VariableType) + sizeof(Test));
 			buildConfig = config;
-
-			//Factory ID doesn't matter
-			*((uint32_t *)buildConfig) = 1337;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 			*((VariableType *)buildConfig) = VariableType::OTHER;
 			buildConfig = (void *)((VariableType *)buildConfig + 1);
@@ -66,12 +58,8 @@ namespace UnitTests
 			_operationOther = Operation_StaticVariable::Create(config, _sizeOther);
 
 						
-			config = malloc(sizeof(Variable) + sizeof(uint32_t));
+			config = malloc(sizeof(Variable) + sizeof(uint32_t) + sizeof(TestBig));
 			buildConfig = config;
-
-			//Factory ID doesn't matter
-			*((uint32_t *)buildConfig) = 1337;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 			*((VariableType *)buildConfig) = VariableType::BIGOTHER;
 			buildConfig = (void *)((VariableType *)buildConfig + 1);
@@ -93,9 +81,9 @@ namespace UnitTests
 
 	TEST_F(Operation_StaticVariableTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(7, _size);
-		ASSERT_EQ(9 + sizeof(TestBig), _sizeBigOther);
-		ASSERT_EQ(13, _sizeOther);
+		ASSERT_EQ(3, _size);
+		ASSERT_EQ(5 + sizeof(TestBig), _sizeBigOther);
+		ASSERT_EQ(9, _sizeOther);
 	}
 
 	TEST_F(Operation_StaticVariableTests, WhenExecuting_ReturnsStaticVariable)

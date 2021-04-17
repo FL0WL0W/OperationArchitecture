@@ -36,7 +36,7 @@ namespace OperationArchitecture
 
     IOperationBase *OperationFactory::Create(const void *config, unsigned int &sizeOut)
     {
-        const uint32_t factoryId = *reinterpret_cast<const uint32_t *>(config);
+        const uint32_t factoryId = Config::CastAndOffset<uint32_t>(config, sizeOut);
 
 		const std::map<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>::iterator it = _factories.find(factoryId);
 		if (it != _factories.end())

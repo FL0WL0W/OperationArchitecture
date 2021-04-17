@@ -14,12 +14,8 @@ namespace UnitTests
 
 		IOperationBase *CreateOperationMath(MathOperation operation, unsigned int &size)
 		{
-			void *config = malloc(sizeof(MathOperation) + sizeof(uint32_t));
+			void *config = malloc(sizeof(MathOperation));
 			void *buildConfig = config;
-
-			//Factory ID doesn't matter
-			*((uint32_t *)buildConfig) = 1337;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 			*((MathOperation *)buildConfig) = operation;
 			buildConfig = (void *)((MathOperation *)buildConfig + 1);
@@ -68,17 +64,17 @@ namespace UnitTests
 
 	TEST_F(Operation_MathTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(5, _sizeAdd);
-		ASSERT_EQ(5, _sizeSubtract);
-		ASSERT_EQ(5, _sizeMultiply);
-		ASSERT_EQ(5, _sizeDivide);
-		ASSERT_EQ(5, _sizeAnd);
-		ASSERT_EQ(5, _sizeOr);
-		ASSERT_EQ(5, _sizeGreaterThan);
-		ASSERT_EQ(5, _sizeLessThan);
-		ASSERT_EQ(5, _sizeEqual);
-		ASSERT_EQ(5, _sizeGreaterThanOrEqual);
-		ASSERT_EQ(5, _sizeLessThanOrEqual);
+		ASSERT_EQ(1, _sizeAdd);
+		ASSERT_EQ(1, _sizeSubtract);
+		ASSERT_EQ(1, _sizeMultiply);
+		ASSERT_EQ(1, _sizeDivide);
+		ASSERT_EQ(1, _sizeAnd);
+		ASSERT_EQ(1, _sizeOr);
+		ASSERT_EQ(1, _sizeGreaterThan);
+		ASSERT_EQ(1, _sizeLessThan);
+		ASSERT_EQ(1, _sizeEqual);
+		ASSERT_EQ(1, _sizeGreaterThanOrEqual);
+		ASSERT_EQ(1, _sizeLessThanOrEqual);
 	}
 
 	TEST_F(Operation_MathTests, WhenAdding_OperationAdds)

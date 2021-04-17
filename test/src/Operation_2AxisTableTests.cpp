@@ -66,12 +66,8 @@ namespace UnitTests
 			Table[38] = 100;
 			Table[39] = 110;
 
-			void *config = malloc(_config->Size() + sizeof(uint32_t));
+			void *config = malloc(_config->Size());
 			void *buildConfig = config;
-
-			//Factory ID doesn't matter
-			*((uint32_t *)buildConfig) = 1337;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 			memcpy(buildConfig, _config, _config->Size());
 			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
@@ -83,7 +79,7 @@ namespace UnitTests
 	TEST_F(Operation_2AxisTableTests, ConfigsAreCorrect)
 	{
 		ASSERT_EQ(179, _config->Size());
-		ASSERT_EQ(183, _size);
+		ASSERT_EQ(179, _size);
 		ASSERT_EQ((float *)(_config + 1), _config->Table());
 		ASSERT_EQ(-10, ((float *)_config->Table())[0]);
 	}
