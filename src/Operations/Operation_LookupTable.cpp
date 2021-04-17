@@ -56,7 +56,6 @@ namespace OperationArchitecture
 
 	IOperationBase *Operation_LookupTable::Create(const void *config, unsigned int &sizeOut)
 	{
-		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
 		const Operation_LookupTableConfig *tableConfig = Config::CastConfigAndOffset<const Operation_LookupTableConfig>(config, sizeOut);
 		return new Operation_LookupTable(tableConfig);
 	}

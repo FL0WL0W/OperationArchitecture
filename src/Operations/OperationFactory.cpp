@@ -4,27 +4,23 @@
 #ifdef OPERATIONFACTORY_H
 
 namespace OperationArchitecture
-{
-    OperationFactory::OperationFactory()
-    {
-        _idOffset = 0;
-    }
-
-    OperationFactory::OperationFactory(const uint32_t idOffset)
-    {
-        _idOffset = idOffset;
-    }
-    
+{    
     void OperationFactory::Register(const uint32_t id, IOperationBase*(*factory)(const void *, unsigned int &))
     {
 		if(_factories.find(id) != _factories.end())
 			Unregister(id);
+		if(_factoriesWithParameters.find(id) != _factoriesWithParameters.end())
+			Unregister(id);
 		_factories.insert(std::pair<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>(id, factory));
     }
     
-    void OperationFactory::RegisterSubFactory(IOperationFactory *subFactory)
+    void OperationFactory::Register(const uint32_t id, ICreateWithParameters *factory)
     {
-        _subFactories.push_back(subFactory);
+		if(_factories.find(id) != _factories.end())
+			Unregister(id);
+		if(_factoriesWithParameters.find(id) != _factoriesWithParameters.end())
+			Unregister(id);
+		_factoriesWithParameters.insert(std::pair<uint32_t, ICreateWithParameters*>(id, factory));
     }
 
 	void OperationFactory::Unregister(const uint32_t id)
@@ -32,28 +28,27 @@ namespace OperationArchitecture
 		const std::map<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>::iterator it = _factories.find(id);
 		if (it != _factories.end())
 			_factories.erase(it);
+            
+		const std::map<uint32_t, ICreateWithParameters*>::iterator itWithParameters = _factoriesWithParameters.find(id);
+		if (itWithParameters != _factoriesWithParameters.end())
+			_factoriesWithParameters.erase(itWithParameters);
 	}
 
     IOperationBase *OperationFactory::Create(const void *config, unsigned int &sizeOut)
     {
-        const uint32_t factoryId = *reinterpret_cast<const uint32_t *>(config) - _idOffset;
-        IOperationBase*(*factory)(const void *, unsigned int &);
+        const uint32_t factoryId = *reinterpret_cast<const uint32_t *>(config);
+
 		const std::map<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>::iterator it = _factories.find(factoryId);
 		if (it != _factories.end())
             return it->second(config, sizeOut);
         else 
         {
-            for (IOperationFactory *subFactory : _subFactories) 
-            {
-                unsigned int size = 0;
-                IOperationBase* ret = subFactory->Create(config, size);
-                if(size > 0)
-                {
-                    Config::OffsetConfig(config, sizeOut, size);
-                    return ret;
-                }
-            }
+		    const std::map<uint32_t, ICreateWithParameters*>::iterator itWithParameters = _factoriesWithParameters.find(factoryId);
+            if (itWithParameters != _factoriesWithParameters.end())
+                return itWithParameters->second->Create(config, sizeOut);
         }
+
+        return 0;
     }
 }
 

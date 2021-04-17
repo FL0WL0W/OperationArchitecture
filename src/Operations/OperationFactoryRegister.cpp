@@ -10,14 +10,14 @@
 
 namespace OperationArchitecture
 {
-    void OperationFactoryRegister::Register(OperationFactory *factory)
+    void OperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory)
     {
-        factory->Register(1, Operation_2AxisTable::Create);
-        factory->Register(2, Operation_LookupTable::Create);
-        factory->Register(3, Operation_Polynomial::Create);
-        factory->Register(4, Operation_Math::Create);
-        factory->Register(5, Operation_StaticVariable::Create);
-        factory->Register(6, Operation_FaultDetection::Create);
+        factory->Register(idOffset + 1, Operation_2AxisTable::Create);
+        factory->Register(idOffset + 2, Operation_LookupTable::Create);
+        factory->Register(idOffset + 3, Operation_Polynomial::Create);
+        factory->Register(idOffset + 4, Operation_Math::Create);
+        factory->Register(idOffset + 5, Operation_StaticVariable::Create);
+        factory->Register(idOffset + 6, Operation_FaultDetection::Create);
     }
 }
 

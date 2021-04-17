@@ -64,7 +64,6 @@ namespace OperationArchitecture
 
 	IOperationBase *Operation_FaultDetection::Create(const void *config, unsigned int &sizeOut)
 	{
-		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
 		const Operation_FaultDetectionConfig *faultConfig = Config::CastConfigAndOffset<const Operation_FaultDetectionConfig>(config, sizeOut);
 		return new Operation_FaultDetection(faultConfig);
 	}

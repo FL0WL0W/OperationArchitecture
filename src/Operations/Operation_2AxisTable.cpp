@@ -56,7 +56,6 @@ namespace OperationArchitecture
 
 	IOperationBase * Operation_2AxisTable::Create(const void *config, unsigned int &sizeOut)
 	{
-		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
 		const Operation_2AxisTableConfig *tableConfig = Config::CastConfigAndOffset<const Operation_2AxisTableConfig>(config, sizeOut);
 		return new Operation_2AxisTable(tableConfig);
 	}

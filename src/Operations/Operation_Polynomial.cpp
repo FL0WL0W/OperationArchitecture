@@ -27,7 +27,6 @@ namespace OperationArchitecture
 
 	IOperationBase *Operation_Polynomial::Create(const void *config, unsigned int &sizeOut)
 	{
-		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
 		const Operation_PolynomialConfig *polynomialConfig = Config::CastConfigAndOffset<const Operation_PolynomialConfig>(config, sizeOut);
 		return new Operation_Polynomial(polynomialConfig);
 	}

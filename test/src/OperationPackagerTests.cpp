@@ -47,8 +47,8 @@ namespace UnitTests
 			//if operation is to be created, add the config for creating an operation add
 			if(operationImmediate)
 			{
-				//Factory ID 2 + 64 = 66
-				*((uint32_t *)buildConfig) = 66;
+				//Factory ID 2
+				*((uint32_t *)buildConfig) = 2;
 				buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
 
 				*((MathOperation *)buildConfig) = ADD;
@@ -103,7 +103,7 @@ namespace UnitTests
 			_systemBus->Operations.insert(std::pair<uint32_t, IOperationBase*>(24, new Operation_StaticVariable(Variable::Create(5))));
 			_systemBus->Operations.insert(std::pair<uint32_t, IOperationBase*>(25, new Operation_Math(SUBTRACT)));
 			_systemBus->Variables.insert(std::pair<uint32_t, Variable*>(5, &_secondParameter));
-			_factory = new OperationFactory(64);
+			_factory = new OperationFactory();
 			_factory->Register(2, Operation_Math::Create);
 			_packager = new OperationPackager(_factory, _systemBus);
 

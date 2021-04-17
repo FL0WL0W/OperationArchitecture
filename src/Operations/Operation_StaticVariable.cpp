@@ -18,7 +18,6 @@ namespace OperationArchitecture
 
 	IOperationBase * Operation_StaticVariable::Create(const void *config, unsigned int &sizeOut)
 	{
-		Config::OffsetConfig(config, sizeOut, sizeof(uint32_t)); //skip over FactoryID
 		const VariableType staticValueType = Config::CastAndOffset<VariableType>(config, sizeOut);
 		Variable staticValue;
 		switch (staticValueType)

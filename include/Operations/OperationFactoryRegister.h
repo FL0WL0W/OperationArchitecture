@@ -8,7 +8,7 @@ namespace OperationArchitecture
 	class OperationFactoryRegister
 	{
 		public:
-		static void Register(OperationFactory *factory);
+		static void Register(uint32_t idOffset, OperationFactory *factory);
 	};
 }
 #endif
