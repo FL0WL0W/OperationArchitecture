@@ -27,7 +27,7 @@ namespace OperationArchitecture
 
 	IOperationBase *Operation_Polynomial::Create(const void *config, unsigned int &sizeOut)
 	{
-		const Operation_PolynomialConfig *polynomialConfig = Config::CastConfigAndOffset<const Operation_PolynomialConfig>(config, sizeOut);
+		const Operation_PolynomialConfig *polynomialConfig = Config::CastConfigAndOffset<Operation_PolynomialConfig>(config, sizeOut);
 		return new Operation_Polynomial(polynomialConfig);
 	}
 }

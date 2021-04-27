@@ -56,7 +56,7 @@ namespace OperationArchitecture
 
 	IOperationBase * Operation_2AxisTable::Create(const void *config, unsigned int &sizeOut)
 	{
-		const Operation_2AxisTableConfig *tableConfig = Config::CastConfigAndOffset<const Operation_2AxisTableConfig>(config, sizeOut);
+		const Operation_2AxisTableConfig *tableConfig = Config::CastConfigAndOffset<Operation_2AxisTableConfig>(config, sizeOut);
 		return new Operation_2AxisTable(tableConfig);
 	}
 }
