@@ -13,6 +13,7 @@ namespace OperationArchitecture
 		bool StoreVariables : 1;
 		bool ReturnVariables : 1;
 		bool Group : 1;
+		bool DoNotPackage : 1;
 	});
 
 	class SystemBus

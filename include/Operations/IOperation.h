@@ -12,8 +12,8 @@ namespace OperationArchitecture
         public:
         IOperation() 
         {
-            NumberOfParameters = sizeof...(PARAMS) + 1;
-            NumberOfReturnVariables = 0;
+            NumberOfParameters = sizeof...(PARAMS);
+            NumberOfReturnVariables = 1;
         }
         virtual RET Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override

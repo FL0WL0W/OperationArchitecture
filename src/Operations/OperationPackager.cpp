@@ -78,47 +78,55 @@ namespace OperationArchitecture
                 storageVariables[i] = _systemBus->GetOrCreateVariable(variableId);
             }
         }
-
-        //Create Parameters
-        uint8_t numberOfSubOperations = 0;
-        OperationOrVariable *parameters = new OperationOrVariable[operation->NumberOfParameters];
-        for(int i = 0; i < operation->NumberOfParameters; i++)
+        
+        IOperationBase * package;
+        if(options.DoNotPackage)
         {
-            const uint8_t operationReturnId = Config::CastAndOffset<uint8_t>(config, sizeOut);
-
-            if(operationReturnId > 0)
+            package = operation;
+        }
+        else
+        {
+            //Create Parameters
+            uint8_t numberOfSubOperations = 0;
+            OperationOrVariable *parameters = new OperationOrVariable[operation->NumberOfParameters];
+            for(int i = 0; i < operation->NumberOfParameters; i++)
             {
-                if(operationReturnId > numberOfSubOperations)
+                const uint8_t operationReturnId = Config::CastAndOffset<uint8_t>(config, sizeOut);
+
+                if(operationReturnId > 0)
                 {
-                    numberOfSubOperations = operationReturnId;
+                    if(operationReturnId > numberOfSubOperations)
+                    {
+                        numberOfSubOperations = operationReturnId;
+                    }
+
+                    const uint8_t operationReturnVariableId = Config::CastAndOffset<uint8_t>(config, sizeOut);
+                    parameters[i] = OperationOrVariable(operationReturnId, operationReturnVariableId);
                 }
-
-                const uint8_t operationReturnVariableId = Config::CastAndOffset<uint8_t>(config, sizeOut);
-                parameters[i] = OperationOrVariable(operationReturnId, operationReturnVariableId);
+                else
+                {
+                    const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
+                    parameters[i] = OperationOrVariable(_systemBus->GetOrCreateVariable(variableId));
+                }
             }
-            else
+
+            //Create sub operations
+            IOperationBase **subOperations = new IOperationBase*[numberOfSubOperations];
+            for(int i = 0; i < numberOfSubOperations; i++)
             {
-                const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
-                parameters[i] = OperationOrVariable(_systemBus->GetOrCreateVariable(variableId));
+                unsigned int size = 0;
+                subOperations[i] = Package(config, size);
+                Config::OffsetConfig(config, sizeOut, size);
             }
-        }
 
-        //Create sub operations
-        IOperationBase **subOperations = new IOperationBase*[numberOfSubOperations];
-        for(int i = 0; i < numberOfSubOperations; i++)
-        {
-            unsigned int size = 0;
-            subOperations[i] = Package(config, size);
-            Config::OffsetConfig(config, sizeOut, size);
+            //Create Package
+            package = new Operation_Package(operation, subOperations, parameters);
+            delete subOperations;
+            delete parameters;
         }
-
-        //Create Package
-        IOperationBase * package = new Operation_Package(operation, subOperations, parameters);
-        delete subOperations;
-        delete parameters;
 
         //wrap package in Operation_StoreVariables if storing variables or not returning variables
-        if(storageVariables != 0 || !options.ReturnVariables)
+        if(storageVariables != 0 || (!options.ReturnVariables && operation->NumberOfReturnVariables))
         {
             package = new Operation_StoreVariables(package, storageVariables, options.ReturnVariables);
             delete storageVariables;
