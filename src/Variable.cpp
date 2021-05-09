@@ -40,67 +40,67 @@ namespace OperationArchitecture
     void VariableSet(VariableBase *variable, uint8_t value)
     {
         variable->Type = VariableType::UINT8;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<uint8_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, uint16_t value)
     {
         variable->Type = VariableType::UINT16;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<uint16_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, uint32_t value)
     {
         variable->Type = VariableType::UINT32;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<uint32_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, uint64_t value)
     {
         variable->Type = VariableType::UINT64;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<uint64_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, int8_t value)
     {
         variable->Type = VariableType::INT8;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<int8_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, int16_t value)
     {
         variable->Type = VariableType::INT16;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<int16_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, int32_t value)
     {
         variable->Type = VariableType::INT32;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<int32_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, int64_t value)
     {
         variable->Type = VariableType::INT64;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<int64_t *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, float value)
     {
         variable->Type = VariableType::FLOAT;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<float *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, double value)
     {
         variable->Type = VariableType::DOUBLE;
-        variable->Value = *reinterpret_cast<uint64_t *>(&value);
+        *reinterpret_cast<double *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, bool value)
     {
         variable->Type = VariableType::BOOLEAN;
-        variable->Value = value;
+        *reinterpret_cast<bool *>(&variable->Value) = value;
     }
     template<>
     void VariableSet(VariableBase *variable, VariableBase value)
