@@ -10,6 +10,7 @@ namespace OperationArchitecture
         _numberOfOperations = numberOfOperations;
 
 		NumberOfReturnVariables = 0;
+		NumberOfParameters = 0;
         for(int i = 0; i < _numberOfOperations; i++)
         {
             NumberOfReturnVariables += _operations[i]->NumberOfReturnVariables;
