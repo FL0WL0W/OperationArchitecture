@@ -111,17 +111,24 @@ namespace OperationArchitecture
             }
 
             //Create sub operations
-            IOperationBase **subOperations = new IOperationBase*[numberOfSubOperations];
-            for(int i = 0; i < numberOfSubOperations; i++)
+            if(numberOfSubOperations > 0)
             {
-                unsigned int size = 0;
-                subOperations[i] = Package(config, size);
-                Config::OffsetConfig(config, sizeOut, size);
+                IOperationBase **subOperations = new IOperationBase*[numberOfSubOperations];
+                for(int i = 0; i < numberOfSubOperations; i++)
+                {
+                    unsigned int size = 0;
+                    subOperations[i] = Package(config, size);
+                    Config::OffsetConfig(config, sizeOut, size);
+                }
+                //Create Package
+                package = new Operation_Package(operation, subOperations, parameters);
+            }
+            else
+            {
+                //Create Package
+                package = new Operation_Package(operation, 0, parameters);
             }
 
-            //Create Package
-            package = new Operation_Package(operation, subOperations, parameters);
-            delete subOperations;
             delete parameters;
         }
 

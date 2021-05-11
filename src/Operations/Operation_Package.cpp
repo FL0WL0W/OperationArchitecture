@@ -4,24 +4,27 @@
 
 namespace OperationArchitecture
 {
+    //subOperations will be deleted when package is deleted
     Operation_Package::Operation_Package(IOperationBase *operation, IOperationBase **subOperations, OperationOrVariable *parameters)
     {
         _operation = operation;
         _numberOfSubOperations = 0;
+        _subOperations = subOperations;
         for(int i = 0; i < _operation->NumberOfParameters; i++)
         {
             if(parameters[i].OperationId > _numberOfSubOperations)
                 _numberOfSubOperations = parameters[i].OperationId;
         }
-        _subOperations = new IOperationBase*[_numberOfSubOperations];
-        std::memcpy(_subOperations, subOperations, sizeof(IOperationBase *) * _numberOfSubOperations);
-        _operationVariables = new Variable**[_numberOfSubOperations];
-        for(int i = 0; i < _numberOfSubOperations; i++)
+        if(_numberOfSubOperations > 0)
         {
-            _operationVariables[i] = new Variable*[_subOperations[i]->NumberOfReturnVariables];
-            for(int q = 0; q < _subOperations[i]->NumberOfReturnVariables; q++)
+            _operationVariables = new Variable**[_numberOfSubOperations];
+            for(int i = 0; i < _numberOfSubOperations; i++)
             {
-                _operationVariables[i][q] = new Variable();
+                _operationVariables[i] = new Variable*[_subOperations[i]->NumberOfReturnVariables];
+                for(int q = 0; q < _subOperations[i]->NumberOfReturnVariables; q++)
+                {
+                    _operationVariables[i][q] = new Variable();
+                }
             }
         }
         _variables = new Variable*[_operation->NumberOfParameters + _operation->NumberOfReturnVariables];
