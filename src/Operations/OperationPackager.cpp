@@ -80,7 +80,7 @@ namespace OperationArchitecture
         }
         
         IOperationBase * package;
-        if(options.DoNotPackage)
+        if(options.DoNotPackage || operation->NumberOfParameters == 0)
         {
             package = operation;
         }
@@ -133,7 +133,7 @@ namespace OperationArchitecture
         }
 
         //wrap package in Operation_StoreVariables if storing variables or not returning variables
-        if(storageVariables != 0 || (!options.ReturnVariables && operation->NumberOfReturnVariables))
+        if(storageVariables != 0 || (!options.ReturnVariables && operation->NumberOfReturnVariables > 0))
         {
             package = new Operation_StoreVariables(package, storageVariables, options.ReturnVariables);
             delete storageVariables;
