@@ -58,7 +58,7 @@ namespace UnitTests
 			_operationOther = Operation_StaticVariable::Create(config, _sizeOther);
 
 						
-			config = malloc(sizeof(Variable) + sizeof(uint32_t) + sizeof(TestBig));
+			config = malloc(sizeof(VariableType) + sizeof(uint32_t) + sizeof(TestBig));
 			buildConfig = config;
 
 			*((VariableType *)buildConfig) = VariableType::BIGOTHER;
