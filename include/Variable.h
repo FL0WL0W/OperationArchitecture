@@ -2,16 +2,17 @@
 #include <stdlib.h>
 #include <type_traits>
 #include "VariableType.h"
+#include "Packed.h"
 
 #ifndef VARIABLE_H
 #define VARIABLE_H
 namespace OperationArchitecture
 {
-    struct VariableBase
+    PACK(struct VariableBase
     {
         VariableType Type;
         uint64_t Value;
-    };
+    });
     struct Variable;
 
     template<typename K>
