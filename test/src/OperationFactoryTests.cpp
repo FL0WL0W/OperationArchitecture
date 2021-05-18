@@ -14,10 +14,10 @@ namespace UnitTests
 		OperationFactory *_factory;
 		IOperationBase *_operation;
 		IOperationBase *_operationParamater;
-		unsigned int _size = 0;
-		unsigned int _size2 = 0;
+		size_t _size = 0;
+		size_t _size2 = 0;
 
-		static IOperationBase * CreateWithParameterFunction(const void *config, unsigned int &sizeOut, int parameter1, int parameter2)
+		static IOperationBase * CreateWithParameterFunction(const void *config, size_t &sizeOut, int parameter1, int parameter2)
 		{
 			OperationOrVariable *parameters = new OperationOrVariable[2] { OperationOrVariable(new Variable(parameter1)), OperationOrVariable(new Variable(parameter2)) };
 			return new Operation_Package(Operation_Math::Create(config, sizeOut), 0, parameters);

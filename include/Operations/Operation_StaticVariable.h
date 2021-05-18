@@ -1,5 +1,4 @@
 #include "Operations/IOperation.h"
-#include "Packed.h"
 #include "Interpolation.h"
 #include "Variable.h"
 
@@ -16,7 +15,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override;
 
-		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
+		static IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

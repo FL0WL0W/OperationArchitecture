@@ -1,12 +1,10 @@
 #include "Operations/OperationFactory.h"
 #include "Operations/Operation_Package.h"
-#include "Packed.h"
 
 #ifndef OPERATIONPACKAGER_H
 #define OPERATIONPACKAGER_H
 namespace OperationArchitecture
 {
-	PACK(
 	struct PackageOptions 
 	{
 		bool OperationImmediate : 1;
@@ -14,7 +12,7 @@ namespace OperationArchitecture
 		bool ReturnVariables : 1;
 		bool Group : 1;
 		bool DoNotPackage : 1;
-	});
+	};
 
 	class SystemBus
 	{
@@ -31,11 +29,11 @@ namespace OperationArchitecture
 		OperationFactory *_factory;
 		SystemBus *_systemBus;
 
-    	OperationOrVariable CreateParameter(const void *config, unsigned int &sizeOut);
+    	OperationOrVariable CreateParameter(const void *config, size_t &sizeOut);
 	public:
         OperationPackager(OperationFactory *factory, SystemBus *systemBus);
 
-		IOperationBase *Package(const void *config, unsigned int &sizeOut);
+		IOperationBase *Package(const void *config, size_t &sizeOut);
 	};
 }
 #endif

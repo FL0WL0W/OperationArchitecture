@@ -52,7 +52,7 @@ namespace OperationArchitecture
 		}
 	}
 
-	IOperationBase * Operation_Math::Create(const void *config, unsigned int &sizeOut)
+	IOperationBase * Operation_Math::Create(const void *config, size_t &sizeOut)
 	{
 		return new Operation_Math(Config::CastAndOffset<MathOperation>(config, sizeOut));
 	}

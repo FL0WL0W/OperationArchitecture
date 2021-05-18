@@ -54,7 +54,7 @@ namespace OperationArchitecture
 		}
 	}
 
-	IOperationBase *Operation_LookupTable::Create(const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_LookupTable::Create(const void *config, size_t &sizeOut)
 	{
 		const Operation_LookupTableConfig *tableConfig = Config::CastConfigAndOffset<Operation_LookupTableConfig>(config, sizeOut);
 		return new Operation_LookupTable(tableConfig);

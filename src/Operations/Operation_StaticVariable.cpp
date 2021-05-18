@@ -16,7 +16,7 @@ namespace OperationArchitecture
 		variables[0]->Set(_staticValue);
 	}
 
-	IOperationBase * Operation_StaticVariable::Create(const void *config, unsigned int &sizeOut)
+	IOperationBase * Operation_StaticVariable::Create(const void *config, size_t &sizeOut)
 	{
 		const VariableType staticValueType = Config::CastAndOffset<VariableType>(config, sizeOut);
 		Variable staticValue;
@@ -62,6 +62,7 @@ namespace OperationArchitecture
         	case VariableType::BIGOTHER:
 			{
 				uint32_t length = Config::CastAndOffset<uint32_t>(config, sizeOut);
+				Config::AlignConfig(config, sizeOut, alignof(max_align_t));
 				staticValue.Value = *reinterpret_cast<uint64_t *>(&config);
 				staticValue.Type = BIGOTHER;
 				Config::OffsetConfig(config, sizeOut, length);

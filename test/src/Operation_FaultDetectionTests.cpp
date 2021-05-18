@@ -11,24 +11,18 @@ namespace UnitTests
 		protected:
 		Operation_FaultDetectionConfig *_config;
 		IOperationBase *_operation;
-		unsigned int _size = 0;
+		size_t _size = 0;
 
 		Operation_FaultDetectionTests() 
 		{			
-			unsigned int expectedSize = sizeof(Operation_FaultDetectionConfig);
+			size_t expectedSize = sizeof(Operation_FaultDetectionConfig);
 			_config = (Operation_FaultDetectionConfig *)malloc(expectedSize);
 			
 			_config->MaxValue = 150;
 			_config->MinValue = -40;
 			_config->DefaultValue = 4;
 
-			void *config = malloc(_config->Size());
-			void *buildConfig = config;
-
-			memcpy(buildConfig, _config, _config->Size());
-			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
-
-			_operation = Operation_FaultDetection::Create(config, _size);
+			_operation = Operation_FaultDetection::Create(_config, _size);
 		}
 	};
 

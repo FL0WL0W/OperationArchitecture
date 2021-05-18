@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "Operations/Operation_StaticVariable.h"
+#include "Config.h"
 using namespace testing;
 using namespace OperationArchitecture;
 
@@ -23,57 +24,78 @@ namespace UnitTests
 		};
 
 		IOperationBase *_operation;
-		unsigned int _size = 0;
+		size_t _size = 0;
 		IOperationBase *_operationOther;
-		unsigned int _sizeOther = 0;
+		size_t _sizeOther = 0;
 		IOperationBase *_operationBigOther;
-		unsigned int _sizeBigOther = 0;
+		size_t _sizeBigOther = 0;
 
 		Operation_StaticVariableTests() 
-		{			
-			void *config = malloc(sizeof(VariableType) + sizeof(int16_t));
+		{	
+			size_t size = 0;	
+			size += sizeof(VariableType);
+			size += size % alignof(int16_t);
+			size += sizeof(int16_t);
+			void *config = malloc(size);
+			size = 0;
 			void *buildConfig = config;
 
-			*((VariableType *)buildConfig) = VariableType::INT16;
-			buildConfig = (void *)((VariableType *)buildConfig + 1);
+			*reinterpret_cast<VariableType *>(buildConfig) = VariableType::INT16;
+			Config::OffsetConfig(buildConfig, size, sizeof(VariableType));
 
-			*((int16_t *)buildConfig) = 250;
-			buildConfig = (void *)((int16_t *)buildConfig + 1);
+			Config::AlignConfig(buildConfig, size, alignof(int16_t));
+			*reinterpret_cast<int16_t *>(buildConfig) = 250;
+			Config::OffsetConfig(buildConfig, size, sizeof(int16_t));
 
 			_operation = Operation_StaticVariable::Create(config, _size);
-						
-			config = malloc(sizeof(VariableType) + sizeof(Test));
+
+			size = 0;	
+			size = 0;
+			size += sizeof(VariableType);
+			size += size % alignof(Test);
+			size += sizeof(Test);	
+			config = malloc(size);
+			size = 0;	
 			buildConfig = config;
 
-			*((VariableType *)buildConfig) = VariableType::OTHER;
-			buildConfig = (void *)((VariableType *)buildConfig + 1);
+			*reinterpret_cast<VariableType *>(buildConfig) = VariableType::OTHER;
+			Config::OffsetConfig(buildConfig, size, sizeof(VariableType));
 
 			Test test;
 			test.test1 = 1349;
 			test.test2 = 103.2f;
 
-			*((Test *)buildConfig) = test;
-			buildConfig = (void *)((Test *)buildConfig + 1);
+			Config::AlignConfig(buildConfig, size, alignof(Test));
+			*reinterpret_cast<Test *>(buildConfig) = test;
+			Config::OffsetConfig(buildConfig, size, sizeof(Test));
 
 			_operationOther = Operation_StaticVariable::Create(config, _sizeOther);
-
 						
-			config = malloc(sizeof(VariableType) + sizeof(uint32_t) + sizeof(TestBig));
+			size = 0;		
+			size += sizeof(VariableType);
+			size += size % alignof(uint32_t);
+			size += sizeof(uint32_t);
+			size += size % alignof(max_align_t);
+			size += sizeof(TestBig);
+			config = malloc(size);
+			size = 0;
 			buildConfig = config;
 
-			*((VariableType *)buildConfig) = VariableType::BIGOTHER;
-			buildConfig = (void *)((VariableType *)buildConfig + 1);
+			*reinterpret_cast<VariableType *>(buildConfig) = VariableType::BIGOTHER;
+			Config::OffsetConfig(buildConfig, size, sizeof(VariableType));
 
-			*((uint32_t *)buildConfig) = sizeof(TestBig);
-			buildConfig = (void *)((uint32_t *)buildConfig + 1);
+			Config::AlignConfig(buildConfig, size, alignof(uint32_t));
+			*reinterpret_cast<uint32_t *>(buildConfig) = sizeof(TestBig);
+			Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
 
 			TestBig testb;
 			testb.test1 = 1339;
 			testb.test2 = 102.2f;
 			testb.test3 = true;
 
-			*((TestBig *)buildConfig) = testb;
-			buildConfig = (void *)((TestBig *)buildConfig + 1);
+			Config::AlignConfig(buildConfig, size, alignof(max_align_t));
+			*reinterpret_cast<TestBig *>(buildConfig) = testb;
+			Config::OffsetConfig(buildConfig, size, sizeof(TestBig));
 
 			_operationBigOther = Operation_StaticVariable::Create(config, _sizeBigOther);
 		}
@@ -81,9 +103,25 @@ namespace UnitTests
 
 	TEST_F(Operation_StaticVariableTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(3, _size);
-		ASSERT_EQ(5 + sizeof(TestBig), _sizeBigOther);
-		ASSERT_EQ(9, _sizeOther);
+		size_t size = 0;
+		size += sizeof(VariableType);
+		size += size % alignof(int16_t);
+		size += sizeof(int16_t);
+		ASSERT_EQ(size, _size);
+
+		size = 0;
+		size += sizeof(VariableType);
+		size += size % alignof(Test);
+		size += sizeof(Test);
+		ASSERT_EQ(size, _sizeOther);
+
+		size = 0;		
+		size += sizeof(VariableType);
+		size += size % alignof(uint32_t);
+		size += sizeof(uint32_t);
+		size += size % alignof(max_align_t);
+		size += sizeof(TestBig);
+		ASSERT_EQ(size, _sizeBigOther);
 	}
 
 	TEST_F(Operation_StaticVariableTests, WhenExecuting_ReturnsStaticVariable)

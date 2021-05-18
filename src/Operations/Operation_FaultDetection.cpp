@@ -62,7 +62,7 @@ namespace OperationArchitecture
 		}
 	}
 
-	IOperationBase *Operation_FaultDetection::Create(const void *config, unsigned int &sizeOut)
+	IOperationBase *Operation_FaultDetection::Create(const void *config, size_t &sizeOut)
 	{
 		const Operation_FaultDetectionConfig *faultConfig = Config::CastConfigAndOffset<Operation_FaultDetectionConfig>(config, sizeOut);
 		return new Operation_FaultDetection(faultConfig);

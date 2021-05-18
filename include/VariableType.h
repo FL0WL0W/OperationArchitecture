@@ -46,5 +46,29 @@ namespace OperationArchitecture
         }
         return 0;
     }
+    constexpr uint8_t VariableTypeAlignOf(VariableType type)
+    {
+        switch(type)
+        {
+            case VariableType::UINT8: return alignof(uint8_t);
+            case VariableType::UINT16: return alignof(uint16_t);
+            case VariableType::UINT32: return alignof(uint32_t);
+            case VariableType::UINT64: return alignof(uint64_t);
+            case VariableType::INT8: return alignof(int8_t);
+            case VariableType::INT16: return alignof(int16_t);
+            case VariableType::INT32: return alignof(int32_t);
+            case VariableType::INT64: return alignof(int64_t);
+            case VariableType::FLOAT: return alignof(float);
+            case VariableType::DOUBLE: return alignof(double);
+            case VariableType::BOOLEAN: return alignof(bool);
+            case VariableType::POINTER: return alignof(void *);
+            case VariableType::OTHER: return alignof(uint64_t);
+            case VariableType::BIGOTHER:
+            case VariableType::VOID: 
+                break;
+                //this is bad 
+        }
+        return 0;
+    }
 }
 #endif

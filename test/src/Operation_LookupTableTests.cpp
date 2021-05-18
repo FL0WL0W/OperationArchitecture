@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "Operations/Operation_LookupTable.h"
+#include "Config.h"
 using namespace testing;
 using namespace OperationArchitecture;
 
@@ -11,18 +12,22 @@ namespace UnitTests
 		protected:
 		Operation_LookupTableConfig *_config;
 		IOperationBase *_operation;
-		unsigned int _size = 0;
+		size_t _size = 0;
 
 		Operation_LookupTableTests() 
 		{			
-			unsigned int expectedSize = sizeof(Operation_LookupTableConfig) + 4 * 11;
+			size_t expectedSize = sizeof(Operation_LookupTableConfig) + (sizeof(Operation_LookupTableConfig) % alignof(float)) + sizeof(float) * 11;
 			_config = (Operation_LookupTableConfig *)malloc(expectedSize);
 			
 			_config->MinXValue = 0;
 			_config->MaxXValue = 3.3f;
 			_config->XResolution = 11;
 			_config->TableType = VariableType::FLOAT;
-			float * Table = (float *)(_config + 1);
+			void* config = _config;
+			size_t size = 0;
+			Config::OffsetConfig(config, size, sizeof(Operation_LookupTableConfig));
+			Config::AlignConfig(config, size, alignof(float));
+			float * Table = reinterpret_cast<float *>(config);
 			Table[0] = -10;
 			Table[1] = 0;
 			Table[2] = 10;
@@ -35,20 +40,14 @@ namespace UnitTests
 			Table[9] = 80;
 			Table[10] = 90;
 
-			void *config = malloc(_config->Size());
-			void *buildConfig = config;
-
-			memcpy(buildConfig, _config, _config->Size());
-			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
-
-			_operation = Operation_LookupTable::Create(config, _size);
+			_operation = Operation_LookupTable::Create(_config, _size);
 		}
 	};
 
 	TEST_F(Operation_LookupTableTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(54, _config->Size());
-		ASSERT_EQ(54, _size);
+		ASSERT_EQ(56, _config->Size());
+		ASSERT_EQ(56, _size);
 		ASSERT_EQ((float *)(_config + 1), _config->Table());
 		ASSERT_EQ(-10, reinterpret_cast<const float*>(_config->Table())[0]);
 	}

@@ -4,6 +4,7 @@
 #include "Operations/OperationFactory.h"
 #include "Operations/Operation_Math.h"
 #include "Operations/Operation_StaticVariable.h"
+#include "Config.h"
 using namespace testing;
 using namespace OperationArchitecture;
 
@@ -17,84 +18,86 @@ namespace UnitTests
 		OperationPackager *_packager;
 		Variable _secondParameter;
 		IOperationBase *_operation;//subtract with Operation_StaticVariable for the first parameter and variable for the second
-		unsigned int _size = 0;
+		size_t _size = 0;
+		size_t _expectedSize = 0;
 		IOperationBase *_operationImmediateStore;//add with Operation_StaticVariable for the first parameter and variable for the second
-		unsigned int _sizeImmediateStore = 0;
+		size_t _sizeImmediateStore = 0;
+		size_t _expectedSizeImmediateStore = 0;
 		Variable *_storedResult;
 		IOperationBase *_operationGroup;//operation group add then subtract;
-		unsigned int _sizeGroup = 0;
+		size_t _sizeGroup = 0;
+		size_t _expectedSizeGroup = 0;
 
-		void *CreateOperationConfig(bool operationImmediate, uint32_t storeVariableId)
+		void CreateOperationConfig(void *&buildConfig, size_t &size, bool operationImmediate, uint32_t storeVariableId)
 		{
-			unsigned int configSize = sizeof(PackageOptions) + 
-				sizeof(uint8_t) + sizeof(uint8_t) + sizeof(PackageOptions) + sizeof(uint32_t) + //first parameter
-				sizeof(uint8_t) + sizeof(uint32_t);//second parameter
-			if(operationImmediate)
-				configSize += sizeof(MathOperation) + sizeof(uint32_t);
-			else
-				configSize += sizeof(uint32_t);
-			if(storeVariableId > 0)
-				configSize += sizeof(uint32_t);
-			void *config = malloc(configSize);
-			void *buildConfig = config;
-
 			//options
-			((PackageOptions *)buildConfig)->OperationImmediate = operationImmediate;
-			((PackageOptions *)buildConfig)->StoreVariables = storeVariableId > 0;
-			((PackageOptions *)buildConfig)->ReturnVariables = 1;
-			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
+			Config::AlignConfig(buildConfig, size, alignof(PackageOptions));
+			reinterpret_cast<PackageOptions *>(buildConfig)->OperationImmediate = operationImmediate;
+			reinterpret_cast<PackageOptions *>(buildConfig)->StoreVariables = storeVariableId > 0;
+			reinterpret_cast<PackageOptions *>(buildConfig)->ReturnVariables = 1;
+			reinterpret_cast<PackageOptions *>(buildConfig)->Group = false;
+			Config::OffsetConfig(buildConfig, size, sizeof(PackageOptions));
 
 			//if operation is to be created, add the config for creating an operation add
 			if(operationImmediate)
 			{
 				//Factory ID 2
-				*((uint32_t *)buildConfig) = 2;
-				buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+				Config::AlignConfig(buildConfig, size, alignof(uint32_t));
+				*reinterpret_cast<uint32_t *>(buildConfig) = 2;
+				Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
 
-				*((MathOperation *)buildConfig) = ADD;
-				buildConfig = (void *)((MathOperation *)buildConfig + 1);
+				Config::AlignConfig(buildConfig, size, alignof(MathOperation));
+				*reinterpret_cast<MathOperation *>(buildConfig) = ADD;
+				Config::OffsetConfig(buildConfig, size, sizeof(MathOperation));
 			}
 			//otherwise, point to the operation in the system bus with id 25, this is subtract
 			else
 			{
 				//OperationID for Subtract
-				*((uint32_t *)buildConfig) = 25;
-				buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+				Config::AlignConfig(buildConfig, size, alignof(uint32_t));
+				*reinterpret_cast<uint32_t *>(buildConfig) = 25;
+				Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
 			}
 
 			//if storing variables, set the id for the result to be stored into
 			if(storeVariableId > 0)
 			{
 				//VariableId
-				*((uint32_t *)buildConfig) = storeVariableId;
-				buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+				Config::AlignConfig(buildConfig, size, alignof(uint32_t));
+				*reinterpret_cast<uint32_t *>(buildConfig) = storeVariableId;
+				Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
 			}
 
 			//add first paramater as a package
-			*((uint8_t *)buildConfig) = 1;
-			buildConfig = (void *)(((uint8_t *)buildConfig) + 1);
-			*((uint8_t *)buildConfig) = 0;
-			buildConfig = (void *)(((uint8_t *)buildConfig) + 1);
+			Config::AlignConfig(buildConfig, size, alignof(uint8_t));
+			*reinterpret_cast<uint8_t *>(buildConfig) = 1;
+			Config::OffsetConfig(buildConfig, size, sizeof(uint8_t));
+			Config::AlignConfig(buildConfig, size, alignof(uint8_t));
+			*reinterpret_cast<uint8_t *>(buildConfig) = 0;
+			Config::OffsetConfig(buildConfig, size, sizeof(uint8_t));
 
 			//add second paramater as a variable
-			*((uint8_t *)buildConfig) = 0;
-			buildConfig = (void *)(((uint8_t *)buildConfig) + 1);
+			Config::AlignConfig(buildConfig, size, alignof(uint8_t));
+			*reinterpret_cast<uint8_t *>(buildConfig) = 0;
+			Config::OffsetConfig(buildConfig, size, sizeof(uint8_t));
 
 			//id of variable is 5
-			*((uint32_t *)buildConfig) = 5;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
+			Config::AlignConfig(buildConfig, size, alignof(uint32_t));
+			*reinterpret_cast<uint32_t *>(buildConfig) = 5;
+			Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
 
 			//add configuration for pacakge parameter
-			((PackageOptions *)buildConfig)->OperationImmediate = false;
-			((PackageOptions *)buildConfig)->StoreVariables = false;
-			((PackageOptions *)buildConfig)->ReturnVariables = 1;
-			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
+			Config::AlignConfig(buildConfig, size, alignof(PackageOptions));
+			reinterpret_cast<PackageOptions *>(buildConfig)->OperationImmediate = false;
+			reinterpret_cast<PackageOptions *>(buildConfig)->StoreVariables = false;
+			reinterpret_cast<PackageOptions *>(buildConfig)->ReturnVariables = 1;
+			reinterpret_cast<PackageOptions *>(buildConfig)->Group = false;
+			Config::OffsetConfig(buildConfig, size, sizeof(PackageOptions));
 
 			//operation id for static variable
-			*((uint32_t *)buildConfig) = 24;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
-
-			return config;
+			Config::AlignConfig(buildConfig, size, alignof(uint32_t));
+			*reinterpret_cast<uint32_t *>(buildConfig) = 24;
+			Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
 		}
 
 		OperationPackagerTests() 
@@ -107,29 +110,35 @@ namespace UnitTests
 			_factory->Register(2, Operation_Math::Create);
 			_packager = new OperationPackager(_factory, _systemBus);
 
-			_operationImmediateStore = _packager->Package(CreateOperationConfig(true, 4), _sizeImmediateStore);
-			_storedResult = _systemBus->Variables.find(4)->second;
-			_operation = _packager->Package(CreateOperationConfig(false, 0), _size);
+			void *configOperationImmediate = malloc(100);
+			void *buildConfig = configOperationImmediate;
+			CreateOperationConfig(buildConfig, _expectedSizeImmediateStore, true, 4);
+			_operationImmediateStore = _packager->Package(configOperationImmediate, _sizeImmediateStore);
 
-			void *configGroup = malloc(42);
-			void *buildConfig = configGroup;
+			_storedResult = _systemBus->Variables.find(4)->second;
+
+			void *configOperation = malloc(100);
+			buildConfig = configOperation;
+			CreateOperationConfig(buildConfig, _expectedSize, false, 0);
+			_operation = _packager->Package(configOperation, _size);
+
+			void *configGroup = malloc(100);
+			buildConfig = configGroup;
 
 			//options
-			((PackageOptions *)buildConfig)->OperationImmediate = true;
-			((PackageOptions *)buildConfig)->StoreVariables = false;
-			((PackageOptions *)buildConfig)->ReturnVariables = true;
-			((PackageOptions *)buildConfig)->Group = true;
-			buildConfig = (void *)(((PackageOptions *)buildConfig) + 1);
+			reinterpret_cast<PackageOptions *>(buildConfig)->OperationImmediate = true;
+			reinterpret_cast<PackageOptions *>(buildConfig)->StoreVariables = false;
+			reinterpret_cast<PackageOptions *>(buildConfig)->ReturnVariables = true;
+			reinterpret_cast<PackageOptions *>(buildConfig)->Group = true;
+			Config::OffsetConfig(buildConfig, _expectedSizeGroup, sizeof(PackageOptions));
 
 			//2 operations
-			*((uint16_t *)buildConfig) = 2;
-			buildConfig = (void *)(((uint16_t *)buildConfig) + 1);
+			Config::AlignConfig(buildConfig, _expectedSizeGroup, alignof(uint16_t));
+			*reinterpret_cast<uint16_t *>(buildConfig) = 2;
+			Config::OffsetConfig(buildConfig, _expectedSizeGroup, sizeof(uint16_t));
 
-            std::memcpy(buildConfig, CreateOperationConfig(true, 4), 22);
-			buildConfig = (void *)(((uint8_t *)buildConfig) + 22);
-
-            std::memcpy(buildConfig, CreateOperationConfig(false, 0), 17);
-			buildConfig = (void *)(((uint8_t *)buildConfig) + 17);
+            CreateOperationConfig(buildConfig, _expectedSizeGroup, true, 4);
+            CreateOperationConfig(buildConfig, _expectedSizeGroup, false, 0);
 
 			_operationGroup = _packager->Package(configGroup, _sizeGroup);
 		}
@@ -137,9 +146,9 @@ namespace UnitTests
 
 	TEST_F(OperationPackagerTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(22, _sizeImmediateStore);
-		ASSERT_EQ(17, _size);
-		ASSERT_EQ(42, _sizeGroup);
+		ASSERT_EQ(_expectedSizeImmediateStore, _sizeImmediateStore);
+		ASSERT_EQ(_expectedSize, _size);
+		ASSERT_EQ(_expectedSizeGroup, _sizeGroup);
 	}
 
 	TEST_F(OperationPackagerTests, OperationPackagedandExecutable)

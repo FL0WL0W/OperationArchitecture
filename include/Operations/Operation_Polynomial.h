@@ -1,5 +1,4 @@
 #include "Operations/IOperation.h"
-#include "Packed.h"
 #include "Interpolation.h"
 #include "Variable.h"
 
@@ -7,7 +6,6 @@
 #define OPERATION_POLYNOMIAL_H
 namespace OperationArchitecture
 {
-	PACK(
 	struct Operation_PolynomialConfig
 	{
 	private:
@@ -17,9 +15,10 @@ namespace OperationArchitecture
 		}
 		
 	public:		
-		constexpr const unsigned int Size() const
+		constexpr const size_t Size() const
 		{
-			return sizeof(Operation_PolynomialConfig) + sizeof(float) * (Degree + 1);
+			return sizeof(Operation_PolynomialConfig) + (sizeof(Operation_PolynomialConfig) % alignof(float)) + 
+				sizeof(float) * (Degree + 1);
 		}
 
 		const float *A() const { return reinterpret_cast<const float *>(this + 1); }
@@ -27,7 +26,7 @@ namespace OperationArchitecture
 		float MinValue;
 		float MaxValue;
 		uint8_t Degree;
-	});
+	};
 
 	class Operation_Polynomial : public IOperationBase
 	{
@@ -38,7 +37,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override;
 
-		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
+		static IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

@@ -1,5 +1,4 @@
 #include "Operations/IOperation.h"
-#include "Packed.h"
 #include "Interpolation.h"
 #include "Variable.h"
 
@@ -7,7 +6,6 @@
 #define OPERATION_LOOKUPTABLE_H
 namespace OperationArchitecture
 {
-	PACK(
 	struct Operation_LookupTableConfig
 	{
 	private:
@@ -17,9 +15,9 @@ namespace OperationArchitecture
 		}
 		
 	public:		
-		constexpr const unsigned int Size() const
+		constexpr const size_t Size() const
 		{
-			return sizeof(Operation_LookupTableConfig) +
+			return sizeof(Operation_LookupTableConfig) + (sizeof(Operation_LookupTableConfig) % VariableTypeAlignOf(TableType)) + 
 				(VariableTypeSizeOf(TableType) * XResolution);
 		}
 
@@ -29,7 +27,7 @@ namespace OperationArchitecture
 		float MaxXValue;
 		uint8_t XResolution;
 		VariableType TableType;
-	});
+	};
 
 	class Operation_LookupTable : public IOperationBase
 	{
@@ -40,7 +38,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override;
 
-		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
+		static IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

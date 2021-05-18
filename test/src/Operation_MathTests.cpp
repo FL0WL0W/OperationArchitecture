@@ -12,39 +12,36 @@ namespace UnitTests
 	{
 		protected:
 
-		IOperationBase *CreateOperationMath(MathOperation operation, unsigned int &size)
+		IOperationBase *CreateOperationMath(MathOperation operation, size_t &size)
 		{
 			void *config = malloc(sizeof(MathOperation));
-			void *buildConfig = config;
-
-			*((MathOperation *)buildConfig) = operation;
-			buildConfig = (void *)((MathOperation *)buildConfig + 1);
+			*reinterpret_cast<MathOperation *>(config) = operation;
 
 			return Operation_Math::Create(config, size);
 		}
 
 		IOperationBase *_operationAdd;
-		unsigned int _sizeAdd = 0;
+		size_t _sizeAdd = 0;
 		IOperationBase *_operationSubtract;
-		unsigned int _sizeSubtract = 0;
+		size_t _sizeSubtract = 0;
 		IOperationBase *_operationMultiply;
-		unsigned int _sizeMultiply = 0;
+		size_t _sizeMultiply = 0;
 		IOperationBase *_operationDivide;
-		unsigned int _sizeDivide = 0;
+		size_t _sizeDivide = 0;
 		IOperationBase *_operationAnd;
-		unsigned int _sizeAnd = 0;
+		size_t _sizeAnd = 0;
 		IOperationBase *_operationOr;
-		unsigned int _sizeOr = 0;
+		size_t _sizeOr = 0;
 		IOperationBase *_operationGreaterThan;
-		unsigned int _sizeGreaterThan = 0;
+		size_t _sizeGreaterThan = 0;
 		IOperationBase *_operationLessThan;
-		unsigned int _sizeLessThan = 0;
+		size_t _sizeLessThan = 0;
 		IOperationBase *_operationEqual;
-		unsigned int _sizeEqual = 0;
+		size_t _sizeEqual = 0;
 		IOperationBase *_operationGreaterThanOrEqual;
-		unsigned int _sizeGreaterThanOrEqual = 0;
+		size_t _sizeGreaterThanOrEqual = 0;
 		IOperationBase *_operationLessThanOrEqual;
-		unsigned int _sizeLessThanOrEqual = 0;
+		size_t _sizeLessThanOrEqual = 0;
 
 		Operation_MathTests() 
 		{

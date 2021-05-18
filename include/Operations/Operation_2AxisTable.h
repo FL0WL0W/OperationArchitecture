@@ -1,5 +1,4 @@
 #include "Operations/IOperation.h"
-#include "Packed.h"
 #include "Interpolation.h"
 #include "Variable.h"
 
@@ -7,7 +6,6 @@
 #define OPERATION_2AXISTABLE_H
 namespace OperationArchitecture
 {
-	PACK(
 	struct Operation_2AxisTableConfig
 	{
 	private:
@@ -17,9 +15,9 @@ namespace OperationArchitecture
 		}
 		
 	public:		
-		constexpr const unsigned int Size() const
+		constexpr const size_t Size() const
 		{
-			return sizeof(Operation_2AxisTableConfig) +
+			return sizeof(Operation_2AxisTableConfig) + (sizeof(Operation_2AxisTableConfig) % VariableTypeAlignOf(TableType)) + 
 				(VariableTypeSizeOf(TableType) * XResolution * YResolution);
 		}
 
@@ -27,12 +25,12 @@ namespace OperationArchitecture
 		
 		float MinXValue;
 		float MaxXValue;
-		uint8_t XResolution;
 		float MinYValue;
 		float MaxYValue;
+		uint8_t XResolution;
 		uint8_t YResolution;
 		VariableType TableType;
-	});
+	};
 
 	class Operation_2AxisTable : public IOperationBase
 	{
@@ -43,7 +41,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override;
 
-		static IOperationBase *Create(const void *config, unsigned int &sizeOut);
+		static IOperationBase *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

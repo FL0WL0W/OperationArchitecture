@@ -7,9 +7,9 @@ namespace OperationArchitecture
 {
     struct OperationOrVariable
     {
+        Variable *VariableLocation;
         uint8_t OperationId;
         uint8_t OperationReturnVariableId;
-        Variable *VariableLocation;
         OperationOrVariable()
         {
             OperationId = 0;

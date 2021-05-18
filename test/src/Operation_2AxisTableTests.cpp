@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "Operations/Operation_2AxisTable.h"
+#include "Config.h"
 using namespace testing;
 using namespace OperationArchitecture;
 
@@ -11,11 +12,11 @@ namespace UnitTests
 		protected:
 		Operation_2AxisTableConfig *_config;
 		IOperationBase *_operation;
-		unsigned int _size = 0;
+		size_t _size = 0;
 
 		Operation_2AxisTableTests() 
 		{			
-			_config = (Operation_2AxisTableConfig *)malloc(sizeof(Operation_2AxisTableConfig) + 4 * 40);
+			_config = (Operation_2AxisTableConfig *)malloc(sizeof(Operation_2AxisTableConfig) + (sizeof(Operation_2AxisTableConfig) % alignof(float)) + sizeof(float) * 40);
 			
 			_config->MinXValue = 0;
 			_config->MaxXValue = 2.97f;
@@ -24,7 +25,11 @@ namespace UnitTests
 			_config->MaxYValue = 3.3f;
 			_config->YResolution = 4;
 			_config->TableType = VariableType::FLOAT;
-			float * Table = (float *)(_config + 1);
+			void* config = _config;
+			size_t size = 0;
+			Config::OffsetConfig(config, size, sizeof(Operation_2AxisTableConfig));
+			Config::AlignConfig(config, size, alignof(float));
+			float * Table = reinterpret_cast<float *>(config);
 			Table[0] = -10;
 			Table[1] = 0;
 			Table[2] = 10;
@@ -66,20 +71,14 @@ namespace UnitTests
 			Table[38] = 100;
 			Table[39] = 110;
 
-			void *config = malloc(_config->Size());
-			void *buildConfig = config;
-
-			memcpy(buildConfig, _config, _config->Size());
-			buildConfig = (void *)((uint8_t *)buildConfig + _config->Size());
-
-			_operation = Operation_2AxisTable::Create(config, _size);
+			_operation = Operation_2AxisTable::Create(_config, _size);
 		}
 	};
 
 	TEST_F(Operation_2AxisTableTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(179, _config->Size());
-		ASSERT_EQ(179, _size);
+		ASSERT_EQ(180, _config->Size());
+		ASSERT_EQ(180, _size);
 		ASSERT_EQ((float *)(_config + 1), _config->Table());
 		ASSERT_EQ(-10, ((float *)_config->Table())[0]);
 	}

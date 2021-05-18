@@ -5,13 +5,13 @@
 
 namespace OperationArchitecture
 {    
-    void OperationFactory::Register(const uint32_t id, IOperationBase*(*factory)(const void *, unsigned int &))
+    void OperationFactory::Register(const uint32_t id, IOperationBase*(*factory)(const void *, size_t &))
     {
 		if(_factories.find(id) != _factories.end())
 			Unregister(id);
 		if(_factoriesWithParameters.find(id) != _factoriesWithParameters.end())
 			Unregister(id);
-		_factories.insert(std::pair<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>(id, factory));
+		_factories.insert(std::pair<uint32_t, IOperationBase*(*)(const void *, size_t &)>(id, factory));
     }
     
     void OperationFactory::Register(const uint32_t id, ICreateWithParameters *factory)
@@ -25,7 +25,7 @@ namespace OperationArchitecture
 
 	void OperationFactory::Unregister(const uint32_t id)
 	{
-		const std::map<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>::iterator it = _factories.find(id);
+		const std::map<uint32_t, IOperationBase*(*)(const void *, size_t &)>::iterator it = _factories.find(id);
 		if (it != _factories.end())
 			_factories.erase(it);
             
@@ -34,11 +34,11 @@ namespace OperationArchitecture
 			_factoriesWithParameters.erase(itWithParameters);
 	}
 
-    IOperationBase *OperationFactory::Create(const void *config, unsigned int &sizeOut)
+    IOperationBase *OperationFactory::Create(const void *config, size_t &sizeOut)
     {
         const uint32_t factoryId = Config::CastAndOffset<uint32_t>(config, sizeOut);
 
-		const std::map<uint32_t, IOperationBase*(*)(const void *, unsigned int &)>::iterator it = _factories.find(factoryId);
+		const std::map<uint32_t, IOperationBase*(*)(const void *, size_t &)>::iterator it = _factories.find(factoryId);
 		if (it != _factories.end())
             return it->second(config, sizeOut);
         else 

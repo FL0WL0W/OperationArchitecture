@@ -30,7 +30,7 @@ namespace OperationArchitecture
         _systemBus = systemBus;
     }
 
-    IOperationBase *OperationPackager::Package(const void *config, unsigned int &sizeOut)
+    IOperationBase *OperationPackager::Package(const void *config, size_t &sizeOut)
     {
         const PackageOptions options = Config::CastAndOffset<PackageOptions>(config, sizeOut);
 
@@ -43,7 +43,7 @@ namespace OperationArchitecture
 
             for(int i = 0; i < numberOfOperations; i++)
             {
-                unsigned int size = 0;
+                size_t size = 0;
                 operations[i] = Package(config, size);
                 Config::OffsetConfig(config, sizeOut, size);
             }
@@ -62,7 +62,7 @@ namespace OperationArchitecture
         }
         else
         {
-            unsigned int size = 0;
+            size_t size = 0;
             operation = _factory->Create(config, size);
             Config::OffsetConfig(config, sizeOut, size);
         }
@@ -116,7 +116,7 @@ namespace OperationArchitecture
                 IOperationBase **subOperations = new IOperationBase*[numberOfSubOperations];
                 for(int i = 0; i < numberOfSubOperations; i++)
                 {
-                    unsigned int size = 0;
+                    size_t size = 0;
                     subOperations[i] = Package(config, size);
                     Config::OffsetConfig(config, sizeOut, size);
                 }
