@@ -3,6 +3,7 @@
 #include "Operations/OperationFactory.h"
 #include "Operations/Operation_Math.h"
 #include "Operations/Operation_Package.h"
+#include "Config.h"
 using namespace testing;
 using namespace OperationArchitecture;
 
@@ -16,6 +17,10 @@ namespace UnitTests
 		IOperationBase *_operationParamater;
 		size_t _size = 0;
 		size_t _size2 = 0;
+		size_t _expectedSize = 0;
+		size_t _expectedSize2 = 0;
+		size_t _buildSize = 0;
+		size_t _buildSize2 = 0;
 
 		static IOperationBase * CreateWithParameterFunction(const void *config, size_t &sizeOut, int parameter1, int parameter2)
 		{
@@ -29,30 +34,28 @@ namespace UnitTests
 			_factory->Register(2, Operation_Math::Create);
 			_factory->Register(3, new CreateWithParameters<int, int>(OperationFactoryTests::CreateWithParameterFunction, 26, 5));
 
-			void *config = malloc(sizeof(MathOperation) + sizeof(uint32_t));
+			_expectedSize = sizeof(uint32_t);
+			_expectedSize += _expectedSize % alignof(MathOperation);
+			_expectedSize += sizeof(MathOperation);
+			void *config = malloc(_expectedSize);
 			void *buildConfig = config;
 
 			//Factory ID 2
-			*((uint32_t *)buildConfig) = 2;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
-
-			*((MathOperation *)buildConfig) = ADD;
-			buildConfig = (void *)((MathOperation *)buildConfig + 1);
+			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize, 2);
+			Config::AssignAndOffset(buildConfig, _buildSize, MathOperation::ADD);
 
 			_operation = _factory->Create(config, _size);
 			free(config);
 			
-
-
-			config = malloc(sizeof(MathOperation) + sizeof(uint32_t));
+			_expectedSize2 = sizeof(uint32_t);
+			_expectedSize2 += _expectedSize2 % alignof(MathOperation);
+			_expectedSize2 += sizeof(MathOperation);
+			config = malloc(_expectedSize2);
 			buildConfig = config;
 
 			//Factory ID 3
-			*((uint32_t *)buildConfig) = 3;
-			buildConfig = (void *)(((uint32_t *)buildConfig) + 1);
-
-			*((MathOperation *)buildConfig) = SUBTRACT;
-			buildConfig = (void *)((MathOperation *)buildConfig + 1);
+			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize2, 3);
+			Config::AssignAndOffset(buildConfig, _buildSize2, MathOperation::SUBTRACT);
 
 			_operationParamater  = _factory->Create(config, _size2);
 			free(config);
@@ -61,8 +64,10 @@ namespace UnitTests
 
 	TEST_F(OperationFactoryTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(5, _size);
-		ASSERT_EQ(5, _size2);
+		ASSERT_EQ(_expectedSize, _buildSize);
+		ASSERT_EQ(_expectedSize, _size);
+		ASSERT_EQ(_expectedSize2, _buildSize2);
+		ASSERT_EQ(_expectedSize2, _size2);
 	}
 
 	TEST_F(OperationFactoryTests, CorrectOperationReturned)

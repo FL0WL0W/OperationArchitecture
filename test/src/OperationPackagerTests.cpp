@@ -42,49 +42,32 @@ namespace UnitTests
 			if(operationImmediate)
 			{
 				//Factory ID 2
-				Config::AlignConfig(buildConfig, size, alignof(uint32_t));
-				*reinterpret_cast<uint32_t *>(buildConfig) = 2;
-				Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
-
-				Config::AlignConfig(buildConfig, size, alignof(MathOperation));
-				*reinterpret_cast<MathOperation *>(buildConfig) = ADD;
-				Config::OffsetConfig(buildConfig, size, sizeof(MathOperation));
+				Config::AssignAndOffset<uint32_t>(buildConfig, size, 2);
+				Config::AssignAndOffset(buildConfig, size, MathOperation::ADD);
 			}
 			//otherwise, point to the operation in the system bus with id 25, this is subtract
 			else
 			{
 				//OperationID for Subtract
-				Config::AlignConfig(buildConfig, size, alignof(uint32_t));
-				*reinterpret_cast<uint32_t *>(buildConfig) = 25;
-				Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
+				Config::AssignAndOffset<uint32_t>(buildConfig, size, 25);
 			}
 
 			//if storing variables, set the id for the result to be stored into
 			if(storeVariableId > 0)
 			{
 				//VariableId
-				Config::AlignConfig(buildConfig, size, alignof(uint32_t));
-				*reinterpret_cast<uint32_t *>(buildConfig) = storeVariableId;
-				Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
+				Config::AssignAndOffset(buildConfig, size, storeVariableId);
 			}
 
 			//add first paramater as a package
-			Config::AlignConfig(buildConfig, size, alignof(uint8_t));
-			*reinterpret_cast<uint8_t *>(buildConfig) = 1;
-			Config::OffsetConfig(buildConfig, size, sizeof(uint8_t));
-			Config::AlignConfig(buildConfig, size, alignof(uint8_t));
-			*reinterpret_cast<uint8_t *>(buildConfig) = 0;
-			Config::OffsetConfig(buildConfig, size, sizeof(uint8_t));
+			Config::AssignAndOffset<uint8_t>(buildConfig, size, 1);
+			Config::AssignAndOffset<uint8_t>(buildConfig, size, 0);
 
 			//add second paramater as a variable
-			Config::AlignConfig(buildConfig, size, alignof(uint8_t));
-			*reinterpret_cast<uint8_t *>(buildConfig) = 0;
-			Config::OffsetConfig(buildConfig, size, sizeof(uint8_t));
+			Config::AssignAndOffset<uint8_t>(buildConfig, size, 0);
 
 			//id of variable is 5
-			Config::AlignConfig(buildConfig, size, alignof(uint32_t));
-			*reinterpret_cast<uint32_t *>(buildConfig) = 5;
-			Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
+			Config::AssignAndOffset<uint32_t>(buildConfig, size, 5);
 
 			//add configuration for pacakge parameter
 			Config::AlignConfig(buildConfig, size, alignof(PackageOptions));
@@ -95,9 +78,7 @@ namespace UnitTests
 			Config::OffsetConfig(buildConfig, size, sizeof(PackageOptions));
 
 			//operation id for static variable
-			Config::AlignConfig(buildConfig, size, alignof(uint32_t));
-			*reinterpret_cast<uint32_t *>(buildConfig) = 24;
-			Config::OffsetConfig(buildConfig, size, sizeof(uint32_t));
+			Config::AssignAndOffset<uint32_t>(buildConfig, size, 24);
 		}
 
 		OperationPackagerTests() 
@@ -133,9 +114,7 @@ namespace UnitTests
 			Config::OffsetConfig(buildConfig, _expectedSizeGroup, sizeof(PackageOptions));
 
 			//2 operations
-			Config::AlignConfig(buildConfig, _expectedSizeGroup, alignof(uint16_t));
-			*reinterpret_cast<uint16_t *>(buildConfig) = 2;
-			Config::OffsetConfig(buildConfig, _expectedSizeGroup, sizeof(uint16_t));
+			Config::AssignAndOffset<uint16_t>(buildConfig, _expectedSizeGroup, 2);
 
             CreateOperationConfig(buildConfig, _expectedSizeGroup, true, 4);
             CreateOperationConfig(buildConfig, _expectedSizeGroup, false, 0);

@@ -32,6 +32,14 @@ namespace OperationArchitecture
 			
 			return casted;
 		}
+		
+		template<typename T>
+		static void AssignAndOffset(void *&config, size_t &size, T value)
+		{
+			AlignConfig(config, size, alignof(const T));
+			*reinterpret_cast<T *>(config) = value;
+			OffsetConfig(config, size, sizeof(T));
+		}
     };
 }
 
