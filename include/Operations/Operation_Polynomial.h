@@ -14,16 +14,27 @@ namespace OperationArchitecture
 		{
 			
 		}
+		constexpr const size_t size() const
+		{
+			const size_t a = alignof(float);
+			size_t s = sizeof(float);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<uint8_t>(s);
+			Config::AlignAndAddSize<VariableType>(s);
+			if(s % a > 0)
+				s += a - (s % a);
+			return s;
+		}
 		
 	public:		
 		constexpr const size_t Size() const
 		{
-			return sizeof(Operation_PolynomialConfig) + 
-				((sizeof(Operation_PolynomialConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_PolynomialConfig) % alignof(float))) : 0) + 
-				sizeof(float) * (Degree + 1);
+			size_t s = size();
+			s += sizeof(float) * Degree;
+			return s;
 		}
 
-		const float *A() const { return reinterpret_cast<const float *>(Config::AlignConfig(this + 1, alignof(float))); }
+		const float *A() const { return reinterpret_cast<const float *>(reinterpret_cast<const uint8_t *>(this) + size()); }
 
 		float MinValue;
 		float MaxValue;

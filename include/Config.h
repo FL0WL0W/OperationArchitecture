@@ -44,7 +44,7 @@ namespace OperationArchitecture
 		}
 		
 		template<typename T>
-		static void AlignAndAddSize(size_t &size)
+		static constexpr void AlignAndAddSize(size_t &size)
 		{
 			if(size % alignof(T) != 0)
 				size += alignof(T) - (size % alignof(T));

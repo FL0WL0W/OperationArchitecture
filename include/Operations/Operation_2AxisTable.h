@@ -14,16 +14,30 @@ namespace OperationArchitecture
 		{
 			
 		}
+		constexpr const size_t size() const
+		{
+			const size_t a = VariableTypeAlignOf(TableType);
+			size_t s = sizeof(float);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<uint8_t>(s);
+			Config::AlignAndAddSize<uint8_t>(s);
+			Config::AlignAndAddSize<VariableType>(s);
+			if(s % a > 0)
+				s += a - (s % a);
+			return s;
+		}
 		
 	public:		
 		constexpr const size_t Size() const
 		{
-			return sizeof(Operation_2AxisTableConfig) + 
-				((sizeof(Operation_2AxisTableConfig) % VariableTypeAlignOf(TableType) > 0)? (VariableTypeAlignOf(TableType) - (sizeof(Operation_2AxisTableConfig) % VariableTypeAlignOf(TableType))) : 0) + 
-				(VariableTypeSizeOf(TableType) * XResolution * YResolution);
+			size_t s = size();
+			s += VariableTypeSizeOf(TableType) * XResolution * YResolution;
+			return s;
 		}
 
-		const void *Table() const { return Config::AlignConfig(this + 1, VariableTypeAlignOf(TableType)); }
+		const void *Table() const { return reinterpret_cast<const uint8_t *>(this) + size(); }
 		
 		float MinXValue;
 		float MaxXValue;
