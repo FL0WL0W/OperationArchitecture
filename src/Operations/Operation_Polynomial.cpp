@@ -1,5 +1,4 @@
 #include "Operations/Operation_Polynomial.h"
-#include "Config.h"
 
 #ifdef OPERATION_POLYNOMIAL_H
 namespace OperationArchitecture

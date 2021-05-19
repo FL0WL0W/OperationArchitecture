@@ -1,6 +1,7 @@
 #include "Operations/IOperation.h"
 #include "Interpolation.h"
 #include "Variable.h"
+#include "Config.h"
 
 #ifndef OPERATION_POLYNOMIAL_H
 #define OPERATION_POLYNOMIAL_H
@@ -22,7 +23,7 @@ namespace OperationArchitecture
 				sizeof(float) * (Degree + 1);
 		}
 
-		const float *A() const { return reinterpret_cast<const float *>(this + 1); }
+		const float *A() const { return reinterpret_cast<const float *>(Config::AlignConfig(this + 1, alignof(float))); }
 
 		float MinValue;
 		float MaxValue;
