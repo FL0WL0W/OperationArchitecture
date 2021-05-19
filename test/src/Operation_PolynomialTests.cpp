@@ -41,8 +41,8 @@ namespace UnitTests
 
 	TEST_F(Operation_PolynomialTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(32, _config->Size());
-		ASSERT_EQ(32, _size);
+		ASSERT_EQ(28, _config->Size());
+		ASSERT_EQ(28, _size);
 	}
 
 	TEST_F(Operation_PolynomialTests, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)
