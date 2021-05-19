@@ -16,7 +16,9 @@ namespace UnitTests
 
 		Operation_PolynomialTests() 
 		{			
-			size_t expectedSize = sizeof(Operation_PolynomialConfig) + (sizeof(Operation_PolynomialConfig) % alignof(float)) + sizeof(float) * 4;
+			size_t expectedSize = sizeof(Operation_PolynomialConfig) + 
+				((sizeof(Operation_PolynomialConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_PolynomialConfig) % alignof(float))) : 0) + 
+				sizeof(float) * 4;
 			_config = (Operation_PolynomialConfig *)malloc(expectedSize);
 			
 			_config->MaxValue = 150;

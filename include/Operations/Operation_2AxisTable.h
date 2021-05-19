@@ -1,6 +1,7 @@
 #include "Operations/IOperation.h"
 #include "Interpolation.h"
 #include "Variable.h"
+#include "Config.h"
 
 #ifndef OPERATION_2AXISTABLE_H
 #define OPERATION_2AXISTABLE_H
@@ -17,11 +18,12 @@ namespace OperationArchitecture
 	public:		
 		constexpr const size_t Size() const
 		{
-			return sizeof(Operation_2AxisTableConfig) + (sizeof(Operation_2AxisTableConfig) % VariableTypeAlignOf(TableType)) + 
+			return sizeof(Operation_2AxisTableConfig) + 
+				((sizeof(Operation_2AxisTableConfig) % VariableTypeAlignOf(TableType) > 0)? (VariableTypeAlignOf(TableType) - (sizeof(Operation_2AxisTableConfig) % VariableTypeAlignOf(TableType))) : 0) + 
 				(VariableTypeSizeOf(TableType) * XResolution * YResolution);
 		}
 
-		const void *Table() const { return this + 1; }
+		const void *Table() const { return Config::AlignConfig(this + 1, VariableTypeAlignOf(TableType)); }
 		
 		float MinXValue;
 		float MaxXValue;

@@ -35,8 +35,7 @@ namespace UnitTests
 			_factory->Register(3, new CreateWithParameters<int, int>(OperationFactoryTests::CreateWithParameterFunction, 26, 5));
 
 			_expectedSize = sizeof(uint32_t);
-			_expectedSize += _expectedSize % alignof(MathOperation);
-			_expectedSize += sizeof(MathOperation);
+			Config::AlignAndAddSize<MathOperation>(_expectedSize);
 			void *config = malloc(_expectedSize);
 			void *buildConfig = config;
 
@@ -48,8 +47,7 @@ namespace UnitTests
 			free(config);
 			
 			_expectedSize2 = sizeof(uint32_t);
-			_expectedSize2 += _expectedSize2 % alignof(MathOperation);
-			_expectedSize2 += sizeof(MathOperation);
+			Config::AlignAndAddSize<MathOperation>(_expectedSize2);
 			config = malloc(_expectedSize2);
 			buildConfig = config;
 

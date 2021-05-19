@@ -17,7 +17,8 @@ namespace OperationArchitecture
 	public:		
 		constexpr const size_t Size() const
 		{
-			return sizeof(Operation_PolynomialConfig) + (sizeof(Operation_PolynomialConfig) % alignof(float)) + 
+			return sizeof(Operation_PolynomialConfig) + 
+				((sizeof(Operation_PolynomialConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_PolynomialConfig) % alignof(float))) : 0) + 
 				sizeof(float) * (Degree + 1);
 		}
 

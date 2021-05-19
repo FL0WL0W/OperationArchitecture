@@ -16,7 +16,9 @@ namespace UnitTests
 
 		Operation_LookupTableTests() 
 		{			
-			size_t expectedSize = sizeof(Operation_LookupTableConfig) + (sizeof(Operation_LookupTableConfig) % alignof(float)) + sizeof(float) * 11;
+			size_t expectedSize = sizeof(Operation_LookupTableConfig) + 
+				((sizeof(Operation_LookupTableConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_LookupTableConfig) % alignof(float))) : 0) + 
+				sizeof(float) * 11;
 			_config = (Operation_LookupTableConfig *)malloc(expectedSize);
 			
 			_config->MinXValue = 0;

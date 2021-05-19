@@ -12,6 +12,8 @@ namespace OperationArchitecture
 		static void AlignConfig(const void *&config, size_t &totalSize, size_t align);
 		static void OffsetConfig(void *&config, size_t &totalSize, size_t offset);
 		static void AlignConfig(void *&config, size_t &totalSize, size_t align);
+		static const void *OffsetConfig(const void *config, size_t offset);
+		static const void *AlignConfig(const void *config, size_t align);
 
 		template<typename T>
 		static const T* CastConfigAndOffset(const void *&config, size_t &size)
@@ -39,6 +41,14 @@ namespace OperationArchitecture
 			AlignConfig(config, size, alignof(const T));
 			*reinterpret_cast<T *>(config) = value;
 			OffsetConfig(config, size, sizeof(T));
+		}
+		
+		template<typename T>
+		static void AlignAndAddSize(size_t &size)
+		{
+			if(size % alignof(T) != 0)
+				size += alignof(T) - (size % alignof(T));
+			size += sizeof(T);
 		}
     };
 }

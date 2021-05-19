@@ -1,5 +1,4 @@
 #include "Operations/Operation_2AxisTable.h"
-#include "Config.h"
 
 #ifdef OPERATION_2AXISTABLE_H
 namespace OperationArchitecture

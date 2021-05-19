@@ -39,8 +39,7 @@ namespace UnitTests
 		Operation_StaticVariableTests() 
 		{	
 			_expectedSize = sizeof(VariableType);
-			_expectedSize += _expectedSize % alignof(int16_t);
-			_expectedSize += sizeof(int16_t);
+			Config::AlignAndAddSize<int16_t>(_expectedSize);
 			void *config = malloc(_expectedSize);
 			void *buildConfig = config;
 
@@ -50,8 +49,7 @@ namespace UnitTests
 
 
 			_expectedSizeOther = sizeof(VariableType);
-			_expectedSizeOther += _expectedSizeOther % alignof(Test);
-			_expectedSizeOther += sizeof(Test);	
+			Config::AlignAndAddSize<uint64_t>(_expectedSizeOther);//size and align of other is a uint64_t
 			config = malloc(_expectedSizeOther);
 			buildConfig = config;
 
@@ -59,13 +57,13 @@ namespace UnitTests
 			Test test;
 			test.test1 = 1349;
 			test.test2 = 103.2f;
-			Config::AssignAndOffset(buildConfig, _buildSizeOther, test);
+			Config::AssignAndOffset(buildConfig, _buildSizeOther, *reinterpret_cast<uint64_t *>(&test));
 			_operationOther = Operation_StaticVariable::Create(config, _sizeOther);
 						
 			_expectedSizeBigOther = sizeof(VariableType);
-			_expectedSizeBigOther += _expectedSizeBigOther % alignof(uint32_t);
-			_expectedSizeBigOther += sizeof(uint32_t);
-			_expectedSizeBigOther += _expectedSizeBigOther % alignof(max_align_t);
+			Config::AlignAndAddSize<uint32_t>(_expectedSizeBigOther);
+			if(_expectedSizeBigOther % alignof(max_align_t) != 0)
+				_expectedSizeBigOther += alignof(max_align_t) - _expectedSizeBigOther % alignof(max_align_t);
 			_expectedSizeBigOther += sizeof(TestBig);
 			config = malloc(_expectedSizeBigOther);
 			buildConfig = config;

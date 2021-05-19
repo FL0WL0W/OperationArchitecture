@@ -22,7 +22,7 @@ namespace OperationArchitecture
         OTHER = 13,
         BIGOTHER = 14
     };
-    constexpr uint8_t VariableTypeSizeOf(VariableType type)
+    constexpr size_t VariableTypeSizeOf(VariableType type)
     {
         switch(type)
         {
@@ -46,7 +46,7 @@ namespace OperationArchitecture
         }
         return 0;
     }
-    constexpr uint8_t VariableTypeAlignOf(VariableType type)
+    constexpr size_t VariableTypeAlignOf(VariableType type)
     {
         switch(type)
         {

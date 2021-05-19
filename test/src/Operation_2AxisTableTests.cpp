@@ -16,7 +16,9 @@ namespace UnitTests
 
 		Operation_2AxisTableTests() 
 		{			
-			_config = (Operation_2AxisTableConfig *)malloc(sizeof(Operation_2AxisTableConfig) + (sizeof(Operation_2AxisTableConfig) % alignof(float)) + sizeof(float) * 40);
+			_config = (Operation_2AxisTableConfig *)malloc(sizeof(Operation_2AxisTableConfig) + 
+				((sizeof(Operation_2AxisTableConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_2AxisTableConfig) % alignof(float))) : 0) + 
+				sizeof(float) * 40);
 			
 			_config->MinXValue = 0;
 			_config->MaxXValue = 2.97f;

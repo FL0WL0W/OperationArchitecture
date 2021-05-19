@@ -1,5 +1,4 @@
 #include "Operations/Operation_LookupTable.h"
-#include "Config.h"
 
 #ifdef OPERATION_LOOKUPTABLE_H
 namespace OperationArchitecture
