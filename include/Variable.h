@@ -33,6 +33,9 @@ namespace OperationArchitecture
         }
         return 0;
     }
+//optimization screws this up. casting a uint64_t to a pointer is most likely undefined behavior
+#pragma GCC push_options
+#pragma GCC optimize("O0")
     template<typename K>
     K VariableTo(VariableBase *variable)
     {
@@ -53,6 +56,7 @@ namespace OperationArchitecture
                 //this is bad 
         }
     }
+#pragma GCC pop_options
     template<>
     uint8_t VariableTo<uint8_t>(VariableBase *variable);
     template<>
