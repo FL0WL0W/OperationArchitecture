@@ -16,11 +16,6 @@ namespace OperationArchitecture
         IOperationBase*(*_factory)(const void *, size_t &, PARAMS...);
 		std::tuple<PARAMS...> _params;
 
-		template<std::size_t... Is>
-		IOperationBase* CreateWithTuple(const void *config, size_t &sizeOut, const std::tuple<PARAMS...>& tuple, std::index_sequence<Is...>) {
-			return _factory(config, sizeOut, std::get<Is>(tuple)...);
-		}
-
         public:
 		CreateWithParameters(IOperationBase*(*factory)(const void *, size_t &, PARAMS...), PARAMS... params)
 		{
@@ -29,7 +24,7 @@ namespace OperationArchitecture
 		}
         IOperationBase* Create(const void *config, size_t &sizeOut) override
         {
-            return CreateWithTuple(config, sizeOut, _params, std::index_sequence_for<PARAMS...>());
+            return  _factory(config, sizeOut, std::get<PARAMS>(_params)...);
         }
     };
 }
