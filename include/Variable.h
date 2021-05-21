@@ -52,8 +52,8 @@ namespace OperationArchitecture
                     return *reinterpret_cast<K *>(&variable->Value);
                 return **reinterpret_cast<K **>(&variable->Value); //otherwise, return the value stored in the pointer
             default: 
-                break;
                 //this is bad 
+                return *reinterpret_cast<K *>(0);
         }
     }
 #pragma GCC pop_options
