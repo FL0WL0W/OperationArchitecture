@@ -30,8 +30,9 @@ namespace OperationArchitecture
             case VariableType::FLOAT: if(static_cast<K>(-1) > 0 && *reinterpret_cast<float *>(&variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<float *>(&variable->Value));
             case VariableType::DOUBLE: if(static_cast<K>(-1) > 0 && *reinterpret_cast<double *>(&variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<double *>(&variable->Value));
             case VariableType::BOOLEAN: return static_cast<K>(*reinterpret_cast<bool *>(&variable->Value));
+            default:
+                return 0;
         }
-        return 0;
     }
 //optimization screws this up. casting a uint64_t to a pointer is most likely undefined behavior
 #pragma GCC push_options

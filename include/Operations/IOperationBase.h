@@ -18,7 +18,7 @@ namespace OperationArchitecture
             Variable parameters[sizeof...(PARAMS)] = {Variable::Create(params)...};
             Variable *variables[sizeof...(PARAMS) + 1];
             variables[0] = &ret;
-            for(int i = 0; i < sizeof...(PARAMS); i++)
+            for(size_t i = 0; i < sizeof...(PARAMS); i++)
             {
                 variables[i+1] = &parameters[i];
             } 
