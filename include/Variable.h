@@ -42,16 +42,13 @@ namespace OperationArchitecture
     {
         switch(variable->Type)
         {
+            case VariableType::BIGOTHER:
             case VariableType::POINTER:
-                if(!std::is_pointer<K>::value) //if typename is not a pointer, return the value stored in the pointer
-                    return **reinterpret_cast<K **>(&variable->Value);
-                return *reinterpret_cast<K *>(&variable->Value);
+                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
+                    return *reinterpret_cast<K *>(&variable->Value);
+                return *reinterpret_cast<K *>(variable->Value); //otherwise, return the value stored in the pointer
             case VariableType::OTHER:
                 return *reinterpret_cast<K *>(&variable->Value);
-            case VariableType::BIGOTHER:
-                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer to the BIGOTHER
-                    return *reinterpret_cast<K *>(&variable->Value);
-                return **reinterpret_cast<K **>(&variable->Value); //otherwise, return the value stored in the pointer
             default: 
                 //this is bad 
                 return *reinterpret_cast<K *>(0);
@@ -169,7 +166,7 @@ namespace OperationArchitecture
         {
             K* pointer = 0;
             if(Type == VariableType::BIGOTHER)
-                pointer = *reinterpret_cast<K **>(&value);
+                pointer = reinterpret_cast<K *>(&value);
             VariableSet(this, value);
             if(Type != VariableType::BIGOTHER && pointer != 0)
                 free(pointer);
