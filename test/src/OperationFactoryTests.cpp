@@ -32,7 +32,7 @@ namespace UnitTests
 		{
 			_factory = new OperationFactory();
 			_factory->Register(2, Operation_Math::Create);
-			_factory->Register(3, new CreateWithParameters<int, int>(OperationFactoryTests::CreateWithParameterFunction, 26, 5));
+			_factory->Register(3, [](const void *config, size_t &sizeOut) { return OperationFactoryTests::CreateWithParameterFunction(config, sizeOut, 26, 5); });
 
 			_expectedSize = sizeof(uint32_t);
 			Config::AlignAndAddSize<MathOperation>(_expectedSize);
