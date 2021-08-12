@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -42,16 +42,11 @@ namespace OperationArchitecture
 		VariableType TableType;
 	};
 
-	class Operation_LookupTable : public IOperationBase
+	class Operation_LookupTable
 	{
-	protected:
-		const Operation_LookupTableConfig *_config;
 	public:		
-        Operation_LookupTable(const Operation_LookupTableConfig * const &config);
-
-		void AbstractExecute(Variable **variables) override;
-
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		static Operation *Construct(const Operation_LookupTableConfig * const &tableConfig);
+		static Operation *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

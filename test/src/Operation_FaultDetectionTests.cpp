@@ -10,7 +10,7 @@ namespace UnitTests
 	{
 		protected:
 		Operation_FaultDetectionConfig *_config;
-		IOperationBase *_operation;
+		Operation *_operation;
 		size_t _size = 0;
 
 		Operation_FaultDetectionTests() 
@@ -34,18 +34,18 @@ namespace UnitTests
 
 	TEST_F(Operation_FaultDetectionTests, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(20, _operation->Execute<int>(20));
-		ASSERT_EQ(-40, _operation->Execute<int>(-40));
-		ASSERT_EQ(150, _operation->Execute<int>(150));
+		ASSERT_EQ(20, _operation->ExecuteT<int>(20));
+		ASSERT_EQ(-40, _operation->ExecuteT<int>(-40));
+		ASSERT_EQ(150, _operation->ExecuteT<int>(150));
 	}
 
 	TEST_F(Operation_FaultDetectionTests, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(4, _operation->Execute<int>(151));
+		ASSERT_EQ(4, _operation->ExecuteT<int>(151));
 	}
 
 	TEST_F(Operation_FaultDetectionTests, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(4, _operation->Execute<int>(-41));
+		ASSERT_EQ(4, _operation->ExecuteT<int>(-41));
 	}
 }

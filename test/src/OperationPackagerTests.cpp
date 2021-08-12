@@ -17,14 +17,14 @@ namespace UnitTests
 		OperationFactory *_factory;
 		OperationPackager *_packager;
 		Variable _secondParameter;
-		IOperationBase *_operation;//subtract with Operation_StaticVariable for the first parameter and variable for the second
+		Operation *_operation;//subtract with Operation_StaticVariable for the first parameter and variable for the second
 		size_t _size = 0;
 		size_t _expectedSize = 0;
-		IOperationBase *_operationImmediateStore;//add with Operation_StaticVariable for the first parameter and variable for the second
+		Operation *_operationImmediateStore;//add with Operation_StaticVariable for the first parameter and variable for the second
 		size_t _sizeImmediateStore = 0;
 		size_t _expectedSizeImmediateStore = 0;
 		Variable *_storedResult;
-		IOperationBase *_operationGroup;//operation group add then subtract;
+		Operation *_operationGroup;//operation group add then subtract;
 		size_t _sizeGroup = 0;
 		size_t _expectedSizeGroup = 0;
 
@@ -84,8 +84,9 @@ namespace UnitTests
 		OperationPackagerTests() 
 		{
 			_systemBus = new SystemBus();
-			_systemBus->Operations.insert(std::pair<uint32_t, IOperationBase*>(24, new Operation_StaticVariable(Variable::Create(5))));
-			_systemBus->Operations.insert(std::pair<uint32_t, IOperationBase*>(25, new Operation_Math(SUBTRACT)));
+
+			_systemBus->Operations.insert(std::pair<uint32_t, Operation*>(24, Operation_StaticVariable::Construct(5)));
+			_systemBus->Operations.insert(std::pair<uint32_t, Operation*>(25, Operation_Math::Construct(SUBTRACT)));
 			_systemBus->Variables.insert(std::pair<uint32_t, Variable*>(5, &_secondParameter));
 			_factory = new OperationFactory();
 			_factory->Register(2, Operation_Math::Create);
@@ -136,20 +137,20 @@ namespace UnitTests
 		ASSERT_EQ(0, _operation->NumberOfParameters);
 		//5 + 2
 		_secondParameter.Set(2);
-		ASSERT_EQ(7, _operationImmediateStore->Execute<int>());
+		ASSERT_EQ(7, _operationImmediateStore->ExecuteT<int>());
 		ASSERT_EQ(7, _storedResult->To<int>());
 
 		//5 - 2
-		ASSERT_EQ(3, _operation->Execute<int>());
+		ASSERT_EQ(3, _operation->ExecuteT<int>());
 		ASSERT_EQ(7, _storedResult->To<int>());
 
 		//5 + 3
 		_secondParameter.Set(3);
-		ASSERT_EQ(8, _operationImmediateStore->Execute<int>());
+		ASSERT_EQ(8, _operationImmediateStore->ExecuteT<int>());
 		ASSERT_EQ(8, _storedResult->To<int>());
 
 		//5 - 3
-		ASSERT_EQ(2, _operation->Execute<int>());
+		ASSERT_EQ(2, _operation->ExecuteT<int>());
 		ASSERT_EQ(8, _storedResult->To<int>());
 
 		_secondParameter.Set(4);
@@ -157,7 +158,7 @@ namespace UnitTests
 		Variable **variables = new Variable*[2];
 		for(int i = 0; i < 2; i++)
 			variables[i] = new Variable();
-		_operationGroup->AbstractExecute(variables);
+		_operationGroup->Execute(variables);
 
 		//5 + 4
 		ASSERT_EQ(9, variables[0]->To<int>());

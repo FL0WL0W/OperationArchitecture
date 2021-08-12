@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 
@@ -21,16 +21,11 @@ namespace OperationArchitecture
 		LESSTHANOREQUAL = 10
 	};
 
-	class Operation_Math : public IOperationBase
+	class Operation_Math
 	{
-	protected:
-		MathOperation _operation;
 	public:		
-        Operation_Math(const MathOperation operation);
-
-		void AbstractExecute(Variable **params) override;
-
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+        static Operation *Construct(const MathOperation op);
+		static Operation *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

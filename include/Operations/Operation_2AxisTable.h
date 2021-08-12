@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -48,16 +48,11 @@ namespace OperationArchitecture
 		VariableType TableType;
 	};
 
-	class Operation_2AxisTable : public IOperationBase
+	class Operation_2AxisTable
 	{
-	protected:
-		const Operation_2AxisTableConfig *_config;
 	public:		
-        Operation_2AxisTable(const Operation_2AxisTableConfig * const &config);
-
-		void AbstractExecute(Variable **variables) override;
-
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		static Operation *Construct(const Operation_2AxisTableConfig * const &tableConfig);
+		static Operation *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

@@ -11,7 +11,7 @@ namespace UnitTests
 	{
 		protected:
 		Operation_2AxisTableConfig *_config;
-		IOperationBase *_operation;
+		Operation *_operation;
 		size_t _size = 0;
 
 		Operation_2AxisTableTests() 
@@ -87,23 +87,23 @@ namespace UnitTests
 
 	TEST_F(Operation_2AxisTableTests, WhenGettingValueInTable_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(-10, _operation->Execute<int8_t>(static_cast<uint8_t>(0), static_cast<int8_t>(0)));
-		ASSERT_EQ(20, _operation->Execute<uint8_t>(static_cast<float>(0.99f), static_cast<uint16_t>(0)));
-		ASSERT_EQ(0, _operation->Execute<uint16_t>(static_cast<double>(0.33f), static_cast<int16_t>(0)));
-		ASSERT_NEAR(-1.25f, _operation->Execute<float>(static_cast<float>(0.28875f), static_cast<uint32_t>(0)), 0.001f);
-		ASSERT_EQ(0, _operation->Execute<uint16_t>(static_cast<int32_t>(0), static_cast<float>(1.1f)));
-		ASSERT_EQ(30, _operation->Execute<uint16_t>(static_cast<float>(0.99f), static_cast<float>(1.1f)));
-		ASSERT_EQ(10, _operation->Execute<int32_t>(static_cast<float>(0.33f), static_cast<float>(1.1f)));
-		ASSERT_NEAR(8.75f, _operation->Execute<float>(static_cast<float>(0.28875f), static_cast<float>(1.1f)), 0.001f);
+		ASSERT_EQ(-10, _operation->ExecuteT<int8_t>(static_cast<uint8_t>(0), static_cast<int8_t>(0)));
+		ASSERT_EQ(20, _operation->ExecuteT<uint8_t>(static_cast<float>(0.99f), static_cast<uint16_t>(0)));
+		ASSERT_EQ(0, _operation->ExecuteT<uint16_t>(static_cast<double>(0.33f), static_cast<int16_t>(0)));
+		ASSERT_NEAR(-1.25f, _operation->ExecuteT<float>(static_cast<float>(0.28875f), static_cast<uint32_t>(0)), 0.001f);
+		ASSERT_EQ(0, _operation->ExecuteT<uint16_t>(static_cast<int32_t>(0), static_cast<float>(1.1f)));
+		ASSERT_EQ(30, _operation->ExecuteT<uint16_t>(static_cast<float>(0.99f), static_cast<float>(1.1f)));
+		ASSERT_EQ(10, _operation->ExecuteT<int32_t>(static_cast<float>(0.33f), static_cast<float>(1.1f)));
+		ASSERT_NEAR(8.75f, _operation->ExecuteT<float>(static_cast<float>(0.28875f), static_cast<float>(1.1f)), 0.001f);
 	}
 
 	TEST_F(Operation_2AxisTableTests, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(80, _operation->Execute<uint64_t>(static_cast<float>(100.0f), static_cast<uint64_t>(0)));
+		ASSERT_EQ(80, _operation->ExecuteT<uint64_t>(static_cast<float>(100.0f), static_cast<uint64_t>(0)));
 	}
 
 	TEST_F(Operation_2AxisTableTests, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_EQ(-10, _operation->Execute<int64_t>(static_cast<float>(-1.0f), static_cast<uint64_t>(0)));
+		ASSERT_EQ(-10, _operation->ExecuteT<int64_t>(static_cast<float>(-1.0f), static_cast<uint64_t>(0)));
 	}
 }

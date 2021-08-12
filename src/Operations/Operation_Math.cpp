@@ -4,57 +4,39 @@
 #ifdef OPERATION_MATH_H
 namespace OperationArchitecture
 {
-	Operation_Math::Operation_Math(const MathOperation operation)
+	Operation *Operation_Math::Construct(const MathOperation op)
 	{
-		NumberOfReturnVariables = 1;
-        NumberOfParameters = 2;
-		_operation = operation;
-	}
-
-
-	void Operation_Math::AbstractExecute(Variable **variables)
-	{
-		switch (_operation)
+		switch (op)
 		{
 			case ADD:
-				variables[0]->Set(*variables[1] + *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] + *variables[2]); }, 1, 2);
 			case SUBTRACT:
-				variables[0]->Set(*variables[1] - *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] - *variables[2]); }, 1, 2);
 			case MULTIPLY:
-				variables[0]->Set(*variables[1] * *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] * *variables[2]); }, 1, 2);
 			case DIVIDE:
-				variables[0]->Set(*variables[1] / *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] / *variables[2]); }, 1, 2);
 			case AND:
-				variables[0]->Set(*variables[1] & *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] & *variables[2]); }, 1, 2);
 			case OR:
-				variables[0]->Set(*variables[1] | *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] | *variables[2]); }, 1, 2);
 			case GREATERTHAN:
-				variables[0]->Set(*variables[1] > *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] > *variables[2]); }, 1, 2);
 			case LESSTHAN:
-				variables[0]->Set(*variables[1] < *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] < *variables[2]); }, 1, 2);
 			case GREATERTHANOREQUAL:
-				variables[0]->Set(*variables[1] >= *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] >= *variables[2]); }, 1, 2);
 			case EQUAL:
-				variables[0]->Set(*variables[1] == *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] == *variables[2]); }, 1, 2);
 			case LESSTHANOREQUAL:
-				variables[0]->Set(*variables[1] <= *variables[2]);
-				break;
+				return new Operation([](Variable **variables) { variables[0]->Set(*variables[1] <= *variables[2]); }, 1, 2);
 		}
 	}
 
-	IOperationBase * Operation_Math::Create(const void *config, size_t &sizeOut)
+	Operation * Operation_Math::Create(const void *config, size_t &sizeOut)
 	{
-		return new Operation_Math(Config::CastAndOffset<MathOperation>(config, sizeOut));
+		const MathOperation op = Config::CastAndOffset<MathOperation>(config, sizeOut);
+		return Construct(op);
 	}
 }
 #endif

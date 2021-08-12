@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -41,16 +41,11 @@ namespace OperationArchitecture
 		uint8_t Degree;
 	};
 
-	class Operation_Polynomial : public IOperationBase
+	class Operation_Polynomial
 	{
-	protected:
-		const Operation_PolynomialConfig *_config;
 	public:		
-        Operation_Polynomial(const Operation_PolynomialConfig * const &config);
-
-		void AbstractExecute(Variable **variables) override;
-
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+        static Operation *Construct(const Operation_PolynomialConfig * const &config);
+		static Operation *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

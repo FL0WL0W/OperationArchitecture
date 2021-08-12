@@ -5,7 +5,7 @@
 namespace OperationArchitecture
 {
     //subOperations will be deleted when package is deleted
-    Operation_Package::Operation_Package(IOperationBase *operation, IOperationBase **subOperations, OperationOrVariable *parameters)
+    Operation_Package::Operation_Package(Operation *operation, Operation **subOperations, OperationOrVariable *parameters)
     {
         _operation = operation;
         _numberOfSubOperations = 0;
@@ -40,8 +40,8 @@ namespace OperationArchitecture
             }
         }
 
-        NumberOfReturnVariables = _operation->NumberOfReturnVariables;
-        NumberOfParameters = 0;
+        // NumberOfReturnVariables = _operation->NumberOfReturnVariables;
+        // NumberOfParameters = 0;
     }
 
     Operation_Package::~Operation_Package()
@@ -59,11 +59,11 @@ namespace OperationArchitecture
         delete _subOperations;
     }
 
-    void Operation_Package::AbstractExecute(Variable **variablesIn)
+    void Operation_Package::Execute(Variable **variablesIn)
     {
         for(int i = 0; i < _numberOfSubOperations; i++)
         {
-            _subOperations[i]->AbstractExecute(_operationVariables[i]);
+            _subOperations[i]->Execute(_operationVariables[i]);
         }
 
         for(int i = 0; i < _operation->NumberOfReturnVariables; i++)
@@ -71,7 +71,7 @@ namespace OperationArchitecture
             _variables[i] = variablesIn[i];
         }
 
-        _operation->AbstractExecute(_variables);
+        _operation->Execute(_variables);
     }
 }
 

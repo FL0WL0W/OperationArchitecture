@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 
@@ -6,16 +6,15 @@
 #define OPERATION_STATICVARIABLE_H
 namespace OperationArchitecture
 {
-	class Operation_StaticVariable : public IOperationBase
+	class Operation_StaticVariable
 	{
-	protected:
-        Variable _staticValue;
 	public:		
-        Operation_StaticVariable(const Variable &staticValue);
-
-		void AbstractExecute(Variable **variables) override;
-
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		template<typename ValueType>
+		static Operation *Construct(const ValueType staticValue)
+		{
+			return new Operation([staticValue](Variable **variables) { variables[0]->Set(staticValue); }, 1, 0);
+		}
+		static Operation *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

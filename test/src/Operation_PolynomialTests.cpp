@@ -11,7 +11,7 @@ namespace UnitTests
 	{
 		protected:
 		Operation_PolynomialConfig *_config;
-		IOperationBase *_operation;
+		Operation *_operation;
 		size_t _size = 0;
 
 		Operation_PolynomialTests() 
@@ -47,20 +47,20 @@ namespace UnitTests
 
 	TEST_F(Operation_PolynomialTests, WhenGettingValueWithinLimits_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(-10, _operation->Execute<float>(0.0f));
+		ASSERT_FLOAT_EQ(-10, _operation->ExecuteT<float>(0.0f));
 
-		ASSERT_FLOAT_EQ(20, _operation->Execute<float>(1.0f));
+		ASSERT_FLOAT_EQ(20, _operation->ExecuteT<float>(1.0f));
 
-		ASSERT_FLOAT_EQ(-1.25f, _operation->Execute<float>(0.5f));
+		ASSERT_FLOAT_EQ(-1.25f, _operation->ExecuteT<float>(0.5f));
 	}
 
 	TEST_F(Operation_PolynomialTests, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(150, _operation->Execute<float>(100.0f));
+		ASSERT_FLOAT_EQ(150, _operation->ExecuteT<float>(100.0f));
 	}
 
 	TEST_F(Operation_PolynomialTests, WhenGettingValueBelowMinValue_ThenCorrectValueIsReturned)
 	{
-		ASSERT_FLOAT_EQ(-40, _operation->Execute<float>(-100.0f));
+		ASSERT_FLOAT_EQ(-40, _operation->ExecuteT<float>(-100.0f));
 	}
 }

@@ -13,8 +13,8 @@ namespace UnitTests
 	{
 		protected:
 		OperationFactory *_factory;
-		IOperationBase *_operation;
-		IOperationBase *_operationParamater;
+		Operation *_operation;
+		Operation *_operationParamater;
 		size_t _size = 0;
 		size_t _size2 = 0;
 		size_t _expectedSize = 0;
@@ -22,10 +22,13 @@ namespace UnitTests
 		size_t _buildSize = 0;
 		size_t _buildSize2 = 0;
 
-		static IOperationBase * CreateWithParameterFunction(const void *config, size_t &sizeOut, int parameter1, int parameter2)
+		static Operation * CreateWithParameterFunction(const void *config, size_t &sizeOut, int parameter1, int parameter2)
 		{
 			OperationOrVariable *parameters = new OperationOrVariable[2] { OperationOrVariable(new Variable(parameter1)), OperationOrVariable(new Variable(parameter2)) };
-			return new Operation_Package(Operation_Math::Create(config, sizeOut), 0, parameters);
+			Operation_Package *operation_Package = new Operation_Package(Operation_Math::Create(config, sizeOut), 0, parameters);
+			Operation *operation = new Operation([operation_Package](Variable **variables) { operation_Package->Execute(variables); }, 1, 0);
+			operation->Destructor = [operation_Package]() { delete operation_Package; };
+			return operation;
 		}
 
 		OperationFactoryTests() 
@@ -72,11 +75,11 @@ namespace UnitTests
 	{
 		ASSERT_EQ(2, _operation->NumberOfParameters);
 		ASSERT_EQ(1, _operation->NumberOfReturnVariables);
-		ASSERT_EQ(7, _operation->Execute<int>(5, 2));
-		ASSERT_EQ(8, _operation->Execute<int>(6, 2));
+		ASSERT_EQ(7, _operation->ExecuteT<int>(5, 2));
+		ASSERT_EQ(8, _operation->ExecuteT<int>(6, 2));
 
 		ASSERT_EQ(0, _operationParamater->NumberOfParameters);
 		ASSERT_EQ(1, _operationParamater->NumberOfReturnVariables);
-		ASSERT_EQ(21, _operationParamater->Execute<int>());
+		ASSERT_EQ(21, _operationParamater->ExecuteT<int>());
 	}
 }

@@ -23,15 +23,15 @@ namespace UnitTests
 			bool test3;
 		};
 
-		IOperationBase *_operation;
+		Operation *_operation;
 		size_t _size = 0;
 		size_t _expectedSize = 0;
 		size_t _buildSize = 0;
-		IOperationBase *_operationOther;
+		Operation *_operationOther;
 		size_t _sizeOther = 0;
 		size_t _expectedSizeOther = 0;
 		size_t _buildSizeOther = 0;
-		IOperationBase *_operationBigOther;
+		Operation *_operationBigOther;
 		size_t _sizeBigOther = 0;
 		size_t _expectedSizeBigOther = 0;
 		size_t _buildSizeBigOther = 0;
@@ -95,13 +95,13 @@ namespace UnitTests
 
 	TEST_F(Operation_StaticVariableTests, WhenExecuting_ReturnsStaticVariable)
 	{
-		ASSERT_EQ(250, _operation->Execute<int>());
+		ASSERT_EQ(250, _operation->ExecuteT<int>());
 
-		ASSERT_EQ(1349, _operationOther->Execute<Test>().test1);
-		ASSERT_FLOAT_EQ(103.2f, _operationOther->Execute<Test>().test2);
+		ASSERT_EQ(1349, _operationOther->ExecuteT<Test>().test1);
+		ASSERT_FLOAT_EQ(103.2f, _operationOther->ExecuteT<Test>().test2);
 
-		ASSERT_EQ(1339, _operationBigOther->Execute<TestBig>().test1);
-		ASSERT_FLOAT_EQ(102.2f, _operationBigOther->Execute<TestBig>().test2);
-		ASSERT_EQ(true, _operationBigOther->Execute<TestBig>().test3);
+		ASSERT_EQ(1339, _operationBigOther->ExecuteT<TestBig>().test1);
+		ASSERT_FLOAT_EQ(102.2f, _operationBigOther->ExecuteT<TestBig>().test2);
+		ASSERT_EQ(true, _operationBigOther->ExecuteT<TestBig>().test3);
 	}
 }

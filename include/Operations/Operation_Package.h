@@ -1,4 +1,4 @@
-#include "Operations/IOperationBase.h"
+#include "Operations/Operation.h"
 #include <utility>
 
 #ifndef OPERATION_PACKAGE_H
@@ -30,18 +30,18 @@ namespace OperationArchitecture
         }
     };
 
-    class Operation_Package : public IOperationBase
+    class Operation_Package
     {
         protected:
-        IOperationBase *_operation;
-        IOperationBase **_subOperations;
+        Operation *_operation;
+        Operation **_subOperations;
         uint8_t _numberOfSubOperations;
         Variable ***_operationVariables;
         Variable **_variables;
         public:
-        Operation_Package(IOperationBase *operation, IOperationBase **subOperations, OperationOrVariable *parameters);
+        Operation_Package(Operation *operation, Operation **subOperations, OperationOrVariable *parameters);
         ~Operation_Package();
-        void AbstractExecute(Variable **variables) override;
+        void Execute(Variable **variables);
     };
 }
 #endif

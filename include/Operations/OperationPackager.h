@@ -17,7 +17,7 @@ namespace OperationArchitecture
 	class SystemBus
 	{
 	public:
-		std::map<uint32_t, IOperationBase*> Operations;
+		std::map<uint32_t, Operation*> Operations;
 		std::map<uint32_t, Variable*> Variables;
 		
     	Variable *GetOrCreateVariable(uint32_t variableId);
@@ -33,7 +33,7 @@ namespace OperationArchitecture
 	public:
         OperationPackager(OperationFactory *factory, SystemBus *systemBus);
 
-		IOperationBase *Package(const void *config, size_t &sizeOut);
+		Operation *Package(const void *config, size_t &sizeOut);
 	};
 }
 #endif
