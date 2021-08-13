@@ -4,12 +4,7 @@
 #ifdef OPERATION_FAULTDETECTION_H
 namespace OperationArchitecture
 {
-	Operation_FaultDetection::Operation_FaultDetection(const Operation_FaultDetectionConfig * const &config)
-	{
-		NumberOfReturnVariables = 1;
-        NumberOfParameters = 1;
-		_config = config;
-	}
+	Operation_FaultDetection::Operation_FaultDetection(const Operation_FaultDetectionConfig * const &config) : IOperationBase(1, 1), _config(config) {}
 
 	void Operation_FaultDetection::AbstractExecute(Variable **variables)
 	{

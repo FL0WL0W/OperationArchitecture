@@ -4,10 +4,9 @@
 #ifdef OPERATION_STATICVARIABLE_H
 namespace OperationArchitecture
 {
-	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue)
+	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue) :
+		IOperationBase(1, 0)
 	{
-		NumberOfReturnVariables = 1;
-        NumberOfParameters = 0;
 		_staticValue = staticValue;
 	}
 

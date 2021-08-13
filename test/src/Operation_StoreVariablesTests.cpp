@@ -21,7 +21,7 @@ namespace UnitTests
 		{	
 			_variables = new Variable[1];
 			_variables[0].Set(0);
-			_operationAdd = new Operation_Math(ADD);
+			_operationAdd = &Operation_Add::Instance;
 			_operation = new Operation_StoreVariables(_operationAdd, &_variables, true);
 			_operationNoStore = new Operation_StoreVariables(_operationAdd, 0, true);
 			_operationNoReturn = new Operation_StoreVariables(_operationAdd, &_variables, false);

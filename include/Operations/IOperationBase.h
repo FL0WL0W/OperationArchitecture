@@ -7,9 +7,12 @@ namespace OperationArchitecture
     class IOperationBase
     {
         public:
-        char NumberOfReturnVariables;
-        char NumberOfParameters;
+        const uint8_t NumberOfReturnVariables;
+        const uint8_t NumberOfParameters;
         virtual void AbstractExecute(Variable **variables) = 0;
+
+        IOperationBase();
+        IOperationBase(uint8_t numberOfReturnVariables, uint8_t numberOfParameters);
 
         template<typename RET, typename... PARAMS>
         RET Execute(PARAMS... params)

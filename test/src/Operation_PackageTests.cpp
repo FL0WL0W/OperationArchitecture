@@ -19,7 +19,7 @@ namespace UnitTests
 		{	
 			_operationOrVariable[0] = OperationOrVariable(&_variables[0]);
 			_operationOrVariable[1] = OperationOrVariable(&_variables[1]);
-			_operationAdd = new Operation_Math(ADD);
+			_operationAdd = &Operation_Add::Instance;
 			_operation = new Operation_Package(_operationAdd, 0, _operationOrVariable);
 		}
 	};

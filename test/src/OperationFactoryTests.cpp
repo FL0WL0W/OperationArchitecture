@@ -25,35 +25,31 @@ namespace UnitTests
 		static IOperationBase * CreateWithParameterFunction(const void *config, size_t &sizeOut, int parameter1, int parameter2)
 		{
 			OperationOrVariable *parameters = new OperationOrVariable[2] { OperationOrVariable(new Variable(parameter1)), OperationOrVariable(new Variable(parameter2)) };
-			return new Operation_Package(Operation_Math::Create(config, sizeOut), 0, parameters);
+			return new Operation_Package(&Operation_Subtract::Instance, 0, parameters);
 		}
 
 		OperationFactoryTests() 
 		{
 			_factory = new OperationFactory();
-			_factory->Register(2, Operation_Math::Create);
+			_factory->Register(2, &Operation_Add::Instance);
 			_factory->Register(3, [](const void *config, size_t &sizeOut) { return OperationFactoryTests::CreateWithParameterFunction(config, sizeOut, 26, 5); });
 
 			_expectedSize = sizeof(uint32_t);
-			Config::AlignAndAddSize<MathOperation>(_expectedSize);
 			void *config = malloc(_expectedSize);
 			void *buildConfig = config;
 
 			//Factory ID 2
 			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize, 2);
-			Config::AssignAndOffset(buildConfig, _buildSize, MathOperation::ADD);
 
 			_operation = _factory->Create(config, _size);
 			free(config);
 			
 			_expectedSize2 = sizeof(uint32_t);
-			Config::AlignAndAddSize<MathOperation>(_expectedSize2);
 			config = malloc(_expectedSize2);
 			buildConfig = config;
 
 			//Factory ID 3
 			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize2, 3);
-			Config::AssignAndOffset(buildConfig, _buildSize2, MathOperation::SUBTRACT);
 
 			_operationParamater  = _factory->Create(config, _size2);
 			free(config);

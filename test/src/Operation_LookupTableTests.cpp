@@ -42,7 +42,7 @@ namespace UnitTests
 			Table[9] = 80;
 			Table[10] = 90;
 
-			_operation = Operation_LookupTable::Create(_config, _size);
+			_operation = Operation_LookupTableCreate(_config, _size);
 		}
 	};
 
@@ -50,8 +50,8 @@ namespace UnitTests
 	{
 		ASSERT_EQ(56, _config->Size());
 		ASSERT_EQ(56, _size);
-		ASSERT_EQ((float *)(_config + 1), _config->Table());
-		ASSERT_EQ(-10, reinterpret_cast<const float*>(_config->Table())[0]);
+		ASSERT_EQ((float *)(_config + 1), _config->Table<float>());
+		ASSERT_EQ(-10, reinterpret_cast<const float*>(_config->Table<float>())[0]);
 	}
 
 	TEST_F(Operation_LookupTableTests, WhenGettingValueInTable_ThenCorrectValueIsReturned)

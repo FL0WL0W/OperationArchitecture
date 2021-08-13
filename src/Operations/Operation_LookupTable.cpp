@@ -3,60 +3,39 @@
 #ifdef OPERATION_LOOKUPTABLE_H
 namespace OperationArchitecture
 {
-	Operation_LookupTable::Operation_LookupTable(const Operation_LookupTableConfig * const &config)
-	{
-        NumberOfReturnVariables = 1;
-        NumberOfParameters = 1;
-		_config = config;
-	}
 
-	void Operation_LookupTable::AbstractExecute(Variable **variables)
-	{
-		switch(_config->TableType)
-		{
-			case VariableType::UINT8:
-				variables[0]->Set(Interpolation::InterpolateTable1<uint8_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint8_t*>(_config->Table())));
-				break;
-			case VariableType::UINT16:
-				variables[0]->Set(Interpolation::InterpolateTable1<uint16_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
-				break;
-			case VariableType::UINT32:
-				variables[0]->Set(Interpolation::InterpolateTable1<uint16_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint16_t*>(_config->Table())));
-				break;
-			case VariableType::UINT64:
-				variables[0]->Set(Interpolation::InterpolateTable1<uint64_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const uint64_t*>(_config->Table())));
-				break;
-			case VariableType::INT8:
-				variables[0]->Set(Interpolation::InterpolateTable1<int8_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int8_t*>(_config->Table())));
-				break;
-			case VariableType::INT16:
-				variables[0]->Set(Interpolation::InterpolateTable1<int16_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int16_t*>(_config->Table())));
-				break;
-			case VariableType::INT32:
-				variables[0]->Set(Interpolation::InterpolateTable1<int32_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int32_t*>(_config->Table())));
-				break;
-			case VariableType::INT64:
-				variables[0]->Set(Interpolation::InterpolateTable1<int64_t>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const int64_t*>(_config->Table())));
-				break;
-			case VariableType::FLOAT:
-				variables[0]->Set(Interpolation::InterpolateTable1<float>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const float*>(_config->Table())));
-				break;
-			case VariableType::DOUBLE:
-				variables[0]->Set(Interpolation::InterpolateTable1<double>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const double*>(_config->Table())));
-				break;
-			case VariableType::BOOLEAN:
-				variables[0]->Set(Interpolation::InterpolateTable1<bool>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, reinterpret_cast<const bool*>(_config->Table())));
-				break;
-			default:
-				//should throw here
-				break;
-		}
-	}
-
-	IOperationBase *Operation_LookupTable::Create(const void *config, size_t &sizeOut)
+	IOperationBase *Operation_LookupTableCreate(const void *config, size_t &sizeOut)
 	{
 		const Operation_LookupTableConfig *tableConfig = Config::CastConfigAndOffset<Operation_LookupTableConfig>(config, sizeOut);
-		return new Operation_LookupTable(tableConfig);
+
+		switch(tableConfig->TableType)
+		{
+			case VariableType::UINT8:
+				return new Operation_LookupTable<uint8_t>(tableConfig);
+			case VariableType::UINT16:
+				return new Operation_LookupTable<uint16_t>(tableConfig);
+			case VariableType::UINT32:
+				return new Operation_LookupTable<uint32_t>(tableConfig);
+			case VariableType::UINT64:
+				return new Operation_LookupTable<uint64_t>(tableConfig);
+			case VariableType::INT8:
+				return new Operation_LookupTable<int8_t>(tableConfig);
+			case VariableType::INT16:
+				return new Operation_LookupTable<int16_t>(tableConfig);
+			case VariableType::INT32:
+				return new Operation_LookupTable<int32_t>(tableConfig);
+			case VariableType::INT64:
+				return new Operation_LookupTable<int64_t>(tableConfig);
+			case VariableType::FLOAT:
+				return new Operation_LookupTable<float>(tableConfig);
+			case VariableType::DOUBLE:
+				return new Operation_LookupTable<double>(tableConfig);
+			case VariableType::BOOLEAN:
+				return new Operation_LookupTable<bool>(tableConfig);
+			default:
+				//should throw here
+				return 0;
+		}
 	}
 }
 #endif

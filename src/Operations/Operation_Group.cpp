@@ -4,20 +4,31 @@
 
 namespace OperationArchitecture
 {
-    Operation_Group::Operation_Group(IOperationBase **operations, uint16_t numberOfOperations)
+    constexpr uint8_t totalReturnVariables(IOperationBase * const * const &operations, const uint16_t & numberOfOperations)
     {
-        _operations = operations;
-        _numberOfOperations = numberOfOperations;
-
-		NumberOfReturnVariables = 0;
-		NumberOfParameters = 0;
-        for(int i = 0; i < _numberOfOperations; i++)
+        uint8_t numberOfReturnVariables = 0;
+        for(uint16_t i = 0; i < numberOfOperations; i++)
         {
-            NumberOfReturnVariables += _operations[i]->NumberOfReturnVariables;
-            if(_operations[i]->NumberOfParameters > NumberOfParameters)
-                NumberOfParameters = _operations[i]->NumberOfParameters;
+            numberOfReturnVariables += operations[i]->NumberOfReturnVariables;
         }
+        return numberOfReturnVariables;
     }
+    constexpr uint8_t totalParameters(IOperationBase * const * const &operations, const uint16_t &numberOfOperations)
+    {
+        uint8_t numberOfParameters = 0;
+        for(uint16_t i = 0; i < numberOfOperations; i++)
+        {
+            if(operations[i]->NumberOfParameters > numberOfParameters)
+                numberOfParameters = operations[i]->NumberOfParameters;
+        }
+        return numberOfParameters;
+    }
+
+    Operation_Group::Operation_Group(IOperationBase * const * const operations, const uint16_t &numberOfOperations) :
+        IOperationBase(totalReturnVariables(operations, numberOfOperations), totalParameters(operations, numberOfOperations)),
+        _operations(operations),
+        _numberOfOperations(numberOfOperations)
+    { }
 
     void Operation_Group::AbstractExecute(Variable **variables)
     {

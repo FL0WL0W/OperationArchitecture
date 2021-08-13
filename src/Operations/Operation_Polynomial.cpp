@@ -3,10 +3,9 @@
 #ifdef OPERATION_POLYNOMIAL_H
 namespace OperationArchitecture
 {
-	Operation_Polynomial::Operation_Polynomial(const Operation_PolynomialConfig * const &config)
+	Operation_Polynomial::Operation_Polynomial(const Operation_PolynomialConfig * const &config) :
+		IOperationBase(1, 1)
 	{
-		NumberOfReturnVariables = 1;
-        NumberOfParameters = 1;
 		_config = config;
 	}
 

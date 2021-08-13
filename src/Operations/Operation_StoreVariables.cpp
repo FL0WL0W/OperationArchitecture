@@ -4,12 +4,11 @@
 
 namespace OperationArchitecture
 {
-    Operation_StoreVariables::Operation_StoreVariables(IOperationBase *operation, Variable **variables, bool returnVariables)
+    Operation_StoreVariables::Operation_StoreVariables(IOperationBase *operation, Variable **variables, bool returnVariables) :
+		IOperationBase(returnVariables? operation->NumberOfReturnVariables : 0, operation->NumberOfParameters)
     {
         _operation = operation;
         _returnVariables = returnVariables;
-        NumberOfReturnVariables = _returnVariables? _operation->NumberOfReturnVariables : 0;
-        NumberOfParameters = _operation->NumberOfParameters;
 
         _variables = new Variable*[_operation->NumberOfParameters + _operation->NumberOfReturnVariables];
         if(variables == 0)

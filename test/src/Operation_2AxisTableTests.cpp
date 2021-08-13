@@ -73,7 +73,7 @@ namespace UnitTests
 			Table[38] = 100;
 			Table[39] = 110;
 
-			_operation = Operation_2AxisTable::Create(_config, _size);
+			_operation = Operation_2AxisTableCreate(_config, _size);
 		}
 	};
 
@@ -81,8 +81,8 @@ namespace UnitTests
 	{
 		ASSERT_EQ(180, _config->Size());
 		ASSERT_EQ(180, _size);
-		ASSERT_EQ((float *)(_config + 1), _config->Table());
-		ASSERT_EQ(-10, ((float *)_config->Table())[0]);
+		ASSERT_EQ((float *)(_config + 1), _config->Table<float>());
+		ASSERT_EQ(-10, ((float *)_config->Table<float>())[0]);
 	}
 
 	TEST_F(Operation_2AxisTableTests, WhenGettingValueInTable_ThenCorrectValueIsReturned)

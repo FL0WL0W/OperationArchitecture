@@ -43,7 +43,6 @@ namespace UnitTests
 			{
 				//Factory ID 2
 				Config::AssignAndOffset<uint32_t>(buildConfig, size, 2);
-				Config::AssignAndOffset(buildConfig, size, MathOperation::ADD);
 			}
 			//otherwise, point to the operation in the system bus with id 25, this is subtract
 			else
@@ -85,10 +84,10 @@ namespace UnitTests
 		{
 			_systemBus = new SystemBus();
 			_systemBus->Operations.insert(std::pair<uint32_t, IOperationBase*>(24, new Operation_StaticVariable(Variable::Create(5))));
-			_systemBus->Operations.insert(std::pair<uint32_t, IOperationBase*>(25, new Operation_Math(SUBTRACT)));
+			_systemBus->Operations.insert(std::pair<uint32_t, IOperationBase*>(25, &Operation_Subtract::Instance));
 			_systemBus->Variables.insert(std::pair<uint32_t, Variable*>(5, &_secondParameter));
 			_factory = new OperationFactory();
-			_factory->Register(2, Operation_Math::Create);
+			_factory->Register(2, &Operation_Add::Instance);
 			_packager = new OperationPackager(_factory, _systemBus);
 
 			void *configOperationImmediate = malloc(100);

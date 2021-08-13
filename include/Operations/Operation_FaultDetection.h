@@ -22,7 +22,7 @@ namespace OperationArchitecture
 	class Operation_FaultDetection : public IOperationBase
 	{
 	protected:
-		const Operation_FaultDetectionConfig *_config;
+		const Operation_FaultDetectionConfig * const _config;
 	public:		
         Operation_FaultDetection(const Operation_FaultDetectionConfig * const &config);
 
