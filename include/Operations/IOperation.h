@@ -10,11 +10,7 @@ namespace OperationArchitecture
     class IOperation : public IOperationBase
     {
         public:
-        IOperation() 
-        {
-            NumberOfParameters = sizeof...(PARAMS);
-            NumberOfReturnVariables = 1;
-        }
+        IOperation() : IOperationBase(1, sizeof...(PARAMS)) {}
         virtual RET Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
@@ -32,11 +28,7 @@ namespace OperationArchitecture
     class IOperation<void, PARAMS...> : public IOperationBase
     {
         public:
-        IOperation() 
-        {
-            NumberOfParameters = sizeof...(PARAMS);
-            NumberOfReturnVariables = 0;
-        }
+        IOperation() : IOperationBase(0, sizeof...(PARAMS)) {}
         virtual void Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
@@ -54,11 +46,7 @@ namespace OperationArchitecture
     class IOperation<std::tuple<RETs...>, PARAMS...> : public IOperationBase
     {
         public:
-        IOperation() 
-        {
-            NumberOfParameters = sizeof...(PARAMS);
-            NumberOfReturnVariables = sizeof...(RETs);
-        }
+        IOperation() : IOperationBase(sizeof...(RETs), sizeof...(PARAMS)) {}
         virtual std::tuple<RETs...> Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
