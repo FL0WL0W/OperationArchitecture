@@ -17,7 +17,13 @@ namespace OperationArchitecture
 		constexpr const size_t size() const
 		{
 			const size_t a = VariableTypeAlignOf(TableType);
-			size_t s = sizeof(Operation_2AxisTableConfig);
+			size_t s = sizeof(float);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<uint8_t>(s);
+			Config::AlignAndAddSize<uint8_t>(s);
+			Config::AlignAndAddSize<VariableType>(s);
 			if(s % a > 0)
 				s += a - (s % a);
 			return s;
