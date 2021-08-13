@@ -109,10 +109,13 @@ namespace OperationArchitecture
         {
             //Create Parameters
             uint8_t numberOfSubOperations = 0;
-            OperationOrVariable *parameters = new OperationOrVariable[operation->NumberOfParameters];
+            bool hasVariables = false;
+            Variable **parameterVariables = new Variable*[operation->NumberOfReturnVariables + operation->NumberOfParameters];
+            uint16_t parameterOperationReturnID[operation->NumberOfParameters];
             for(int i = 0; i < operation->NumberOfParameters; i++)
             {
                 const uint8_t operationReturnId = Config::CastAndOffset<uint8_t>(config, sizeOut);
+                parameterOperationReturnID[i] = operationReturnId << 8;
 
                 if(operationReturnId > 0)
                 {
@@ -122,39 +125,95 @@ namespace OperationArchitecture
                     }
 
                     const uint8_t operationReturnVariableId = Config::CastAndOffset<uint8_t>(config, sizeOut);
-                    parameters[i] = OperationOrVariable(operationReturnId, operationReturnVariableId);
+                    parameterOperationReturnID[i] |= operationReturnVariableId;
+                    parameterVariables[i + operation->NumberOfReturnVariables] = new Variable();
                 }
                 else
                 {
                     const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
-                    parameters[i] = OperationOrVariable(_systemBus->GetOrCreateVariable(variableId));
+                    parameterVariables[i + operation->NumberOfReturnVariables] = _systemBus->GetOrCreateVariable(variableId);
                 }
             }
 
             //Create sub operations
             if(numberOfSubOperations > 0)
             {
+                Variable*** operationVariables = new Variable**[numberOfSubOperations];
                 Operation **subOperations = new Operation*[numberOfSubOperations];
                 for(int i = 0; i < numberOfSubOperations; i++)
                 {
                     size_t size = 0;
                     subOperations[i] = Package(config, size);
                     Config::OffsetConfig(config, sizeOut, size);
+
+                    operationVariables[i] = new Variable*[subOperations[i]->NumberOfReturnVariables];
+                    for(int q = 0; q < subOperations[i]->NumberOfReturnVariables; q++)
+                    {
+                        operationVariables[i][q] = new Variable();
+                    }
+
                 }
-                //Create Package
-                Operation_Package *operation_Package = new Operation_Package(operation, subOperations, parameters);
-                operation = new Operation([operation_Package](Variable **variables) { operation_Package->Execute(variables); }, 1, 0);
-                operation->Destructor = [operation_Package]() { delete operation_Package; };
+
+                for(int i = 0; i < operation->NumberOfParameters; i++)
+                {
+                    if(parameterOperationReturnID[i] > 0)
+                    {
+                        const uint8_t operationReturnId = parameterOperationReturnID[i] >> 8;
+                        const uint8_t operationReturnVariableId = parameterOperationReturnID[i] & 0xFF;
+
+                        parameterVariables[i + operation->NumberOfReturnVariables] = operationVariables[operationReturnId-1][operationReturnVariableId];
+                    }
+                }
+
+                Operation *subOp = operation;
+                operation = new Operation([subOp, numberOfSubOperations, subOperations, operationVariables, parameterVariables](Variable **variables) 
+                {
+                    for(int i = 0; i < numberOfSubOperations; i++)
+                    {
+                        subOperations[i]->Execute(operationVariables[i]);
+                    }
+
+                    for(int i = 0; i < subOp->NumberOfReturnVariables; i++)
+                    {
+                        parameterVariables[i] = variables[i];
+                    }
+
+                    subOp->Execute(parameterVariables);
+                }, subOp->NumberOfReturnVariables, 0);
+                operation->Destructor = [subOp, numberOfSubOperations, subOperations, operationVariables, parameterVariables]()
+                {
+                    for(int i = 0; i < numberOfSubOperations; i++)
+                    {
+                        for(int q = 0; q < subOperations[i]->NumberOfReturnVariables; q++)
+                        {
+                            delete operationVariables[i][q];
+                        }
+                        delete operationVariables[i];
+                    }
+                    delete operationVariables;
+                    delete parameterVariables;
+                    delete subOperations;
+                    delete subOp;
+                };
             }
             else
             {
-                //Create Package
-                Operation_Package *operation_Package = new Operation_Package(operation, 0, parameters);
-                operation = new Operation([operation_Package](Variable **variables) { operation_Package->Execute(variables); }, 1, 0);
-                operation->Destructor = [operation_Package]() { delete operation_Package; };
-            }
+                Operation *subOp = operation;
+                operation = new Operation([subOp, parameterVariables](Variable **variables) 
+                {
+                    for(int i = 0; i < subOp->NumberOfReturnVariables; i++)
+                    {
+                        parameterVariables[i] = variables[i];
+                    }
 
-            delete parameters;
+                    subOp->Execute(parameterVariables);
+                }, subOp->NumberOfReturnVariables, 0);
+                operation->Destructor = [subOp, parameterVariables]()
+                {
+                    delete parameterVariables;
+                    delete subOp;
+                };
+            }
         }
 
         //wrap package in Operation_StoreVariables if storing variables or not returning variables

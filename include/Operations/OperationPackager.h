@@ -1,5 +1,4 @@
 #include "Operations/OperationFactory.h"
-#include "Operations/Operation_Package.h"
 
 #ifndef OPERATIONPACKAGER_H
 #define OPERATIONPACKAGER_H
@@ -28,8 +27,6 @@ namespace OperationArchitecture
 	protected:
 		OperationFactory *_factory;
 		SystemBus *_systemBus;
-
-    	OperationOrVariable CreateParameter(const void *config, size_t &sizeOut);
 	public:
         OperationPackager(OperationFactory *factory, SystemBus *systemBus);
 
