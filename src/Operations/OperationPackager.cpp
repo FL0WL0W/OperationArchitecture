@@ -129,14 +129,14 @@ namespace OperationArchitecture
                 package = new Operation_Package(operation, 0, parameters);
             }
 
-            delete parameters;
+            delete[] parameters;
         }
 
         //wrap package in Operation_StoreVariables if storing variables or not returning variables
         if(storageVariables != 0 || (!options.ReturnVariables && operation->NumberOfReturnVariables > 0))
         {
             package = new Operation_StoreVariables(package, storageVariables, options.ReturnVariables);
-            delete storageVariables;
+            delete[] storageVariables;
         }
 
         return package;

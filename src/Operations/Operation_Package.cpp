@@ -50,11 +50,11 @@ namespace OperationArchitecture
             {
                 delete _operationVariables[i][q];
             }
-            delete _operationVariables[i];
+            delete[] _operationVariables[i];
         }
-        delete _operationVariables;
-        delete _variables;
-        delete _subOperations;
+        delete[] _operationVariables;
+        delete[] _variables;
+        delete[] _subOperations;
     }
 
     void Operation_Package::AbstractExecute(Variable **variablesIn)

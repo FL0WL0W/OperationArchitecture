@@ -26,7 +26,7 @@ namespace OperationArchitecture
 
     Operation_StoreVariables::~Operation_StoreVariables()
     {
-        delete _variables;
+        delete[] _variables;
     }
 
     void Operation_StoreVariables::AbstractExecute(Variable **variables)
