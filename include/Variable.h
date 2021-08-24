@@ -103,7 +103,7 @@ namespace OperationArchitecture
                 variable->Value = *reinterpret_cast<uint64_t *>(&dyn);
             }
             variable->Type = VariableType::BIGOTHER;
-            std::memcpy(reinterpret_cast<K *>(variable->Value), &value, sizeof(K));
+            *reinterpret_cast<K *>(variable->Value) = value;
         }
     }
     template<>
