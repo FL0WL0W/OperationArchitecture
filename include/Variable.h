@@ -85,17 +85,7 @@ namespace OperationArchitecture
     template<typename K>
     void VariableSet(VariableBase *variable, K value)
     {
-        if(std::is_pointer<K>::value)
-        {
-            variable->Type = VariableType::POINTER;
-            variable->Value = *reinterpret_cast<uint64_t *>(&value);
-        }
-        else if(sizeof(K) <= sizeof(uint64_t))
-        {
-            variable->Type = VariableType::OTHER;
-            variable->Value = *reinterpret_cast<uint64_t *>(&value);
-        }
-        else
+        if(sizeof(K) <= sizeof(uint64_t))
         {
             if(variable->Type != VariableType::BIGOTHER)
             {
@@ -104,6 +94,23 @@ namespace OperationArchitecture
             }
             variable->Type = VariableType::BIGOTHER;
             *reinterpret_cast<K *>(variable->Value) = value;
+        }
+        else
+        {
+            if(variable->Type == VariableType::BIGOTHER)
+            {
+                free(reinterpret_cast<void *>(variable->Value));
+            }
+            if(std::is_pointer<K>::value)
+            {
+                variable->Type = VariableType::POINTER;
+                variable->Value = *reinterpret_cast<uint64_t *>(&value);
+            }
+            else
+            {
+                variable->Type = VariableType::OTHER;
+                variable->Value = *reinterpret_cast<uint64_t *>(&value);
+            }
         }
     }
     template<>
@@ -164,12 +171,7 @@ namespace OperationArchitecture
         template<typename K>
         void Set(K value)
         {
-            void* pointer = 0;
-            if(Type == VariableType::BIGOTHER)
-                pointer = reinterpret_cast<void *>(Value);
             VariableSet(this, value);
-            if(Type != VariableType::BIGOTHER && pointer != 0)
-                free(pointer);
         }
 
         template<typename K>
