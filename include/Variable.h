@@ -85,7 +85,7 @@ namespace OperationArchitecture
     template<typename K>
     void VariableSet(VariableBase *variable, K value)
     {
-        if(sizeof(K) <= sizeof(uint64_t))
+        if(sizeof(K) > sizeof(uint64_t))
         {
             if(variable->Type != VariableType::BIGOTHER)
             {
