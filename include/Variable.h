@@ -164,9 +164,9 @@ namespace OperationArchitecture
         template<typename K>
         void Set(K value)
         {
-            K* pointer = 0;
+            void* pointer = 0;
             if(Type == VariableType::BIGOTHER)
-                pointer = reinterpret_cast<K *>(&value);
+                pointer = reinterpret_cast<void *>(Value);
             VariableSet(this, value);
             if(Type != VariableType::BIGOTHER && pointer != 0)
                 free(pointer);
