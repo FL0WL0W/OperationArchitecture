@@ -34,7 +34,7 @@ namespace OperationArchitecture
     {
         uint32_t returnVariableLocation = 0;
         Variable** operationVariables = new Variable*[NumberOfReturnVariables + NumberOfParameters];
-        for(int i = 0; i < _numberOfOperations; i++)
+        for(uint16_t i = 0; i < _numberOfOperations; i++)
         {
             //copy return variables
             std::memcpy(operationVariables, variables + returnVariableLocation, sizeof(Variable *) * _operations[i]->NumberOfReturnVariables);

@@ -41,7 +41,7 @@ namespace OperationArchitecture
             const uint16_t numberOfOperations = Config::CastAndOffset<uint16_t>(config, sizeOut);
             IOperationBase **operations = new IOperationBase*[numberOfOperations];
 
-            for(int i = 0; i < numberOfOperations; i++)
+            for(uint16_t i = 0; i < numberOfOperations; i++)
             {
                 size_t size = 0;
                 operations[i] = Package(config, size);

@@ -14,7 +14,7 @@ namespace OperationArchitecture
 		{
 			
 		}
-		constexpr const size_t size() const
+		inline size_t size() const
 		{
 			const size_t a = alignof(float);
 			size_t s = sizeof(float);
@@ -26,7 +26,7 @@ namespace OperationArchitecture
 		}
 		
 	public:		
-		constexpr const size_t Size() const
+		size_t Size() const
 		{
 			size_t s = size();
 			s += sizeof(float) * Degree;

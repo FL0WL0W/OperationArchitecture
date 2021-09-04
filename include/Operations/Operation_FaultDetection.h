@@ -1,6 +1,7 @@
 #include "Operations/IOperation.h"
 #include "Interpolation.h"
 #include "Variable.h"
+#include "Config.h"
 
 #ifndef OPERATION_FAULTDETECTION_H
 #define OPERATION_FAULTDETECTION_H
@@ -9,9 +10,12 @@ namespace OperationArchitecture
 	struct Operation_FaultDetectionConfig
 	{
 	public:
-		constexpr const size_t Size() const
+		size_t Size() const
 		{
-			return sizeof(Operation_FaultDetectionConfig);
+			size_t s = sizeof(float);
+			Config::AlignAndAddSize<float>(s);
+			Config::AlignAndAddSize<float>(s);
+			return s;
 		}
 		
 		float MinValue;
