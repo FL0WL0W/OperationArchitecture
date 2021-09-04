@@ -14,7 +14,7 @@ namespace OperationArchitecture
 		{
 			
 		}
-		constexpr const size_t size() const
+		inline const size_t size() const
 		{
 			const size_t a = VariableTypeAlignOf(TableType);
 			size_t s = sizeof(float);
@@ -30,7 +30,7 @@ namespace OperationArchitecture
 		}
 		
 	public:		
-		constexpr const size_t Size() const
+		inline const size_t Size() const
 		{
 			size_t s = size();
 			s += VariableTypeSizeOf(TableType) * XResolution * YResolution;

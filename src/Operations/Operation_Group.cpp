@@ -4,7 +4,7 @@
 
 namespace OperationArchitecture
 {
-    constexpr uint8_t totalReturnVariables(IOperationBase * const * const &operations, const uint16_t & numberOfOperations)
+    inline uint8_t totalReturnVariables(IOperationBase * const * const &operations, const uint16_t & numberOfOperations)
     {
         uint8_t numberOfReturnVariables = 0;
         for(uint16_t i = 0; i < numberOfOperations; i++)
@@ -13,7 +13,7 @@ namespace OperationArchitecture
         }
         return numberOfReturnVariables;
     }
-    constexpr uint8_t totalParameters(IOperationBase * const * const &operations, const uint16_t &numberOfOperations)
+    inline uint8_t totalParameters(IOperationBase * const * const &operations, const uint16_t &numberOfOperations)
     {
         uint8_t numberOfParameters = 0;
         for(uint16_t i = 0; i < numberOfOperations; i++)
