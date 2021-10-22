@@ -29,6 +29,17 @@ namespace OperationArchitecture
             AbstractExecute(variables);
             return ret.To<RET>();
         }
+        
+        template<typename RET>
+        RET Execute()
+        {
+            Variable ret;
+            Variable *variables[1];
+            variables[0] = &ret;
+
+            AbstractExecute(variables);
+            return ret.To<RET>();
+        }
 
         template<typename... PARAMS>
         void Execute(PARAMS... params)
