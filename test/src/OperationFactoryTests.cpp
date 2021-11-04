@@ -14,7 +14,7 @@ namespace UnitTests
 		protected:
 		OperationFactory *_factory;
 		IOperationBase *_operation;
-		IOperationBase *_operationParamater;
+		IOperationBase *_operationParameter;
 		size_t _size = 0;
 		size_t _size2 = 0;
 		size_t _expectedSize = 0;
@@ -51,7 +51,7 @@ namespace UnitTests
 			//Factory ID 3
 			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize2, 3);
 
-			_operationParamater  = _factory->Create(config, _size2);
+			_operationParameter  = _factory->Create(config, _size2);
 			free(config);
 		}
 	};
@@ -71,8 +71,8 @@ namespace UnitTests
 		ASSERT_EQ(7, _operation->Execute<int>(5, 2));
 		ASSERT_EQ(8, _operation->Execute<int>(6, 2));
 
-		ASSERT_EQ(0, _operationParamater->NumberOfParameters);
-		ASSERT_EQ(1, _operationParamater->NumberOfReturnVariables);
-		ASSERT_EQ(21, _operationParamater->Execute<int>());
+		ASSERT_EQ(0, _operationParameter->NumberOfParameters);
+		ASSERT_EQ(1, _operationParameter->NumberOfReturnVariables);
+		ASSERT_EQ(21, _operationParameter->Execute<int>());
 	}
 }

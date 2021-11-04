@@ -58,11 +58,11 @@ namespace UnitTests
 				Config::AssignAndOffset(buildConfig, size, storeVariableId);
 			}
 
-			//add first paramater as a package
+			//add first Parameter as a package
 			Config::AssignAndOffset<uint8_t>(buildConfig, size, 1);
 			Config::AssignAndOffset<uint8_t>(buildConfig, size, 0);
 
-			//add second paramater as a variable
+			//add second Parameter as a variable
 			Config::AssignAndOffset<uint8_t>(buildConfig, size, 0);
 
 			//id of variable is 5
