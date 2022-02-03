@@ -90,11 +90,11 @@ namespace UnitTests
 		ASSERT_EQ(-10, _operation->Execute<int8_t>(static_cast<uint8_t>(0), static_cast<int8_t>(0)));
 		ASSERT_EQ(20, _operation->Execute<uint8_t>(static_cast<float>(0.99f), static_cast<uint16_t>(0)));
 		ASSERT_EQ(0, _operation->Execute<uint16_t>(static_cast<double>(0.33f), static_cast<int16_t>(0)));
-		ASSERT_NEAR(-1.25f, _operation->Execute<float>(static_cast<float>(0.28875f), static_cast<uint32_t>(0)), 0.001f);
+		ASSERT_NEAR(-1.25f, (_operation->Execute<float, float, uint32_t>(static_cast<float>(0.28875f), static_cast<uint32_t>(0))), 0.001f);
 		ASSERT_EQ(0, _operation->Execute<uint16_t>(static_cast<int32_t>(0), static_cast<float>(1.1f)));
 		ASSERT_EQ(30, _operation->Execute<uint16_t>(static_cast<float>(0.99f), static_cast<float>(1.1f)));
 		ASSERT_EQ(10, _operation->Execute<int32_t>(static_cast<float>(0.33f), static_cast<float>(1.1f)));
-		ASSERT_NEAR(8.75f, _operation->Execute<float>(static_cast<float>(0.28875f), static_cast<float>(1.1f)), 0.001f);
+		ASSERT_NEAR(8.75f, (_operation->Execute<float, float, float>(static_cast<float>(0.28875f), static_cast<float>(1.1f))), 0.001f);
 	}
 
 	TEST_F(Operation_2AxisTableTests, WhenGettingValueAboveMaxValue_ThenCorrectValueIsReturned)

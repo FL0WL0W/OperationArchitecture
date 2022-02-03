@@ -8,34 +8,34 @@ namespace UnitTests
 {	
 	TEST(Operation_MathTests, WhenAdding_OperationAdds)
 	{
-		ASSERT_EQ(7, Operation_Add::Instance.Execute<int>(5, 2));
-		ASSERT_EQ(8, Operation_Add::Instance.Execute<int>(6, 2));
+		ASSERT_EQ(7, (Operation_Add::Instance.Execute<int, int, int>(5, 2)));
+		ASSERT_EQ(8, (Operation_Add::Instance.Execute<int, int, int>(6, 2)));
 	}
 
 	TEST(Operation_MathTests, WhenSubtracting_OperationSubtracts)
 	{
-		ASSERT_EQ(3, Operation_Subtract::Instance.Execute<int>(5, 2));
+		ASSERT_EQ(3, (Operation_Subtract::Instance.Execute<int, int, int>(5, 2)));
 	}
 
 	TEST(Operation_MathTests, WhenMultiplying_OperationMultiplies)
 	{
-		ASSERT_EQ(10, Operation_Multiply::Instance.Execute<int>(5, 2));
+		ASSERT_EQ(10, (Operation_Multiply::Instance.Execute<int, int, int>(5, 2)));
 	}
 
 	TEST(Operation_MathTests, WhenDividing_OperationDivides)
 	{
-		ASSERT_EQ(2, Operation_Divide::Instance.Execute<int>(5, 2));
+		ASSERT_EQ(2, (Operation_Divide::Instance.Execute<int, int, int>(5, 2)));
 	}
 
 	TEST(Operation_MathTests, WhenAnding_OperationAnds)
 	{
-		ASSERT_EQ(0, Operation_And::Instance.Execute<int>(5, 2));
+		ASSERT_EQ(0, (Operation_And::Instance.Execute<int, int, int>(5, 2)));
 	}
 
 	TEST(Operation_MathTests, WhenOring_OperationOrs)
 	{
-		ASSERT_EQ(7, Operation_Or::Instance.Execute<int>(5, 2));
-		ASSERT_EQ(6, Operation_Or::Instance.Execute<int>(6, 2));
+		ASSERT_EQ(7, (Operation_Or::Instance.Execute<int, int, int>(5, 2)));
+		ASSERT_EQ(6, (Operation_Or::Instance.Execute<int, int, int>(6, 2)));
 	}
 
 	TEST(Operation_MathTests, WhenGreaterThan_OperationReturnsGreaterThan)

@@ -25,7 +25,7 @@ namespace UnitTests
 			uint16_t test2;
 			uint32_t test3;
 		};
-		other testOther;
+		other testOther = {};
 
 		ASSERT_EQ(Variable::Create(testOther).Type, OTHER);
 
@@ -36,7 +36,7 @@ namespace UnitTests
 			uint32_t test3;
 			uint32_t test4;
 		};
-		bigother testBigOther;
+		bigother testBigOther = {};
 
 		ASSERT_EQ(Variable::Create(testBigOther).Type, BIGOTHER);
 		ASSERT_EQ(Variable::Create(&testBigOther).Type, POINTER);
