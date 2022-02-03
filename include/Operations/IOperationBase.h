@@ -19,19 +19,20 @@ namespace OperationArchitecture
         {
             Variable parameters[sizeof...(PARAMS) + 1] = { 0, Variable::Create(params)... };
             Variable *variables[sizeof...(PARAMS) + 1];
-            for(size_t i = 0; i < sizeof...(PARAMS) + 1; i++)
+            for(size_t i = 0; i < sizeof...(PARAMS); i++)
             {
                 variables[i] = &parameters[i];
             } 
+            Variable * const ret = variables[0];
 
             AbstractExecute(variables);
-            return parameters[0].To<RET>();
+            return ret->To<RET>();
         }
 
         template<typename... PARAMS>
         void Execute(PARAMS... params)
         {
-            Variable parameters[sizeof...(PARAMS)] = {Variable::Create(params)...};
+            Variable parameters[sizeof...(PARAMS)] = { Variable::Create(params)... };
             Variable *variables[sizeof...(PARAMS)];
             for(size_t i = 0; i < sizeof...(PARAMS); i++)
             {
