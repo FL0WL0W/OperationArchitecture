@@ -33,10 +33,10 @@ namespace UnitTests
 	{
 		ASSERT_EQ(0, _variables[0].To<int>());
 
-		ASSERT_EQ(22, (_operation->Execute<int, int, int>(20, 2)));
+		ASSERT_EQ(22, _operation->Execute<int>(20, 2));
 		ASSERT_EQ(22, _variables[0].To<int>());
 
-		ASSERT_EQ(7, (_operation->Execute<int, int, int>(5, 2)));
+		ASSERT_EQ(7, _operation->Execute<int>(5, 2));
 		ASSERT_EQ(7, _variables[0].To<int>());
 
 		_operationNoReturn->Execute(5, 10);
@@ -46,7 +46,7 @@ namespace UnitTests
 	TEST_F(Operation_StoreVariablesTests, WhenExecutingOperation_NoErrors)
 	{
 		_variables[0].Set(15);
-		ASSERT_EQ(7, (_operationNoStore->Execute<int, int, int>(5, 2)));
+		ASSERT_EQ(7, _operationNoStore->Execute<int>(5, 2));
 		ASSERT_EQ(15, _variables[0].To<int>());
 		
 		_operationNoReturnOrStore->Execute(20, 2);

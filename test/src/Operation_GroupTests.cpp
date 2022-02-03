@@ -28,8 +28,8 @@ namespace UnitTests
 
 	TEST_F(Operation_GroupTests, WhenExecuting_OperationAddsAndSubtracts)
 	{
-		ASSERT_EQ(7, (_operationAdd->Execute<int, int, int>(5, 2)));
-		ASSERT_EQ(3, (_operationSubtract->Execute<int, int, int>(5, 2)));
+		ASSERT_EQ(7, _operationAdd->Execute<int>(5, 2));
+		ASSERT_EQ(3, _operationSubtract->Execute<int>(5, 2));
 
 		Variable **variables = new Variable*[4];
 		for(int i = 0; i < 4; i++)

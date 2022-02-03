@@ -68,8 +68,8 @@ namespace UnitTests
 	{
 		ASSERT_EQ(2, _operation->NumberOfParameters);
 		ASSERT_EQ(1, _operation->NumberOfReturnVariables);
-		ASSERT_EQ(7, (_operation->Execute<int, int, int>(5, 2)));
-		ASSERT_EQ(8, (_operation->Execute<int, int, int>(6, 2)));
+		ASSERT_EQ(7, _operation->Execute<int>(5, 2));
+		ASSERT_EQ(8, _operation->Execute<int>(6, 2));
 
 		ASSERT_EQ(0, _operationParameter->NumberOfParameters);
 		ASSERT_EQ(1, _operationParameter->NumberOfReturnVariables);

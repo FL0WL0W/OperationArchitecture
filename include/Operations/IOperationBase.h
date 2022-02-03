@@ -14,7 +14,7 @@ namespace OperationArchitecture
         IOperationBase();
         IOperationBase(uint8_t numberOfReturnVariables, uint8_t numberOfParameters);
 
-        template<typename RET, typename... PARAMS>
+        template<typename RET, int..., typename... PARAMS>
         RET Execute(PARAMS... params)
         {
             Variable parameters[sizeof...(PARAMS) + 1] = { 0, Variable::Create(params)... };
@@ -29,7 +29,7 @@ namespace OperationArchitecture
             return ret->To<RET>();
         }
 
-        template<typename... PARAMS>
+        template<int..., typename... PARAMS>
         void Execute(PARAMS... params)
         {
             Variable parameters[sizeof...(PARAMS)] = { Variable::Create(params)... };
