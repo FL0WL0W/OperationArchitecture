@@ -17,7 +17,7 @@ namespace OperationArchitecture
         template<typename RET, int..., typename... PARAMS>
         RET Execute(PARAMS... params)
         {
-            Variable parameters[sizeof...(PARAMS) + 1] = { 0, Variable::Create(params)... };
+            Variable parameters[sizeof...(PARAMS) + 1] = { Variable::Create(0), Variable::Create(params)... };
             Variable *variables[sizeof...(PARAMS) + 1];
             for(size_t i = 0; i < sizeof...(PARAMS) + 1; i++)
             {
