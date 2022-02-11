@@ -10,8 +10,7 @@ namespace OperationArchitecture
 	}
 
 	IOperationBase::IOperationBase() :
-		NumberOfReturnVariables(0),
-		NumberOfParameters(0)
+		IOperationBase(0, 0)
 	{
 		
 	}

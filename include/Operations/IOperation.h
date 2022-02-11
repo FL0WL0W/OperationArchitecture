@@ -6,6 +6,7 @@
 #define IOPERATION_H
 namespace OperationArchitecture
 {
+    //c++ 2011 and below don't include std::index_sequence_for<T...>; and std::index_sequence<Ints...>;
 #if __cplusplus > 201103L
 	template<std::size_t... Ints>
 	using index_sequence = std::index_sequence<Ints...>;
@@ -36,6 +37,7 @@ namespace OperationArchitecture
 	using index_sequence_for = make_index_sequence<sizeof...(T)>;
 #endif
 
+    //// Defines an IOperationBase with specified return variable and parameters
     template<typename RET, typename... PARAMS>
     class IOperation : public IOperationBase
     {
@@ -54,6 +56,7 @@ namespace OperationArchitecture
         }
     };
     
+    //// Defines an IOperationBase with specified parameters
     template<typename... PARAMS>
     class IOperation<void, PARAMS...> : public IOperationBase
     {
@@ -72,6 +75,7 @@ namespace OperationArchitecture
         }
     };
     
+    //// Defines an IOperationBase with multiple return variables and specified parameters
     template<typename... RETs, typename... PARAMS>
     class IOperation<std::tuple<RETs...>, PARAMS...> : public IOperationBase
     {
