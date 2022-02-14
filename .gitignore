@@ -37,6 +37,6 @@
 *.sqlite
 
 build/*
-.vscode
+.vscode/*
 !.vscode/extensions.json
 .vs/*
