@@ -38,5 +38,5 @@
 
 build/*
 .vscode
-!.vscode/extenstions.json
+!.vscode/extensions.json
 .vs/*
