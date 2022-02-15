@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "Operations/Operation_Group.h"
 
 #ifdef OPERATION_GROUP_H
@@ -24,11 +25,17 @@ namespace OperationArchitecture
         return numberOfParameters;
     }
 
+    //operations will be deleted when package is deleted
     Operation_Group::Operation_Group(IOperationBase * const * const operations, const uint16_t &numberOfOperations) :
         IOperationBase(totalReturnVariables(operations, numberOfOperations), totalParameters(operations, numberOfOperations)),
         _operations(operations),
         _numberOfOperations(numberOfOperations)
     { }
+
+    Operation_Group::~Operation_Group()
+    {
+        delete[] _operations;
+    }
 
     void Operation_Group::AbstractExecute(Variable **variables)
     {
@@ -46,6 +53,21 @@ namespace OperationArchitecture
             _operations[i]->AbstractExecute(operationVariables);
         }
         delete operationVariables;
+    }
+    
+    IOperationBase *Operation_Group::Create(const void *config, size_t &sizeOut, OperationFactory *factory)
+    {
+        const uint16_t numberOfOperations = Config::CastAndOffset<uint16_t>(config, sizeOut);
+        IOperationBase **operations = new IOperationBase*[numberOfOperations];
+
+        for(uint16_t i = 0; i < numberOfOperations; i++)
+        {
+            size_t size = 0;
+            operations[i] = factory->Create(config, size);
+            Config::OffsetConfig(config, sizeOut, size);
+        }
+
+        return new Operation_Group(operations, numberOfOperations);
     }
 }
 

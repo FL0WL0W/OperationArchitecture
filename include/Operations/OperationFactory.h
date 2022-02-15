@@ -1,7 +1,6 @@
 #include <map>
-#include <list>
-#include "Operations/IOperation.h"
 #include <functional>
+#include "Operations/IOperationBase.h"
 
 #ifndef OPERATIONFACTORY_H
 #define OPERATIONFACTORY_H

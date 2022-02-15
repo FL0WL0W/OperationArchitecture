@@ -13,8 +13,8 @@ namespace UnitTests
 	{
 		protected:
 		OperationFactory *_factory;
-		IOperationBase *_operation;
-		IOperationBase *_operationParameter;
+		IOperationBase *_operation2;
+		IOperationBase *_operation3;
 		size_t _size = 0;
 		size_t _size2 = 0;
 		size_t _expectedSize = 0;
@@ -22,17 +22,11 @@ namespace UnitTests
 		size_t _buildSize = 0;
 		size_t _buildSize2 = 0;
 
-		static IOperationBase * CreateWithParameterFunction(const void *config, size_t &sizeOut, int parameter1, int parameter2)
-		{
-			OperationOrVariable *parameters = new OperationOrVariable[2] { OperationOrVariable(new Variable(parameter1)), OperationOrVariable(new Variable(parameter2)) };
-			return new Operation_Package(&Operation_Subtract::Instance, 0, parameters);
-		}
-
 		OperationFactoryTests() 
 		{
 			_factory = new OperationFactory();
 			_factory->Register(2, &Operation_Add::Instance);
-			_factory->Register(3, [](const void *config, size_t &sizeOut) { return OperationFactoryTests::CreateWithParameterFunction(config, sizeOut, 26, 5); });
+			_factory->Register(3, &Operation_Subtract::Instance);
 
 			_expectedSize = sizeof(uint32_t);
 			void *config = malloc(_expectedSize);
@@ -41,7 +35,7 @@ namespace UnitTests
 			//Factory ID 2
 			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize, 2);
 
-			_operation = _factory->Create(config, _size);
+			_operation2 = _factory->Create(config, _size);
 			free(config);
 			
 			_expectedSize2 = sizeof(uint32_t);
@@ -51,7 +45,7 @@ namespace UnitTests
 			//Factory ID 3
 			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize2, 3);
 
-			_operationParameter  = _factory->Create(config, _size2);
+			_operation3  = _factory->Create(config, _size2);
 			free(config);
 		}
 	};
@@ -66,13 +60,14 @@ namespace UnitTests
 
 	TEST_F(OperationFactoryTests, CorrectOperationReturned)
 	{
-		ASSERT_EQ(2, _operation->NumberOfParameters);
-		ASSERT_EQ(1, _operation->NumberOfReturnVariables);
-		ASSERT_EQ(7, _operation->Execute<int>(5, 2));
-		ASSERT_EQ(8, _operation->Execute<int>(6, 2));
+		ASSERT_EQ(2, _operation2->NumberOfParameters);
+		ASSERT_EQ(1, _operation2->NumberOfReturnVariables);
+		ASSERT_EQ(7, _operation2->Execute<int>(5, 2));
+		ASSERT_EQ(8, _operation2->Execute<int>(6, 2));
 
-		ASSERT_EQ(0, _operationParameter->NumberOfParameters);
-		ASSERT_EQ(1, _operationParameter->NumberOfReturnVariables);
-		ASSERT_EQ(21, _operationParameter->Execute<int>());
+		ASSERT_EQ(2, _operation3->NumberOfParameters);
+		ASSERT_EQ(1, _operation3->NumberOfReturnVariables);
+		ASSERT_EQ(3, _operation3->Execute<int>(5, 2));
+		ASSERT_EQ(3, _operation3->Execute<int>(5, 2));
 	}
 }

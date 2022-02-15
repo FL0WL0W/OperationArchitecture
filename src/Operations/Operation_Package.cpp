@@ -1,75 +1,82 @@
+#include "Config.h"
 #include "Operations/Operation_Package.h"
 
 #ifdef OPERATION_PACKAGE_H
 
 namespace OperationArchitecture
-{
-    //subOperations will be deleted when package is deleted
-    Operation_Package::Operation_Package(IOperationBase *operation, IOperationBase **subOperations, OperationOrVariable *parameters) :
-        IOperationBase(operation->NumberOfReturnVariables, 0)
+{    
+    inline uint8_t totalReturnVariables(IOperationBase *operation, Variable **executionvariables)
     {
-        _operation = operation;
-        _numberOfSubOperations = 0;
-        _subOperations = subOperations;
-        for(int i = 0; i < _operation->NumberOfParameters; i++)
+        uint8_t numberOfReturnVariables = 0;
+        for(uint8_t i = 0; i < operation->NumberOfReturnVariables; i++)
         {
-            if(parameters[i].OperationId > _numberOfSubOperations)
-                _numberOfSubOperations = parameters[i].OperationId;
+            if(executionvariables[i] == 0)
+                numberOfReturnVariables++;
         }
-        if(_numberOfSubOperations > 0)
+        return numberOfReturnVariables;
+    }
+    inline uint8_t totalParameters(IOperationBase *operation, Variable **executionvariables)
+    {
+        uint8_t numberOfParameters = 0;
+        for(uint8_t i = 0; i < operation->NumberOfParameters; i++)
         {
-            _operationVariables = new Variable**[_numberOfSubOperations];
-            for(int i = 0; i < _numberOfSubOperations; i++)
-            {
-                _operationVariables[i] = new Variable*[_subOperations[i]->NumberOfReturnVariables];
-                for(int q = 0; q < _subOperations[i]->NumberOfReturnVariables; q++)
-                {
-                    _operationVariables[i][q] = new Variable();
-                }
-            }
+            if(executionvariables[i + operation->NumberOfReturnVariables] == 0)
+                numberOfParameters++;
         }
-        _variables = new Variable*[_operation->NumberOfParameters + _operation->NumberOfReturnVariables];
-        for(int i = 0; i < _operation->NumberOfParameters; i++)
+        return numberOfParameters;
+    }
+
+    //executionvariables will be deleted when package is deleted
+    Operation_Package::Operation_Package(IOperationBase *operation, Variable **executionvariables) :
+        IOperationBase(totalReturnVariables(operation, executionvariables), totalParameters(operation, executionvariables)),
+        _operation(operation),
+        _executionvariables(executionvariables)
+    {
+        _variableInMap = new uint8_t[NumberOfParameters + NumberOfReturnVariables];
+        uint8_t v = 0;
+        for(uint8_t i = 0; i < operation->NumberOfParameters + operation->NumberOfReturnVariables; i++)
         {
-            if(parameters[i].OperationId > 0)
+            if(executionvariables[i] == 0)
             {
-                _variables[i + _operation->NumberOfReturnVariables] = _operationVariables[parameters[i].OperationId-1][parameters[i].OperationReturnVariableId];
-            }
-            else
-            {
-                _variables[i + _operation->NumberOfReturnVariables] = parameters[i].VariableLocation;
+                _variableInMap[v] = i;
+                v++;
             }
         }
     }
 
     Operation_Package::~Operation_Package()
     {
-        for(int i = 0; i < _numberOfSubOperations; i++)
-        {
-            for(int q = 0; q < _subOperations[i]->NumberOfReturnVariables; q++)
-            {
-                delete _operationVariables[i][q];
-            }
-            delete[] _operationVariables[i];
-        }
-        delete[] _operationVariables;
-        delete[] _variables;
-        delete[] _subOperations;
+        delete[] _executionvariables;
+        delete[] _variableInMap;
     }
 
     void Operation_Package::AbstractExecute(Variable **variablesIn)
     {
-        for(int i = 0; i < _numberOfSubOperations; i++)
+        for(uint8_t i = 0; i < NumberOfParameters +NumberOfReturnVariables; i++)
         {
-            _subOperations[i]->AbstractExecute(_operationVariables[i]);
+            _executionvariables[_variableInMap[i]] = variablesIn[i];
+        }
+        _operation->AbstractExecute(_executionvariables);
+    }
+
+    IOperationBase *Operation_Package::Create(const void *config, size_t &sizeOut, OperationFactory *factory, GeneratorMap<Variable> *variableMap)
+    {
+        const uint32_t factoryId = Config::Cast<uint32_t>(config);
+
+        //Create operation
+        size_t size = 0;
+        IOperationBase *operation = factory->Create(config, size);
+        Config::OffsetConfig(config, sizeOut, size);
+
+        //Create Execute Variables
+        Variable **executeVariables = new Variable*[operation->NumberOfReturnVariables + operation->NumberOfParameters];
+        for(int i = 0; i < operation->NumberOfReturnVariables + operation->NumberOfParameters; i++)
+        {
+            const uint32_t variableId = Config::CastAndOffset<uint32_t>(config, sizeOut);
+            executeVariables[i] = variableId == 0? 0 : variableMap->GenerateValue(variableId);
         }
 
-        for(int i = 0; i < _operation->NumberOfReturnVariables; i++)
-        {
-            _variables[i] = variablesIn[i];
-        }
-
-        _operation->AbstractExecute(_variables);
+        return new Operation_Package(operation, executeVariables);
     }
 }
 

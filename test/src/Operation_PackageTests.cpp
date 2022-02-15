@@ -12,26 +12,27 @@ namespace UnitTests
 		protected:
 		IOperationBase *_operation;
 		IOperationBase *_operationAdd;
-		OperationOrVariable _operationOrVariable[2];
-		Variable _variables[2];
+		Variable ** _variables = new Variable*[3];
 
 		Operation_PackageTests() 
 		{	
-			_operationOrVariable[0] = OperationOrVariable(&_variables[0]);
-			_operationOrVariable[1] = OperationOrVariable(&_variables[1]);
-			_operationAdd = &Operation_Add::Instance;
-			_operation = new Operation_Package(_operationAdd, 0, _operationOrVariable);
+			_variables[0] = new Variable(0);
+			_variables[1] = new Variable(0);
+			_variables[2] = new Variable(0);
+			_operation = new Operation_Package(&Operation_Add::Instance, _variables);
 		}
 	};
 
 	TEST_F(Operation_PackageTests, WhenExecutingOperation_VariableIsStored)
 	{
-		_variables[0].Set(20);
-		_variables[1].Set(2);
-		ASSERT_EQ(22, _operation->Execute<int>());
+		_variables[0]->Set(20);
+		_variables[1]->Set(2);
+		_operation->Execute();
+		ASSERT_EQ(22, _variables[2]->To<int>());
 
-		_variables[0].Set(5);
-		_variables[1].Set(2);
-		ASSERT_EQ(7, _operation->Execute<int>());
+		_variables[0]->Set(5);
+		_variables[1]->Set(2);
+		_operation->Execute();
+		ASSERT_EQ(7, _variables[2]->To<int>());
 	}
 }

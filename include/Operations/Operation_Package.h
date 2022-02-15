@@ -1,47 +1,24 @@
 #include "Operations/IOperationBase.h"
-#include <utility>
+#include "Operations/OperationFactory.h"
+#include "GeneratorMap.h"
 
 #ifndef OPERATION_PACKAGE_H
 #define OPERATION_PACKAGE_H
 namespace OperationArchitecture
-{
-    struct OperationOrVariable
-    {
-        Variable *VariableLocation;
-        uint8_t OperationId;
-        uint8_t OperationReturnVariableId;
-        OperationOrVariable()
-        {
-            OperationId = 0;
-            OperationReturnVariableId = 0;
-            VariableLocation = 0;
-        }
-        OperationOrVariable(Variable *variable)
-        {
-            OperationId = 0;
-            OperationReturnVariableId = 0;
-            VariableLocation = variable;
-        }
-        OperationOrVariable(uint8_t operationId, uint8_t operationReturnVariableID)
-        {
-            OperationId = operationId;
-            OperationReturnVariableId = operationReturnVariableID;
-            VariableLocation = 0;
-        }
-    };
-
+{    
     class Operation_Package : public IOperationBase
     {
-        protected:
+    protected:
         IOperationBase *_operation;
-        IOperationBase **_subOperations;
-        uint8_t _numberOfSubOperations;
-        Variable ***_operationVariables;
-        Variable **_variables;
-        public:
-        Operation_Package(IOperationBase *operation, IOperationBase **subOperations, OperationOrVariable *parameters);
+        Variable **_executionvariables;
+        uint8_t *_variableInMap;
+    public:
+        Operation_Package(IOperationBase *operation, Variable **executionvariables);
         ~Operation_Package();
+
         void AbstractExecute(Variable **variables) override;
+
+		static IOperationBase *Create(const void *config, size_t &sizeOut, OperationFactory *factory, GeneratorMap<Variable> *variableMap);
     };
 }
 #endif
