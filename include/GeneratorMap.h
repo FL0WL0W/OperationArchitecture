@@ -11,11 +11,11 @@ namespace OperationArchitecture
     	VALUE *GenerateValue(uint32_t id)
         {
             VALUE *ret;
-            GeneratorMap::iterator it = find(id);
-            if (it == end())
+            typename GeneratorMap::iterator it = this->find(id);
+            if (it == this->end())
             {
                 ret = new VALUE();
-                insert(std::pair<uint32_t, VALUE *>(id, ret));
+                this->insert(std::pair<uint32_t, VALUE *>(id, ret));
             }
             else
             {
