@@ -25,14 +25,14 @@ namespace UnitTests
 
 	TEST_F(Operation_PackageTests, WhenExecutingOperation_VariableIsStored)
 	{
-		_variables[0]->Set(20);
-		_variables[1]->Set(2);
+		_variables[1]->Set(20);
+		_variables[2]->Set(2);
 		_operation->Execute();
-		ASSERT_EQ(22, _variables[2]->To<int>());
+		ASSERT_EQ(22, _variables[0]->To<int>());
 
-		_variables[0]->Set(5);
-		_variables[1]->Set(2);
+		_variables[1]->Set(5);
+		_variables[2]->Set(2);
 		_operation->Execute();
-		ASSERT_EQ(7, _variables[2]->To<int>());
+		ASSERT_EQ(7, _variables[0]->To<int>());
 	}
 }

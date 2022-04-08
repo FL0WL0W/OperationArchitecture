@@ -9,20 +9,20 @@ namespace UnitTests
 	class Operation_FaultDetectionTests : public Test
 	{
 		protected:
-		Operation_FaultDetectionConfig *_config;
+		Operation_FaultDetectionConfig<float> *_config;
 		IOperationBase *_operation;
 		size_t _size = 0;
 
 		Operation_FaultDetectionTests() 
 		{			
-			size_t expectedSize = sizeof(Operation_FaultDetectionConfig);
-			_config = (Operation_FaultDetectionConfig *)malloc(expectedSize);
+			size_t expectedSize = sizeof(Operation_FaultDetectionConfig<float>);
+			_config = (Operation_FaultDetectionConfig<float> *)malloc(expectedSize);
 			
 			_config->MaxValue = 150;
 			_config->MinValue = -40;
 			_config->DefaultValue = 4;
 
-			_operation = Operation_FaultDetection::Create(_config, _size);
+			_operation = Operation_FaultDetection<float>::Create(_config, _size);
 		}
 	};
 

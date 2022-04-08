@@ -7,6 +7,7 @@
 #define OPERATION_POLYNOMIAL_H
 namespace OperationArchitecture
 {
+	template<typename a_t>
 	struct Operation_PolynomialConfig
 	{
 	private:
@@ -16,9 +17,9 @@ namespace OperationArchitecture
 		}
 		inline size_t size() const
 		{
-			const size_t a = alignof(float);
-			size_t s = sizeof(float);
-			Config::AlignAndAddSize<float>(s);
+			const size_t a = alignof(a_t);
+			size_t s = sizeof(a_t);
+			Config::AlignAndAddSize<a_t>(s);
 			Config::AlignAndAddSize<uint8_t>(s);
 			if(s % a > 0)
 				s += a - (s % a);
@@ -29,27 +30,48 @@ namespace OperationArchitecture
 		size_t Size() const
 		{
 			size_t s = size();
-			s += sizeof(float) * Degree;
+			s += sizeof(a_t) * Degree;
 			return s;
 		}
 
-		const float *A() const { return reinterpret_cast<const float *>(reinterpret_cast<const uint8_t *>(this) + size()); }
+		const a_t *A() const { return reinterpret_cast<const a_t *>(reinterpret_cast<const uint8_t *>(this) + size()); }
 
-		float MinValue;
-		float MaxValue;
+		a_t MinValue;
+		a_t MaxValue;
 		uint8_t Degree;
 	};
 
+	template<typename a_t>
 	class Operation_Polynomial : public IOperationBase
 	{
 	protected:
-		const Operation_PolynomialConfig *_config;
+		const Operation_PolynomialConfig<a_t> *_config;
 	public:		
-        Operation_Polynomial(const Operation_PolynomialConfig * const &config);
+        Operation_Polynomial(const Operation_PolynomialConfig<a_t> * const &config) :
+			IOperationBase(1, 1)
+		{
+			_config = config;
+		}
 
-		void AbstractExecute(Variable **variables) override;
+		void AbstractExecute(Variable **variables) override
+		{
+			const a_t x = variables[1]->To<a_t>();
+			const a_t * a = _config->A();
+			a_t val = a[0];
+			for (uint8_t i = 1; i <= _config->Degree; i++)
+				val += a[i] * powf(x, i);
+			if (val < _config->MinValue)
+				val = _config->MinValue;
+			else if (val > _config->MaxValue)
+				val = _config->MaxValue;
+			variables[0]->Set(val);
+		}
 
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		static IOperationBase *Create(const void *config, size_t &sizeOut)
+		{
+			const Operation_PolynomialConfig<a_t> *polynomialConfig = Config::CastConfigAndOffset<Operation_PolynomialConfig<a_t>>(config, sizeOut);
+			return new Operation_Polynomial<a_t>(polynomialConfig);
+		}
 	};
 }
 #endif

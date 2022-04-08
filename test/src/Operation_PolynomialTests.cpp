@@ -10,23 +10,23 @@ namespace UnitTests
 	class Operation_PolynomialTests : public Test
 	{
 		protected:
-		Operation_PolynomialConfig *_config;
+		Operation_PolynomialConfig<float> *_config;
 		IOperationBase *_operation;
 		size_t _size = 0;
 
 		Operation_PolynomialTests() 
 		{			
-			size_t expectedSize = sizeof(Operation_PolynomialConfig) + 
-				((sizeof(Operation_PolynomialConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_PolynomialConfig) % alignof(float))) : 0) + 
+			size_t expectedSize = sizeof(Operation_PolynomialConfig<float>) + 
+				((sizeof(Operation_PolynomialConfig<float>) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_PolynomialConfig<float>) % alignof(float))) : 0) + 
 				sizeof(float) * 4;
-			_config = (Operation_PolynomialConfig *)malloc(expectedSize);
+			_config = (Operation_PolynomialConfig<float> *)malloc(expectedSize);
 			
 			_config->MaxValue = 150;
 			_config->MinValue = -40;
 			_config->Degree = 4;
 			void* config = _config;
 			size_t size = 0;
-			Config::OffsetConfig(config, size, sizeof(Operation_PolynomialConfig));
+			Config::OffsetConfig(config, size, sizeof(Operation_PolynomialConfig<float>));
 			Config::AlignConfig(config, size, alignof(float));
 			float * Table = reinterpret_cast<float *>(config);
 			Table[0] = -10;
@@ -35,7 +35,7 @@ namespace UnitTests
 			Table[3] = 10;
 			Table[4] = 0;
 
-			_operation = Operation_Polynomial::Create(_config, _size);
+			_operation = Operation_Polynomial<float>::Create(_config, _size);
 		}
 	};
 

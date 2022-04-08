@@ -18,9 +18,9 @@ namespace OperationArchitecture
         factory->Register(idOffset + 1, [factory](const void *config, size_t &size){ return Operation_Group::Create(config, size, factory); });
         factory->Register(idOffset + 2, Operation_2AxisTableCreate);
         factory->Register(idOffset + 3, Operation_LookupTableCreate);
-        factory->Register(idOffset + 4, Operation_Polynomial::Create);
+        factory->Register(idOffset + 4, Operation_Polynomial<float>::Create);
         factory->Register(idOffset + 5, Operation_StaticVariable::Create);
-        factory->Register(idOffset + 6, Operation_FaultDetection::Create);
+        factory->Register(idOffset + 6, Operation_FaultDetection<float>::Create);
         factory->Register(idOffset + 10, &Operation_Add::Instance);
         factory->Register(idOffset + 11, &Operation_Subtract::Instance);
         factory->Register(idOffset + 12, &Operation_Multiply::Instance);
