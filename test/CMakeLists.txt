@@ -20,6 +20,7 @@ add_executable(${TARGET} ${SRCS})
 
 # link static libraries
 target_link_libraries(${TARGET} OperationArchitecture)
+target_link_libraries(${TARGET} OperationArchitectureMockedObjects)
 target_link_libraries(${TARGET} gtest gtest_main gmock)
 
 add_test(ALLTESTS ${TARGET})
