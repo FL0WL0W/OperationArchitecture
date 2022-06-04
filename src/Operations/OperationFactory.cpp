@@ -5,6 +5,20 @@
 
 namespace OperationArchitecture
 {    
+	OperationFactory::~OperationFactory()
+	{
+		Clear();
+		for (std::list<IOperationBase*>::iterator it = _dynamicOperations.begin(); it != _dynamicOperations.end(); ++it){
+			delete *it;
+		}
+	}
+
+	void OperationFactory::Clear()
+	{
+		_staticOperations.clear();
+		_factories.clear();
+	}
+
     void OperationFactory::Register(const uint32_t id, std::function<IOperationBase*(const void *, size_t &)> factory)
     {
 		Unregister(id);
@@ -14,14 +28,14 @@ namespace OperationArchitecture
 	void OperationFactory::Register(const uint32_t id, IOperationBase* operation)
 	{
 		Unregister(id);
-		_operations.insert(std::pair<uint32_t, IOperationBase*>(id, operation));
+		_staticOperations.insert(std::pair<uint32_t, IOperationBase*>(id, operation));
 	}
 
 	void OperationFactory::Unregister(const uint32_t id)
 	{
-		const std::map<uint32_t, IOperationBase*>::iterator itOp = _operations.find(id);
-		if (itOp != _operations.end())
-			_operations.erase(itOp);
+		const std::map<uint32_t, IOperationBase*>::iterator itOp = _staticOperations.find(id);
+		if (itOp != _staticOperations.end())
+			_staticOperations.erase(itOp);
 
 		const std::map<uint32_t, std::function<IOperationBase*(const void *, size_t &)>>::iterator it = _factories.find(id);
 		if (it != _factories.end())
@@ -32,13 +46,19 @@ namespace OperationArchitecture
     {
         const uint32_t factoryId = Config::CastAndOffset<uint32_t>(config, sizeOut);
 
-		const std::map<uint32_t, IOperationBase*>::iterator itOp = _operations.find(factoryId);
-		if (itOp != _operations.end())
+		//these are all static instance operations
+		const std::map<uint32_t, IOperationBase*>::iterator itOp = _staticOperations.find(factoryId);
+		if (itOp != _staticOperations.end())
             return itOp->second;
 
+		//these factories create a dynamic instance of the operation that needs to be tracked so it can be later deleted
 		const std::map<uint32_t, std::function<IOperationBase*(const void *, size_t &)>>::iterator it = _factories.find(factoryId);
 		if (it != _factories.end())
-            return it->second(config, sizeOut);
+		{
+			IOperationBase *operation = it->second(config, sizeOut);
+			_dynamicOperations.push_front(operation);
+			return operation;
+		}
 
         return 0;
     }

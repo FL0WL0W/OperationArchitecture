@@ -25,7 +25,7 @@ namespace OperationArchitecture
         return numberOfParameters;
     }
 
-    //operations will be deleted when package is deleted
+    //operations array will be deleted when package is deleted, contents of operations array will not be deleted
     Operation_Group::Operation_Group(IOperationBase * const * const operations, const uint16_t &numberOfOperations) :
         IOperationBase(totalReturnVariables(operations, numberOfOperations), totalParameters(operations, numberOfOperations)),
         _operations(operations),
@@ -34,7 +34,7 @@ namespace OperationArchitecture
 
     Operation_Group::~Operation_Group()
     {
-        delete[] _operations;
+        delete _operations;
     }
 
     void Operation_Group::AbstractExecute(Variable **variables)

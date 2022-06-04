@@ -26,7 +26,8 @@ namespace OperationArchitecture
         return numberOfParameters;
     }
 
-    //executionvariables will be deleted when package is deleted
+    //operation will not be deleted when package is deleted
+    //executionvariables array will be deleted when package is deleted. contents of executionvariables will not be deleted
     Operation_Package::Operation_Package(IOperationBase *operation, Variable **executionvariables) :
         IOperationBase(totalReturnVariables(operation, executionvariables), totalParameters(operation, executionvariables)),
         _operation(operation),
@@ -46,7 +47,7 @@ namespace OperationArchitecture
 
     Operation_Package::~Operation_Package()
     {
-        delete[] _executionvariables;
+        delete _executionvariables;
         delete[] _variableInMap;
     }
 
