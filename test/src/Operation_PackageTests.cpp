@@ -19,7 +19,7 @@ namespace UnitTests
 			_variables[0] = new Variable(0);
 			_variables[1] = new Variable(0);
 			_variables[2] = new Variable(0);
-			_operation = new Operation_Package(&Operation_Add::Instance, _variables);
+			_operation = new Operation_Package(new Operation_Add(), _variables);
 		}
 	};
 

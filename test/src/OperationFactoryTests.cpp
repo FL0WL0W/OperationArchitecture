@@ -25,8 +25,8 @@ namespace UnitTests
 		OperationFactoryTests() 
 		{
 			_factory = new OperationFactory();
-			_factory->Register(2, &Operation_Add::Instance);
-			_factory->Register(3, &Operation_Subtract::Instance);
+			_factory->Register(2, new Operation_Add());
+			_factory->Register(3, new Operation_Subtract());
 
 			_expectedSize = sizeof(uint32_t);
 			void *config = malloc(_expectedSize);

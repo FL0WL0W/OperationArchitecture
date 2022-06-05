@@ -17,8 +17,8 @@ namespace UnitTests
 		Operation_GroupTests() 
 		{
 			size_t size = 0;
-			_operationAdd = &Operation_Add::Instance;
-			_operationSubtract = &Operation_Subtract::Instance;
+			_operationAdd = new Operation_Add();
+			_operationSubtract = new Operation_Subtract();
 			IOperationBase **operations = new IOperationBase*[2];
 			operations[0] = _operationAdd;
 			operations[1] = _operationSubtract;
