@@ -12,17 +12,17 @@
 
 namespace OperationArchitecture
 {
-    Operation_Add                   *Operation_AddInstance;
-    Operation_Subtract              *Operation_SubtractInstance;
-    Operation_Multiply              *Operation_MultiplyInstance;
-    Operation_Divide                *Operation_DivideInstance;
-    Operation_And                   *Operation_AndInstance;
-    Operation_Or                    *Operation_OrInstance;
-    Operation_GreaterThan           *Operation_GreaterThanInstance;
-    Operation_LessThan              *Operation_LessThanInstance;
-    Operation_Equal                 *Operation_EqualInstance;
-    Operation_GreaterThanOrEqual    *Operation_GreaterThanOrEqualInstance;
-    Operation_LessThanOrEqual       *Operation_LessThanOrEqualInstance;
+    Operation_Add                   *Operation_AddInstance = 0;
+    Operation_Subtract              *Operation_SubtractInstance = 0;
+    Operation_Multiply              *Operation_MultiplyInstance = 0;
+    Operation_Divide                *Operation_DivideInstance = 0;
+    Operation_And                   *Operation_AndInstance = 0;
+    Operation_Or                    *Operation_OrInstance = 0;
+    Operation_GreaterThan           *Operation_GreaterThanInstance = 0;
+    Operation_LessThan              *Operation_LessThanInstance = 0;
+    Operation_Equal                 *Operation_EqualInstance = 0;
+    Operation_GreaterThanOrEqual    *Operation_GreaterThanOrEqualInstance = 0;
+    Operation_LessThanOrEqual       *Operation_LessThanOrEqualInstance = 0;
 
     void OperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory, GeneratorMap<Variable> *variableMap)
     {
