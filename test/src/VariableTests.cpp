@@ -21,20 +21,15 @@ namespace UnitTests
 
 		struct other 
 		{
-			uint8_t test1;
-			uint16_t test2;
-			uint32_t test3;
-		};
-		other testOther = {};
+			uint8_t test[VARIABLE_VALUE_SIZE];
+		} __attribute__((packed)); 
+		other testOther;
 
 		ASSERT_EQ(Variable::Create(testOther).Type, OTHER);
 
 		struct bigother 
 		{
-			uint8_t test1;
-			uint16_t test2;
-			uint32_t test3;
-			uint32_t test4;
+			uint8_t test[VARIABLE_VALUE_SIZE+1];
 		};
 		bigother testBigOther = {};
 
@@ -166,32 +161,24 @@ namespace UnitTests
 
 		struct other 
 		{
-			uint8_t test1;
-			uint16_t test2;
-			uint32_t test3;
-		};
+			uint8_t test[VARIABLE_VALUE_SIZE];
+		} __attribute__((packed)); 
 		other testOther;
-		testOther.test2 = 25;
+		testOther.test[VARIABLE_VALUE_SIZE-1] = 25;
 
-		ASSERT_EQ(Variable::Create(testOther).To<other>().test2, 25);
+		ASSERT_EQ(Variable::Create(testOther).To<other>().test[VARIABLE_VALUE_SIZE-1], 25);
 
 		struct bigother 
 		{
-			uint8_t test1;
-			uint16_t test2;
-			uint32_t test3;
-			uint32_t test4;
+			uint8_t test[VARIABLE_VALUE_SIZE+1];
 		};
 		bigother testBigOther;
-		testBigOther.test4 = 28;
-		testBigOther.test3 = 22;
-		testBigOther.test2 = 32;
-		testBigOther.test1 = 12;
+		testBigOther.test[VARIABLE_VALUE_SIZE] = 28;
 
-		ASSERT_EQ(Variable::Create(testBigOther).To<bigother>().test4, 28);
-		ASSERT_EQ(Variable::Create(testBigOther).To<bigother*>()->test2, 32);
-		ASSERT_EQ(Variable::Create(&testBigOther).To<bigother>().test3, 22);
-		ASSERT_EQ(Variable::Create(&testBigOther).To<bigother*>()->test1, 12);
+		ASSERT_EQ(Variable::Create(testBigOther).To<bigother>().test[VARIABLE_VALUE_SIZE], 28);
+		ASSERT_EQ(Variable::Create(testBigOther).To<bigother*>()->test[VARIABLE_VALUE_SIZE], 28);
+		ASSERT_EQ(Variable::Create(&testBigOther).To<bigother>().test[VARIABLE_VALUE_SIZE], 28);
+		ASSERT_EQ(Variable::Create(&testBigOther).To<bigother*>()->test[VARIABLE_VALUE_SIZE], 28);
 	}
 
 	TEST(VariableTests, WhenAdding_ThenCorrectValueReturned)

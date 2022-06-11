@@ -62,7 +62,7 @@ namespace OperationArchitecture
 			{
 				uint32_t length = Config::CastAndOffset<uint32_t>(config, sizeOut);
 				Config::AlignConfig(config, sizeOut, alignof(max_align_t));
-				staticValue.Value = *reinterpret_cast<uint64_t *>(&config);
+				staticValue.Set(config);
 				staticValue.Type = BIGOTHER;
 				Config::OffsetConfig(config, sizeOut, length);
 				break;
