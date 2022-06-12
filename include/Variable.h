@@ -7,6 +7,24 @@
 #define VARIABLE_H
 namespace OperationArchitecture
 {
+    template<bool b, typename K2>
+    struct size_of2 { const static size_t value = sizeof(K2); };
+
+    template<typename K2>
+    struct size_of2<true, K2> { const static K2 k; const static size_t value = sizeof(*k); };
+
+    template<>
+    struct size_of2<true, const void *> { const static size_t value = 0; };
+
+    template<>
+    struct size_of2<true, void *> { const static size_t value = 0; };
+
+    template<typename K>
+    struct size_of 
+    {
+        const static size_t value = size_of2<std::is_pointer<K>::value, K>::value;
+    };
+
     struct alignas(VARIABLE_ALIGN) VariableBase
     {
         uint8_t Value[VARIABLE_VALUE_SIZE];
@@ -85,13 +103,20 @@ namespace OperationArchitecture
     template<typename K>
     void VariableSet(VariableBase *variable, K value)
     {
-        if(sizeof(K) > VARIABLE_VALUE_SIZE)
+        if(sizeof(value) > VARIABLE_VALUE_SIZE - 1)
         {
             if(variable->Type != VariableType::BIGOTHER)
             {
-                void * dyn = malloc(sizeof(K));
+                void * dyn = malloc(sizeof(value));
                 *reinterpret_cast<void **>(variable->Value) = dyn;
-                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(K);
+                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
+            }
+            if(*reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) != sizeof(value))
+            {
+                free(*reinterpret_cast<void **>(variable->Value));
+                void * dyn = malloc(sizeof(value));
+                *reinterpret_cast<void **>(variable->Value) = dyn;
+                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
             }
             variable->Type = VariableType::BIGOTHER;
             std::memcpy(*reinterpret_cast<K **>(variable->Value), &value, sizeof(K));
@@ -106,11 +131,13 @@ namespace OperationArchitecture
             {
                 variable->Type = VariableType::POINTER;
                 *reinterpret_cast<K *>(variable->Value) = value;
+                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = size_of<K>::value;
             }
             else
             {
                 variable->Type = VariableType::OTHER;
                 *reinterpret_cast<K *>(variable->Value) = value;
+                variable->Value[VARIABLE_VALUE_SIZE - 1] = sizeof(value);
             }
         }
     }
@@ -184,8 +211,10 @@ namespace OperationArchitecture
 
 		size_t Size() const
 		{
-            if(Type == VariableType::BIGOTHER)
+            if(Type == BIGOTHER || Type == POINTER)
                 return *reinterpret_cast<const size_t *>(reinterpret_cast<void * const *>(Value) + 1);
+            if(Type == OTHER)
+                return Value[VARIABLE_VALUE_SIZE-1];
 			return VariableTypeSizeOf(Type);
 		}
 
