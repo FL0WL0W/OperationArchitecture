@@ -1,5 +1,12 @@
 #include <stdint.h>
 
+#define VARIABLE_VALUE_ALIGN (alignof(uint64_t) > alignof(size_t)? alignof(uint64_t) : alignof(size_t))
+#define VARIABLE_VALUE_MINSIZE (sizeof(uint64_t) > 2*sizeof(size_t)? sizeof(uint64_t) : 2*sizeof(size_t))
+#define VARIABLE_ALIGN (VARIABLE_VALUE_ALIGN > alignof(OperationArchitecture::VariableType)? VARIABLE_VALUE_ALIGN : alignof(OperationArchitecture::VariableType))
+#define VARIABLE_SIZE (VARIABLE_VALUE_MINSIZE + (VARIABLE_VALUE_MINSIZE % alignof(OperationArchitecture::VariableType) == 0? 0 : alignof(OperationArchitecture::VariableType) - (VARIABLE_VALUE_MINSIZE % alignof(OperationArchitecture::VariableType))) + sizeof(OperationArchitecture::VariableType))
+#define VARIABLE_SIZE_ALIGNED (VARIABLE_SIZE + (VARIABLE_SIZE % VARIABLE_ALIGN == 0? 0 : VARIABLE_ALIGN - (VARIABLE_SIZE % VARIABLE_ALIGN)))
+#define VARIABLE_VALUE_SIZE (VARIABLE_SIZE_ALIGNED - sizeof(OperationArchitecture::VariableType) - ((VARIABLE_SIZE_ALIGNED - sizeof(OperationArchitecture::VariableType))) % alignof(OperationArchitecture::VariableType))
+
 #ifndef VARIABLETYPE_H
 #define VARIABLETYPE_H
 namespace OperationArchitecture
@@ -38,7 +45,7 @@ namespace OperationArchitecture
             case VariableType::DOUBLE: return sizeof(double);
             case VariableType::BOOLEAN: return sizeof(bool);
             case VariableType::POINTER: return sizeof(void *);
-            case VariableType::OTHER: return sizeof(uint64_t);
+            case VariableType::OTHER: return VARIABLE_VALUE_SIZE;
             case VariableType::BIGOTHER:
             case VariableType::VOID: 
                 break;
@@ -62,7 +69,7 @@ namespace OperationArchitecture
             case VariableType::DOUBLE: return alignof(double);
             case VariableType::BOOLEAN: return alignof(bool);
             case VariableType::POINTER: return alignof(void *);
-            case VariableType::OTHER: return alignof(uint64_t);
+            case VariableType::OTHER: return VARIABLE_VALUE_ALIGN;
             case VariableType::BIGOTHER:
             case VariableType::VOID: 
                 break;

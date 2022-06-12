@@ -36,6 +36,36 @@ namespace UnitTests
 		ASSERT_EQ(Variable::Create(testBigOther).Type, BIGOTHER);
 		ASSERT_EQ(Variable::Create(&testBigOther).Type, POINTER);
 	}
+	TEST(VariableTests, WhenGettingSize_ThenCorrectSizeReturned)
+	{
+		ASSERT_EQ(Variable::Create(static_cast<uint8_t>(0)).Size(), sizeof(uint8_t));
+		ASSERT_EQ(Variable::Create(static_cast<uint16_t>(0)).Size(), sizeof(uint16_t));
+		ASSERT_EQ(Variable::Create(static_cast<uint32_t>(0)).Size(), sizeof(uint32_t));
+		ASSERT_EQ(Variable::Create(static_cast<uint64_t>(0)).Size(), sizeof(uint64_t));
+		ASSERT_EQ(Variable::Create(static_cast<int8_t>(0)).Size(), sizeof(int8_t));
+		ASSERT_EQ(Variable::Create(static_cast<int16_t>(0)).Size(), sizeof(int16_t));
+		ASSERT_EQ(Variable::Create(static_cast<int32_t>(0)).Size(), sizeof(int32_t));
+		ASSERT_EQ(Variable::Create(static_cast<int64_t>(0)).Size(), sizeof(int64_t));
+		ASSERT_EQ(Variable::Create(static_cast<float>(0)).Size(), sizeof(float));
+		ASSERT_EQ(Variable::Create(static_cast<double>(0)).Size(), sizeof(double));
+
+		struct other 
+		{
+			uint8_t test[VARIABLE_VALUE_SIZE];
+		} __attribute__((packed)); 
+		other testOther;
+
+		ASSERT_EQ(Variable::Create(testOther).Size(), VARIABLE_VALUE_SIZE);
+
+		struct bigother 
+		{
+			uint8_t test[VARIABLE_VALUE_SIZE+1];
+		};
+		bigother testBigOther = {};
+
+		ASSERT_EQ(Variable::Create(testBigOther).Size(), sizeof(testBigOther));
+		ASSERT_EQ(Variable::Create(&testBigOther).Size(), sizeof(void *));
+	}
 	TEST(VariableTests, WhenCasting_ThenCorrectValueReturned)
 	{
 		ASSERT_EQ(Variable::Create(static_cast<uint8_t>(10)).To<uint8_t>(), 10);

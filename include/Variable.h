@@ -3,19 +3,10 @@
 #include <type_traits>
 #include "VariableType.h"
 
-#define VARIABLE_VALUE_ALIGN (alignof(uint64_t) > alignof(size_t)? alignof(uint64_t) : alignof(size_t))
-#define VARIABLE_VALUE_MINSIZE (sizeof(uint64_t) > sizeof(size_t)? sizeof(uint64_t) : sizeof(size_t))
-#define VARIABLE_ALIGN (VARIABLE_VALUE_ALIGN > alignof(OperationArchitecture::VariableType)? VARIABLE_VALUE_ALIGN : alignof(OperationArchitecture::VariableType))
-#define VARIABLE_SIZE (VARIABLE_VALUE_MINSIZE + (VARIABLE_VALUE_MINSIZE % alignof(OperationArchitecture::VariableType) == 0? 0 : alignof(OperationArchitecture::VariableType) - (VARIABLE_VALUE_MINSIZE % alignof(OperationArchitecture::VariableType))) + sizeof(OperationArchitecture::VariableType))
-#define VARIABLE_SIZE_ALIGNED (VARIABLE_SIZE + (VARIABLE_SIZE % VARIABLE_ALIGN == 0? 0 : VARIABLE_ALIGN - (VARIABLE_SIZE % VARIABLE_ALIGN)))
-#define VARIABLE_VALUE_SIZE (VARIABLE_SIZE_ALIGNED - sizeof(OperationArchitecture::VariableType) - ((VARIABLE_SIZE_ALIGNED - sizeof(OperationArchitecture::VariableType))) % alignof(OperationArchitecture::VariableType))
-
 #ifndef VARIABLE_H
 #define VARIABLE_H
 namespace OperationArchitecture
 {
-    const size_t _VariableAlign = alignof(uint64_t) > alignof(size_t)? alignof(uint64_t) : alignof(size_t);
-
     struct alignas(VARIABLE_ALIGN) VariableBase
     {
         uint8_t Value[VARIABLE_VALUE_SIZE];
@@ -100,6 +91,7 @@ namespace OperationArchitecture
             {
                 void * dyn = malloc(sizeof(K));
                 *reinterpret_cast<void **>(variable->Value) = dyn;
+                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(K);
             }
             variable->Type = VariableType::BIGOTHER;
             std::memcpy(*reinterpret_cast<K **>(variable->Value), &value, sizeof(K));
@@ -189,6 +181,13 @@ namespace OperationArchitecture
         {
             return VariableTo<K>(this);
         }
+
+		size_t Size() const
+		{
+            if(Type == VariableType::BIGOTHER)
+                return *reinterpret_cast<const size_t *>(reinterpret_cast<void * const *>(Value) + 1);
+			return VariableTypeSizeOf(Type);
+		}
 
         static Variable Int64ToVariable(int64_t result, VariableType targetType)
         {
@@ -366,7 +365,7 @@ namespace OperationArchitecture
                 return 0;
             
             Variable ret = *this;
-            *reinterpret_cast<uint64_t *>(&ret.Value) &= *reinterpret_cast<uint64_t *>(&a.Value);
+            *reinterpret_cast<int64_t *>(&ret.Value) &= *reinterpret_cast<int64_t *>(&a.Value);
             return ret;
         }
         Variable operator|(Variable a)
@@ -376,7 +375,7 @@ namespace OperationArchitecture
                 return 0;
 
             Variable ret = *this;
-            *reinterpret_cast<uint64_t *>(&ret.Value) |= *reinterpret_cast<uint64_t *>(&a.Value);
+            *reinterpret_cast<int64_t *>(&ret.Value) |= *reinterpret_cast<int64_t *>(&a.Value);
             return ret;
         }
         bool operator==(Variable a)
