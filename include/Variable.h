@@ -391,7 +391,7 @@ namespace OperationArchitecture
         {
             if(Type == BIGOTHER || Type == OTHER || Type == POINTER ||
                 a.Type == BIGOTHER || a.Type == OTHER || a.Type == POINTER)
-                return 0;
+                return Variable(static_cast<uint8_t>(0));
             
             Variable ret = *this;
             *reinterpret_cast<int64_t *>(&ret.Value) &= *reinterpret_cast<int64_t *>(&a.Value);
@@ -401,7 +401,7 @@ namespace OperationArchitecture
         {
             if(Type == BIGOTHER || Type == OTHER || Type == POINTER ||
                 a.Type == BIGOTHER || a.Type == OTHER || a.Type == POINTER)
-                return 0;
+                return Variable(static_cast<uint8_t>(0));
 
             Variable ret = *this;
             *reinterpret_cast<int64_t *>(&ret.Value) |= *reinterpret_cast<int64_t *>(&a.Value);
