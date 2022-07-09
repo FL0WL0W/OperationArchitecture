@@ -197,6 +197,7 @@ namespace UnitTests
 		testOther.test[VARIABLE_VALUE_SIZE-2] = 25;
 
 		ASSERT_EQ(Variable::Create(testOther).To<other>().test[VARIABLE_VALUE_SIZE-2], 25);
+		ASSERT_EQ(Variable::Create(testOther).To<other *>()->test[VARIABLE_VALUE_SIZE-2], 25);
 
 		struct bigother 
 		{
