@@ -10,7 +10,8 @@ namespace OperationArchitecture
         uint8_t numberOfReturnVariables = 0;
         for(uint16_t i = 0; i < numberOfOperations; i++)
         {
-            numberOfReturnVariables += operations[i]->NumberOfReturnVariables;
+            if(operations[i] != 0)
+                numberOfReturnVariables += operations[i]->NumberOfReturnVariables;
         }
         return numberOfReturnVariables;
     }
@@ -19,7 +20,7 @@ namespace OperationArchitecture
         uint8_t numberOfParameters = 0;
         for(uint16_t i = 0; i < numberOfOperations; i++)
         {
-            if(operations[i]->NumberOfParameters > numberOfParameters)
+            if(operations[i] != 0 && operations[i]->NumberOfParameters > numberOfParameters)
                 numberOfParameters = operations[i]->NumberOfParameters;
         }
         return numberOfParameters;
@@ -43,6 +44,9 @@ namespace OperationArchitecture
         Variable** operationVariables = new Variable*[NumberOfReturnVariables + NumberOfParameters];
         for(uint16_t i = 0; i < _numberOfOperations; i++)
         {
+            if(_operations[i] == 0)
+                continue;
+                
             //copy return variables
             std::memcpy(operationVariables, variables + returnVariableLocation, sizeof(Variable *) * _operations[i]->NumberOfReturnVariables);
             returnVariableLocation += _operations[i]->NumberOfReturnVariables;
