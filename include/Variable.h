@@ -63,10 +63,12 @@ namespace OperationArchitecture
             case VariableType::BIGOTHER:
             case VariableType::POINTER:
                 if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
-                    return *reinterpret_cast<K *>(variable->Value);
-                return **reinterpret_cast<K **>(variable->Value); //otherwise, return the value stored in the pointer
+                    return *reinterpret_cast<K *>(variable);
+                return **reinterpret_cast<K **>(variable); //otherwise, return the value stored in the pointer
             case VariableType::OTHER:
-                return *reinterpret_cast<K *>(variable->Value);
+                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
+                    return *reinterpret_cast<K *>(&variable);
+                return *reinterpret_cast<K *>(variable);
             default: 
                 //this is bad 
                 return *reinterpret_cast<K *>(0);
