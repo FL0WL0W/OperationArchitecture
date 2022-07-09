@@ -69,8 +69,11 @@ namespace OperationArchitecture
                 if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
                     return *reinterpret_cast<K *>(&variable);
                 return *reinterpret_cast<K *>(variable);
+            case VariableType::VOID:
+                VariableSet(variable, K());
+                if(variable->Type != VariableType::VOID)
+                    return VariableTo<K>(variable);
             default: 
-                //this is bad 
                 return *reinterpret_cast<K *>(0);
         }
     }
