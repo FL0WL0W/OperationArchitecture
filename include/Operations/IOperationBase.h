@@ -33,6 +33,7 @@ namespace OperationArchitecture
 		 */
         IOperationBase();
 
+        virtual ~IOperationBase();
         
 		/**
 		 * @brief This template takes the return and parameters and formats them into variables

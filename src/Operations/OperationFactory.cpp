@@ -7,10 +7,10 @@ namespace OperationArchitecture
 {    
 	OperationFactory::~OperationFactory()
 	{
-		Clear();
 		for (std::list<IOperationBase*>::iterator it = _dynamicOperations.begin(); it != _dynamicOperations.end(); ++it){
 			delete *it;
 		}
+		Clear();
 	}
 
 	void OperationFactory::Clear()

@@ -15,6 +15,11 @@ namespace OperationArchitecture
 		
 	}
 
+	IOperationBase::~IOperationBase()
+	{
+		
+	}
+
 	IOperationBase::IOperationBase(uint8_t numberOfReturnVariables, uint8_t numberOfParameters) :
 		NumberOfReturnVariables(numberOfReturnVariables),
 		NumberOfParameters(numberOfParameters)
