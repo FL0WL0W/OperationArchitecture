@@ -5,10 +5,7 @@
 namespace OperationArchitecture
 {
 	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue) :
-		IOperationBase(1, 0)
-	{
-		_staticValue = staticValue;
-	}
+		IOperationBase(1, 0), _staticValue(staticValue) {}
 
 	void Operation_StaticVariable::AbstractExecute(Variable **variables)
 	{

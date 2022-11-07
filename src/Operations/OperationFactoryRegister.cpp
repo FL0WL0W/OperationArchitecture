@@ -7,6 +7,7 @@
 #include "Operations/Operation_Math.h"
 #include "Operations/Operation_StaticVariable.h"
 #include "Operations/Operation_FaultDetection.h"
+#include "Operations/Operation_UnitConversion.h"
 
 #ifdef OPERATIONFACTORYREGISTER_H
 
@@ -46,6 +47,7 @@ namespace OperationArchitecture
         factory->Register(idOffset + 19, Operation_GreaterThanOrEqualInstance == 0? Operation_GreaterThanOrEqualInstance = new Operation_GreaterThanOrEqual() : Operation_GreaterThanOrEqualInstance);
         factory->Register(idOffset + 20, Operation_LessThanOrEqualInstance == 0? Operation_LessThanOrEqualInstance = new Operation_LessThanOrEqual() : Operation_LessThanOrEqualInstance);
         factory->Register(idOffset + 21, Operation_NotInstance == 0? Operation_NotInstance = new Operation_Not() : Operation_NotInstance);
+        factory->Register(idOffset + 22, Operation_UnitConversion::Create);
     }
 }
 
