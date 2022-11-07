@@ -23,6 +23,7 @@ namespace OperationArchitecture
     Operation_Equal                 *Operation_EqualInstance = 0;
     Operation_GreaterThanOrEqual    *Operation_GreaterThanOrEqualInstance = 0;
     Operation_LessThanOrEqual       *Operation_LessThanOrEqualInstance = 0;
+    Operation_Not                   *Operation_NotInstance = 0;
 
     void OperationFactoryRegister::Register(uint32_t idOffset, OperationFactory *factory, GeneratorMap<Variable> *variableMap)
     {
@@ -44,6 +45,7 @@ namespace OperationArchitecture
         factory->Register(idOffset + 18, Operation_EqualInstance == 0? Operation_EqualInstance = new Operation_Equal() : Operation_EqualInstance);
         factory->Register(idOffset + 19, Operation_GreaterThanOrEqualInstance == 0? Operation_GreaterThanOrEqualInstance = new Operation_GreaterThanOrEqual() : Operation_GreaterThanOrEqualInstance);
         factory->Register(idOffset + 20, Operation_LessThanOrEqualInstance == 0? Operation_LessThanOrEqualInstance = new Operation_LessThanOrEqual() : Operation_LessThanOrEqualInstance);
+        factory->Register(idOffset + 21, Operation_NotInstance == 0? Operation_NotInstance = new Operation_Not() : Operation_NotInstance);
     }
 }
 

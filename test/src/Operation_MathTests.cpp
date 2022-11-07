@@ -72,4 +72,12 @@ namespace UnitTests
 		ASSERT_EQ(true,  (new Operation_LessThanOrEqual())->Execute<bool>(5, 5));
 		ASSERT_EQ(true,  (new Operation_LessThanOrEqual())->Execute<bool>(2, 5));
 	}
+
+	TEST(Operation_MathTests, WhenNotting_OperationNots)
+	{
+		ASSERT_EQ(true,  (new Operation_Not())->Execute<bool>(false));
+		ASSERT_EQ(false,  (new Operation_Not())->Execute<bool>(true));
+		ASSERT_EQ(true,  (new Operation_Not())->Execute<bool>(0));
+		ASSERT_EQ(false, (new Operation_Not())->Execute<bool>(1));
+	}
 }

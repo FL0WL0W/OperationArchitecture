@@ -97,5 +97,12 @@ namespace OperationArchitecture
 		Operation_LessThanOrEqual();
 		void AbstractExecute(Variable **params) override;
 	};
+
+	class Operation_Not : public IOperationBase
+	{
+	public:		
+		Operation_Not();
+		void AbstractExecute(Variable **params) override;
+	};
 }
 #endif
