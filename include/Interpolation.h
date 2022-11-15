@@ -12,12 +12,12 @@ namespace Interpolation
 		uint8_t IndexH;
 	};
 
-	InterpolationResponse Interpolate(const float value, const float maxValue, const float minValue, const uint8_t resolution);
+	InterpolationResponse Interpolate(const float value, const float * const axis, const uint8_t resolution);
 	
 	template<typename K>
-		K InterpolateTable1(const float value, const float maxValue, const float minValue, const uint8_t resolution, const K* table)
+		K InterpolateTable1(const float value, const float * const axis, const uint8_t resolution, const K* table)
 		{
-			return InterpolateTable1<K>(Interpolate(value, maxValue, minValue, resolution), table);
+			return InterpolateTable1<K>(Interpolate(value, axis, resolution), table);
 		}
 	
 	template<typename K>
@@ -32,9 +32,9 @@ namespace Interpolation
 		}
 	
 	template<typename K>
-		K InterpolateTable2(const float valueX, const float maxValueX, const float minValueX, const uint8_t resolutionX, const float valueY, const float maxValueY, const float minValueY, const uint8_t resolutionY, const K* table)
+		K InterpolateTable2(const float valueX, const float * const axisX, const uint8_t resolutionX, const float valueY, const float * const axisY, const uint8_t resolutionY, const K* table)
 		{
-			return InterpolateTable2<K>(Interpolate(valueX, maxValueX, minValueX, resolutionX), resolutionX, Interpolate(valueY, maxValueY, minValueY, resolutionY), table);
+			return InterpolateTable2<K>(Interpolate(valueX, axisX, resolutionX), resolutionX, Interpolate(valueY, axisY, resolutionY), table);
 		}
 	
 	template<typename K>

@@ -18,17 +18,29 @@ namespace UnitTests
 		{			
 			size_t expectedSize = sizeof(Operation_LookupTableConfig) + 
 				((sizeof(Operation_LookupTableConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_LookupTableConfig) % alignof(float))) : 0) + 
+				sizeof(float) * 11 + 
 				sizeof(float) * 11;
 			_config = (Operation_LookupTableConfig *)malloc(expectedSize);
 			
-			_config->MinXValue = 0;
-			_config->MaxXValue = 3.3f;
 			_config->XResolution = 11;
 			_config->TableType = VariableType::FLOAT;
 			void* config = _config;
 			size_t size = 0;
 			Config::OffsetConfig(config, size, sizeof(Operation_LookupTableConfig));
 			Config::AlignConfig(config, size, alignof(float));
+			float * XAxis = reinterpret_cast<float *>(config);
+			XAxis[0] = 0;
+			XAxis[1] = 0.33f;
+			XAxis[2] = 0.66f;
+			XAxis[3] = 0.99f;
+			XAxis[4] = 1.32f;
+			XAxis[5] = 1.65f;
+			XAxis[6] = 1.98f;
+			XAxis[7] = 2.31f;
+			XAxis[8] = 2.64f;
+			XAxis[9] = 2.97f;
+			XAxis[10] = 3.3f;
+			Config::OffsetConfig(config, size, sizeof(float) * 11);
 			float * Table = reinterpret_cast<float *>(config);
 			Table[0] = -10;
 			Table[1] = 0;
@@ -48,10 +60,17 @@ namespace UnitTests
 
 	TEST_F(Operation_LookupTableTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(56, _config->Size());
-		ASSERT_EQ(56, _size);
-		ASSERT_EQ((float *)(_config + 1), _config->Table<float>());
+		void* config = _config;
+		size_t size = 0;
+		Config::OffsetConfig(config, size, sizeof(Operation_LookupTableConfig));
+		Config::AlignConfig(config, size, alignof(float));
+		ASSERT_EQ((float *)(config), _config->XAxis());
+		Config::OffsetConfig(config, size, sizeof(float) * 11);
+		ASSERT_EQ((float *)(config), _config->Table<float>());
+		Config::OffsetConfig(config, size, sizeof(float) * 11);
 		ASSERT_EQ(-10, reinterpret_cast<const float*>(_config->Table<float>())[0]);
+		ASSERT_EQ(size, _config->Size());
+		ASSERT_EQ(size, _size);
 	}
 
 	TEST_F(Operation_LookupTableTests, WhenGettingValueInTable_ThenCorrectValueIsReturned)

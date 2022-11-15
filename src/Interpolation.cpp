@@ -3,13 +3,13 @@
 #ifdef INTERPOLATION_H
 namespace Interpolation
 {
-	InterpolationResponse Interpolate(const float value, const float maxValue, const float minValue, const uint8_t resolution)
+	InterpolationResponse Interpolate(const float value, const float * const axis, const uint8_t resolution)
 	{
 		InterpolationResponse response = { 0, 0, 0 };
 		if (resolution > 1)
 		{
 			const uint8_t resolutionMinus1 = resolution - 1;
-			response.Multiplier = resolutionMinus1 * (value - minValue) / (maxValue - minValue);
+			response.Multiplier = resolutionMinus1 * (value - axis[0]) / (axis[resolution - 1] - axis[0]);
 			if(response.Multiplier < 0)
 			{
 				response.Multiplier = 0;

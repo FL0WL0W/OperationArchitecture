@@ -18,19 +18,35 @@ namespace UnitTests
 		{			
 			_config = (Operation_2AxisTableConfig *)malloc(sizeof(Operation_2AxisTableConfig) + 
 				((sizeof(Operation_2AxisTableConfig) % alignof(float) > 0)? (alignof(float) - (sizeof(Operation_2AxisTableConfig) % alignof(float))) : 0) + 
+				sizeof(float) * 10 + 
+				sizeof(float) * 4 + 
 				sizeof(float) * 40);
 			
-			_config->MinXValue = 0;
-			_config->MaxXValue = 2.97f;
 			_config->XResolution = 10;
-			_config->MinYValue = 0;
-			_config->MaxYValue = 3.3f;
 			_config->YResolution = 4;
 			_config->TableType = VariableType::FLOAT;
 			void* config = _config;
 			size_t size = 0;
 			Config::OffsetConfig(config, size, sizeof(Operation_2AxisTableConfig));
 			Config::AlignConfig(config, size, alignof(float));
+			float * XAxis = reinterpret_cast<float *>(config);
+			Config::OffsetConfig(config, size, sizeof(float) * 10);
+			XAxis[0] = 0;
+			XAxis[1] = 0.33f;
+			XAxis[2] = 0.66f;
+			XAxis[3] = 0.99f;
+			XAxis[4] = 1.32f;
+			XAxis[5] = 1.65f;
+			XAxis[6] = 1.98f;
+			XAxis[7] = 2.31f;
+			XAxis[8] = 2.64f;
+			XAxis[9] = 2.97f;
+			float * YAxis = reinterpret_cast<float *>(config);
+			Config::OffsetConfig(config, size, sizeof(float) * 4);
+			YAxis[0] = 0;
+			YAxis[1] = 1.1f;
+			YAxis[2] = 2.2f;
+			YAxis[3] = 3.3f;
 			float * Table = reinterpret_cast<float *>(config);
 			Table[0] = -10;
 			Table[1] = 0;
@@ -79,10 +95,19 @@ namespace UnitTests
 
 	TEST_F(Operation_2AxisTableTests, ConfigsAreCorrect)
 	{
-		ASSERT_EQ(180, _config->Size());
-		ASSERT_EQ(180, _size);
-		ASSERT_EQ((float *)(_config + 1), _config->Table<float>());
+		void* config = _config;
+		size_t size = 0;
+		Config::OffsetConfig(config, size, sizeof(Operation_2AxisTableConfig));
+		Config::AlignConfig(config, size, alignof(float));
+		ASSERT_EQ((float *)(config), _config->XAxis());
+		Config::OffsetConfig(config, size, sizeof(float) * 10);
+		ASSERT_EQ((float *)(config), _config->YAxis());
+		Config::OffsetConfig(config, size, sizeof(float) * 4);
+		ASSERT_EQ((float *)(config), _config->Table<float>());
 		ASSERT_EQ(-10, ((float *)_config->Table<float>())[0]);
+		Config::OffsetConfig(config, size, sizeof(float) * 40);
+		ASSERT_EQ(size, _config->Size());
+		ASSERT_EQ(size, _size);
 	}
 
 	TEST_F(Operation_2AxisTableTests, WhenGettingValueInTable_ThenCorrectValueIsReturned)

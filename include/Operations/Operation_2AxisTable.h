@@ -14,16 +14,27 @@ namespace OperationArchitecture
 		{
 			
 		}
-		inline size_t size() const
+		inline size_t xAxisOffset() const
 		{
-			const size_t a = VariableTypeAlignOf(TableType);
-			size_t s = sizeof(float);
-			Config::AlignAndAddSize<float>(s);
-			Config::AlignAndAddSize<float>(s);
-			Config::AlignAndAddSize<float>(s);
-			Config::AlignAndAddSize<uint8_t>(s);
+			const size_t af = alignof(float);
+			size_t s = sizeof(uint8_t);
 			Config::AlignAndAddSize<uint8_t>(s);
 			Config::AlignAndAddSize<VariableType>(s);
+			if(s % af > 0)
+				s += af - (s % af);
+			return s;
+		}
+		inline size_t yAxisOffset() const
+		{
+			size_t s = xAxisOffset();
+			s += sizeof(float) * XResolution;
+			return s;
+		}
+		inline size_t tableOffset() const
+		{
+			const size_t a = VariableTypeAlignOf(TableType);
+			size_t s = yAxisOffset();
+			s += sizeof(float) * YResolution;
 			if(s % a > 0)
 				s += a - (s % a);
 			return s;
@@ -32,18 +43,16 @@ namespace OperationArchitecture
 	public:		
 		size_t Size() const
 		{
-			size_t s = size();
+			size_t s = tableOffset();
 			s += VariableTypeSizeOf(TableType) * XResolution * YResolution;
 			return s;
 		}
 
+		const float *XAxis() const { return reinterpret_cast<const float *>(reinterpret_cast<const uint8_t *>(this) + xAxisOffset()); }
+		const float *YAxis() const { return reinterpret_cast<const float *>(reinterpret_cast<const uint8_t *>(this) + yAxisOffset()); }
 		template<typename TABLE_TYPE>
-		const TABLE_TYPE *Table() const { return reinterpret_cast<const TABLE_TYPE *>(reinterpret_cast<const uint8_t *>(this) + size()); }
+		const TABLE_TYPE *Table() const { return reinterpret_cast<const TABLE_TYPE *>(reinterpret_cast<const uint8_t *>(this) + tableOffset()); }
 		
-		float MinXValue;
-		float MaxXValue;
-		float MinYValue;
-		float MaxYValue;
 		uint8_t XResolution;
 		uint8_t YResolution;
 		VariableType TableType;
@@ -59,7 +68,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override
 		{
-			variables[0]->Set(Interpolation::InterpolateTable2<TABLE_TYPE>(variables[1]->To<float>(), _config->MaxXValue, _config->MinXValue, _config->XResolution, variables[2]->To<float>(), _config->MaxYValue, _config->MinYValue, _config->YResolution, _config->Table<TABLE_TYPE>()));
+			variables[0]->Set(Interpolation::InterpolateTable2<TABLE_TYPE>(variables[1]->To<float>(), _config->XAxis(), _config->XResolution, variables[2]->To<float>(), _config->YAxis(), _config->YResolution, _config->Table<TABLE_TYPE>()));
 		}
 	};
 	
