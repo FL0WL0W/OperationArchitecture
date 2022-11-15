@@ -8,23 +8,22 @@ namespace Interpolation
 		InterpolationResponse response = { 0, 0, 0 };
 		if (resolution > 1)
 		{
-			const uint8_t resolutionMinus1 = resolution - 1;
-			response.Multiplier = resolutionMinus1 * (value - axis[0]) / (axis[resolution - 1] - axis[0]);
-			if(response.Multiplier < 0)
+			//value is below minimum
+			if(value <= axis[0])
+				return response;
+
+			while(++response.IndexH < resolution && axis[response.IndexH] < value);
+
+			//this means value is above maximum
+			if(response.IndexH == resolution)
 			{
-				response.Multiplier = 0;
+				response.IndexL = response.IndexH = response.IndexH - 1;
+				return response;
 			}
-			response.IndexL = static_cast<uint8_t>(response.Multiplier);
-			response.Multiplier -= response.IndexL;
-			response.IndexH = response.IndexL + 1;
-			if (response.IndexL > resolutionMinus1)
-			{
-				response.IndexL = response.IndexH = resolutionMinus1;
-			}
-			else if (response.IndexH > resolutionMinus1)
-			{
-				response.IndexH = resolutionMinus1;
-			}
+
+			response.IndexL = response.IndexH - 1;
+
+			response.Multiplier = (value - axis[response.IndexL]) / (axis[response.IndexH] - axis[response.IndexL]);
 		}
 
 		return response;

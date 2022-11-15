@@ -37,7 +37,7 @@ namespace UnitTests
 			XAxis[5] = 1.65f;
 			XAxis[6] = 1.98f;
 			XAxis[7] = 2.31f;
-			XAxis[8] = 2.64f;
+			XAxis[8] = 2.90f;
 			XAxis[9] = 2.97f;
 			XAxis[10] = 3.3f;
 			Config::OffsetConfig(config, size, sizeof(float) * 11);
@@ -80,6 +80,30 @@ namespace UnitTests
 		ASSERT_FLOAT_EQ(20, _operation->Execute<float>(0.99f));
 
 		ASSERT_NEAR(0, _operation->Execute<float>(0.33f), 0.001f);
+
+		ASSERT_NEAR(60, _operation->Execute<float>(2.31f), 0.001f);
+
+		ASSERT_NEAR(62.5, _operation->Execute<float>(2.4575f), 0.001f);
+
+		ASSERT_NEAR(65, _operation->Execute<float>(2.605f), 0.001f);
+
+		ASSERT_NEAR(67.5, _operation->Execute<float>(2.7525f), 0.001f);
+
+		ASSERT_NEAR(70, _operation->Execute<float>(2.90f), 0.001f);
+
+		ASSERT_NEAR(72.5, _operation->Execute<float>(2.9175f), 0.001f);
+
+		ASSERT_NEAR(75, _operation->Execute<float>(2.935f), 0.001f);
+
+		ASSERT_NEAR(77.5, _operation->Execute<float>(2.9525f), 0.001f);
+
+		ASSERT_NEAR(80, _operation->Execute<float>(2.97f), 0.001f);
+
+		ASSERT_NEAR(82.5, _operation->Execute<float>(3.0525f), 0.001f);
+
+		ASSERT_NEAR(85, _operation->Execute<float>(3.135f), 0.001f);
+
+		ASSERT_NEAR(87.5, _operation->Execute<float>(3.2175f), 0.001f);
 
 		ASSERT_NEAR(-1.25f, _operation->Execute<float>(0.28875f), 0.001f);
 	}
