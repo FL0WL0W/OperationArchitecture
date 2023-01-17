@@ -5,7 +5,7 @@
 namespace OperationArchitecture
 {
 	Operation_UnitConversion::Operation_UnitConversion(const float &multiplier, const float &adder) :
-		IOperationBase(1, 1), _multiplier(multiplier), _adder(adder) { }
+		AbstractOperation(1, 1), _multiplier(multiplier), _adder(adder) { }
 
 
 	void Operation_UnitConversion::AbstractExecute(Variable **variables)
@@ -13,7 +13,7 @@ namespace OperationArchitecture
 		variables[0]->Set(variables[1]->To<float>() * _multiplier + _adder);
 	}
 
-	IOperationBase * Operation_UnitConversion::Create(const void *config, size_t &sizeOut)
+	AbstractOperation * Operation_UnitConversion::Create(const void *config, size_t &sizeOut)
 	{
 		return new Operation_UnitConversion(Config::CastAndOffset<float>(config, sizeOut), Config::CastAndOffset<float>(config, sizeOut));
 	}

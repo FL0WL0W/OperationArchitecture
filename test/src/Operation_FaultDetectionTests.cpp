@@ -10,7 +10,7 @@ namespace UnitTests
 	{
 		protected:
 		Operation_FaultDetectionConfig<float> *_config;
-		IOperationBase *_operation;
+		AbstractOperation *_operation;
 		size_t _size = 0;
 
 		Operation_FaultDetectionTests() 

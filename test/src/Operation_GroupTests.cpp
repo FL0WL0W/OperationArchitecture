@@ -10,16 +10,16 @@ namespace UnitTests
 	class Operation_GroupTests : public Test
 	{
 		protected:
-		IOperationBase *_operationAdd;
-		IOperationBase *_operationSubtract;
-		IOperationBase *_operation;
+		AbstractOperation *_operationAdd;
+		AbstractOperation *_operationSubtract;
+		AbstractOperation *_operation;
 
 		Operation_GroupTests() 
 		{
 			size_t size = 0;
 			_operationAdd = new Operation_Add();
 			_operationSubtract = new Operation_Subtract();
-			IOperationBase **operations = new IOperationBase*[2];
+			AbstractOperation **operations = new AbstractOperation*[2];
 			operations[0] = _operationAdd;
 			operations[1] = _operationSubtract;
 			_operation = new Operation_Group(operations, 2);

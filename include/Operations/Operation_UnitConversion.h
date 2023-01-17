@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -7,7 +7,7 @@
 #define OPERATION_UNITCONVERSION_H
 namespace OperationArchitecture
 {
-	class Operation_UnitConversion : public IOperationBase
+	class Operation_UnitConversion : public AbstractOperation
 	{
 	protected:
 		float _multiplier;
@@ -17,7 +17,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override;
 
-		static IOperationBase *Create(const void *config, size_t &sizeOut);
+		static AbstractOperation *Create(const void *config, size_t &sizeOut);
 	};
 }
 #endif

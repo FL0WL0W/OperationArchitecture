@@ -4,7 +4,7 @@
 namespace OperationArchitecture
 {
 
-	IOperationBase *Operation_LookupTableCreate(const void *config, size_t &sizeOut)
+	AbstractOperation *Operation_LookupTableCreate(const void *config, size_t &sizeOut)
 	{
 		const Operation_LookupTableConfig *tableConfig = Config::CastConfigAndOffset<Operation_LookupTableConfig>(config, sizeOut);
 

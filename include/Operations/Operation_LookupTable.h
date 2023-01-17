@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -51,12 +51,12 @@ namespace OperationArchitecture
 	};
 
 	template<typename TABLE_TYPE>
-	class Operation_LookupTable : public IOperationBase
+	class Operation_LookupTable : public AbstractOperation
 	{
 	protected:
 		const Operation_LookupTableConfig *_config;
 	public:		
-        Operation_LookupTable(const Operation_LookupTableConfig * const &config) : IOperationBase(1, 1), _config(config) { }
+        Operation_LookupTable(const Operation_LookupTableConfig * const &config) : AbstractOperation(1, 1), _config(config) { }
 
 		void AbstractExecute(Variable **variables) override
 		{
@@ -64,6 +64,6 @@ namespace OperationArchitecture
 		}
 	};
 
-	IOperationBase *Operation_LookupTableCreate(const void *config, size_t &sizeOut);
+	AbstractOperation *Operation_LookupTableCreate(const void *config, size_t &sizeOut);
 }
 #endif

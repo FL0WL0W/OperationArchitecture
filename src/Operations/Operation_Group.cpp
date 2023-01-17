@@ -5,7 +5,7 @@
 
 namespace OperationArchitecture
 {
-    inline uint8_t totalReturnVariables(IOperationBase * const * const &operations, const uint16_t & numberOfOperations)
+    inline uint8_t totalReturnVariables(AbstractOperation * const * const &operations, const uint16_t & numberOfOperations)
     {
         uint8_t numberOfReturnVariables = 0;
         for(uint16_t i = 0; i < numberOfOperations; i++)
@@ -15,7 +15,7 @@ namespace OperationArchitecture
         }
         return numberOfReturnVariables;
     }
-    inline uint8_t totalParameters(IOperationBase * const * const &operations, const uint16_t &numberOfOperations)
+    inline uint8_t totalParameters(AbstractOperation * const * const &operations, const uint16_t &numberOfOperations)
     {
         uint8_t numberOfParameters = 0;
         for(uint16_t i = 0; i < numberOfOperations; i++)
@@ -27,8 +27,8 @@ namespace OperationArchitecture
     }
 
     //operations array will be deleted when package is deleted, contents of operations array will not be deleted
-    Operation_Group::Operation_Group(IOperationBase * const * const operations, const uint16_t &numberOfOperations) :
-        IOperationBase(totalReturnVariables(operations, numberOfOperations), totalParameters(operations, numberOfOperations)),
+    Operation_Group::Operation_Group(AbstractOperation * const * const operations, const uint16_t &numberOfOperations) :
+        AbstractOperation(totalReturnVariables(operations, numberOfOperations), totalParameters(operations, numberOfOperations)),
         _operations(operations),
         _numberOfOperations(numberOfOperations)
     { }
@@ -59,10 +59,10 @@ namespace OperationArchitecture
         delete operationVariables;
     }
     
-    IOperationBase *Operation_Group::Create(const void *config, size_t &sizeOut, OperationFactory *factory)
+    AbstractOperation *Operation_Group::Create(const void *config, size_t &sizeOut, OperationFactory *factory)
     {
         const uint16_t numberOfOperations = Config::CastAndOffset<uint16_t>(config, sizeOut);
-        IOperationBase **operations = new IOperationBase*[numberOfOperations];
+        AbstractOperation **operations = new AbstractOperation*[numberOfOperations];
 
         for(uint16_t i = 0; i < numberOfOperations; i++)
         {

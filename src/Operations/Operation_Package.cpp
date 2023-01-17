@@ -5,7 +5,7 @@
 
 namespace OperationArchitecture
 {    
-    inline uint8_t totalReturnVariables(IOperationBase *operation, Variable **executionvariables)
+    inline uint8_t totalReturnVariables(AbstractOperation *operation, Variable **executionvariables)
     {
         uint8_t numberOfReturnVariables = 0;
         for(uint8_t i = 0; i < operation->NumberOfReturnVariables; i++)
@@ -15,7 +15,7 @@ namespace OperationArchitecture
         }
         return numberOfReturnVariables;
     }
-    inline uint8_t totalParameters(IOperationBase *operation, Variable **executionvariables)
+    inline uint8_t totalParameters(AbstractOperation *operation, Variable **executionvariables)
     {
         uint8_t numberOfParameters = 0;
         for(uint8_t i = 0; i < operation->NumberOfParameters; i++)
@@ -28,8 +28,8 @@ namespace OperationArchitecture
 
     //operation will not be deleted when package is deleted
     //executionvariables array will be deleted when package is deleted. contents of executionvariables will not be deleted
-    Operation_Package::Operation_Package(IOperationBase *operation, Variable **executionvariables) :
-        IOperationBase(totalReturnVariables(operation, executionvariables), totalParameters(operation, executionvariables)),
+    Operation_Package::Operation_Package(AbstractOperation *operation, Variable **executionvariables) :
+        AbstractOperation(totalReturnVariables(operation, executionvariables), totalParameters(operation, executionvariables)),
         _operation(operation),
         _executionvariables(executionvariables)
     {
@@ -60,13 +60,13 @@ namespace OperationArchitecture
         _operation->AbstractExecute(_executionvariables);
     }
 
-    IOperationBase *Operation_Package::Create(const void *config, size_t &sizeOut, OperationFactory *factory, GeneratorMap<Variable> *variableMap)
+    AbstractOperation *Operation_Package::Create(const void *config, size_t &sizeOut, OperationFactory *factory, GeneratorMap<Variable> *variableMap)
     {
         const uint32_t factoryId = Config::Cast<uint32_t>(config);
 
         //Create operation
         size_t size = 0;
-        IOperationBase *operation = factory->Create(config, size);
+        AbstractOperation *operation = factory->Create(config, size);
         Config::OffsetConfig(config, sizeOut, size);
 
         //Create Execute Variables

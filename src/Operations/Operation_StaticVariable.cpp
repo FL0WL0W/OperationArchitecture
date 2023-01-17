@@ -5,14 +5,14 @@
 namespace OperationArchitecture
 {
 	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue) :
-		IOperationBase(1, 0), _staticValue(staticValue) {}
+		AbstractOperation(1, 0), _staticValue(staticValue) {}
 
 	void Operation_StaticVariable::AbstractExecute(Variable **variables)
 	{
 		variables[0]->Set(_staticValue);
 	}
 
-	IOperationBase * Operation_StaticVariable::Create(const void *config, size_t &sizeOut)
+	AbstractOperation * Operation_StaticVariable::Create(const void *config, size_t &sizeOut)
 	{
 		const VariableType staticValueType = Config::CastAndOffset<VariableType>(config, sizeOut);
 		Variable staticValue;

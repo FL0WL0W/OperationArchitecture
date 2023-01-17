@@ -23,15 +23,15 @@ namespace UnitTests
 			bool test3;
 		};
 
-		IOperationBase *_operation;
+		AbstractOperation *_operation;
 		size_t _size = 0;
 		size_t _expectedSize = 0;
 		size_t _buildSize = 0;
-		IOperationBase *_operationOther;
+		AbstractOperation *_operationOther;
 		size_t _sizeOther = 0;
 		size_t _expectedSizeOther = 0;
 		size_t _buildSizeOther = 0;
-		IOperationBase *_operationBigOther;
+		AbstractOperation *_operationBigOther;
 		size_t _sizeBigOther = 0;
 		size_t _expectedSizeBigOther = 0;
 		size_t _buildSizeBigOther = 0;

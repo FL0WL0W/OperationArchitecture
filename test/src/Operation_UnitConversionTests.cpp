@@ -10,7 +10,7 @@ namespace UnitTests
 	class Operation_UnitConversionTests : public Test
 	{
 		protected:
-		IOperationBase *_operation;
+		AbstractOperation *_operation;
 		size_t _size = 0;
 		size_t _expectedSize = 0;
 		size_t _buildSize = 0;

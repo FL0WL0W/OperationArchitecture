@@ -10,8 +10,8 @@ namespace UnitTests
 	class Operation_PackageTests : public Test
 	{
 		protected:
-		IOperationBase *_operation;
-		IOperationBase *_operationAdd;
+		AbstractOperation *_operation;
+		AbstractOperation *_operationAdd;
 		Variable ** _variables = new Variable*[3];
 
 		Operation_PackageTests() 

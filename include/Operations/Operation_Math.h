@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 
@@ -21,84 +21,84 @@ namespace OperationArchitecture
 		LESSTHANOREQUAL = 10
 	};
 
-	class Operation_Add : public IOperationBase
+	class Operation_Add : public AbstractOperation
 	{
 	public:		
 		Operation_Add();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_Subtract : public IOperationBase
+	class Operation_Subtract : public AbstractOperation
 	{
 	public:		
 		Operation_Subtract();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_Multiply : public IOperationBase
+	class Operation_Multiply : public AbstractOperation
 	{
 	public:		
 		Operation_Multiply();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_Divide : public IOperationBase
+	class Operation_Divide : public AbstractOperation
 	{
 	public:		
 		Operation_Divide();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_And : public IOperationBase
+	class Operation_And : public AbstractOperation
 	{
 	public:		
 		Operation_And();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_Or : public IOperationBase
+	class Operation_Or : public AbstractOperation
 	{
 	public:		
 		Operation_Or();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_GreaterThan : public IOperationBase
+	class Operation_GreaterThan : public AbstractOperation
 	{
 	public:	
 		Operation_GreaterThan();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_LessThan : public IOperationBase
+	class Operation_LessThan : public AbstractOperation
 	{
 	public:		
 		Operation_LessThan();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_Equal : public IOperationBase
+	class Operation_Equal : public AbstractOperation
 	{
 	public:		
 		Operation_Equal();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_GreaterThanOrEqual : public IOperationBase
+	class Operation_GreaterThanOrEqual : public AbstractOperation
 	{
 	public:		
 		Operation_GreaterThanOrEqual();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_LessThanOrEqual : public IOperationBase
+	class Operation_LessThanOrEqual : public AbstractOperation
 	{
 	public:		
 		Operation_LessThanOrEqual();
 		void AbstractExecute(Variable **params) override;
 	};
 
-	class Operation_Not : public IOperationBase
+	class Operation_Not : public AbstractOperation
 	{
 	public:		
 		Operation_Not();

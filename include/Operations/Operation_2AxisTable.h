@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -59,12 +59,12 @@ namespace OperationArchitecture
 	};
 
 	template<typename TABLE_TYPE>
-	class Operation_2AxisTable : public IOperationBase
+	class Operation_2AxisTable : public AbstractOperation
 	{
 	protected:
 		const Operation_2AxisTableConfig * const _config;
 	public:		
-        Operation_2AxisTable(const Operation_2AxisTableConfig * const &config) : IOperationBase(1, 2), _config(config) { }
+        Operation_2AxisTable(const Operation_2AxisTableConfig * const &config) : AbstractOperation(1, 2), _config(config) { }
 
 		void AbstractExecute(Variable **variables) override
 		{
@@ -72,6 +72,6 @@ namespace OperationArchitecture
 		}
 	};
 	
-	IOperationBase *Operation_2AxisTableCreate(const void *config, size_t &sizeOut);
+	AbstractOperation *Operation_2AxisTableCreate(const void *config, size_t &sizeOut);
 }
 #endif

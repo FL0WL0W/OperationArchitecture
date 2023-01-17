@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -25,12 +25,12 @@ namespace OperationArchitecture
 	};
 
 	template<typename compare_t>
-	class Operation_FaultDetection : public IOperationBase
+	class Operation_FaultDetection : public AbstractOperation
 	{
 	protected:
 		const Operation_FaultDetectionConfig<compare_t> * const _config;
 	public:		
-        Operation_FaultDetection(const Operation_FaultDetectionConfig<compare_t> * const &config) : IOperationBase(1, 1), _config(config) {}
+        Operation_FaultDetection(const Operation_FaultDetectionConfig<compare_t> * const &config) : AbstractOperation(1, 1), _config(config) {}
 
 		void AbstractExecute(Variable **variables) override
 		{
@@ -83,7 +83,7 @@ namespace OperationArchitecture
 			}
 		}
 
-		static IOperationBase *Create(const void *config, size_t &sizeOut)
+		static AbstractOperation *Create(const void *config, size_t &sizeOut)
 		{
 			const Operation_FaultDetectionConfig<compare_t> *faultConfig = Config::CastConfigAndOffset<Operation_FaultDetectionConfig<compare_t>>(config, sizeOut);
 			return new Operation_FaultDetection(faultConfig);

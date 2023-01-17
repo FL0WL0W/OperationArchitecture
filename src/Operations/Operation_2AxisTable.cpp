@@ -3,7 +3,7 @@
 #ifdef OPERATION_2AXISTABLE_H
 namespace OperationArchitecture
 {
-	IOperationBase *Operation_2AxisTableCreate(const void *config, size_t &sizeOut)
+	AbstractOperation *Operation_2AxisTableCreate(const void *config, size_t &sizeOut)
 	{
 		const Operation_2AxisTableConfig *tableConfig = Config::CastConfigAndOffset<Operation_2AxisTableConfig>(config, sizeOut);
 

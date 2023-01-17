@@ -1,9 +1,9 @@
-#include "Operations/IOperationBase.h"
+#include "Operations/AbstractOperation.h"
 #include <utility>
 #include <tuple>
 
-#ifndef IOPERATION_H
-#define IOPERATION_H
+#ifndef OPERATION_H
+#define OPERATION_H
 namespace OperationArchitecture
 {
     //c++ 2011 and below don't include std::index_sequence_for<T...>; and std::index_sequence<Ints...>;
@@ -37,12 +37,12 @@ namespace OperationArchitecture
 	using index_sequence_for = make_index_sequence<sizeof...(T)>;
 #endif
 
-    //// Defines an IOperationBase with specified return variable and parameters
+    //// Defines an AbstractOperation with specified return variable and parameters
     template<typename RET, typename... PARAMS>
-    class IOperation : public IOperationBase
+    class Operation : public AbstractOperation
     {
         public:
-        IOperation() : IOperationBase(1, sizeof...(PARAMS)) {}
+        Operation() : AbstractOperation(1, sizeof...(PARAMS)) {}
         virtual RET Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
@@ -56,12 +56,12 @@ namespace OperationArchitecture
         }
     };
     
-    //// Defines an IOperationBase with specified parameters
+    //// Defines an AbstractOperation with specified parameters
     template<typename... PARAMS>
-    class IOperation<void, PARAMS...> : public IOperationBase
+    class Operation<void, PARAMS...> : public AbstractOperation
     {
         public:
-        IOperation() : IOperationBase(0, sizeof...(PARAMS)) {}
+        Operation() : AbstractOperation(0, sizeof...(PARAMS)) {}
         virtual void Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
@@ -75,12 +75,12 @@ namespace OperationArchitecture
         }
     };
     
-    //// Defines an IOperationBase with multiple return variables and specified parameters
+    //// Defines an AbstractOperation with multiple return variables and specified parameters
     template<typename... RETs, typename... PARAMS>
-    class IOperation<std::tuple<RETs...>, PARAMS...> : public IOperationBase
+    class Operation<std::tuple<RETs...>, PARAMS...> : public AbstractOperation
     {
         public:
-        IOperation() : IOperationBase(sizeof...(RETs), sizeof...(PARAMS)) {}
+        Operation() : AbstractOperation(sizeof...(RETs), sizeof...(PARAMS)) {}
         virtual std::tuple<RETs...> Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {

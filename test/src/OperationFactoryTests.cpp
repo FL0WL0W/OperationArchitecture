@@ -13,8 +13,8 @@ namespace UnitTests
 	{
 		protected:
 		OperationFactory *_factory;
-		IOperationBase *_operation2;
-		IOperationBase *_operation3;
+		AbstractOperation *_operation2;
+		AbstractOperation *_operation3;
 		size_t _size = 0;
 		size_t _size2 = 0;
 		size_t _expectedSize = 0;

@@ -1,11 +1,11 @@
 #include "Variable.h"
 
-#ifndef IOPERATIONBASE_H
-#define IOPERATIONBASE_H
+#ifndef ABSTRACTOPERATION_H
+#define ABSTRACTOPERATION_H
 namespace OperationArchitecture
 {
     //// Defines an abstract operation
-    class IOperationBase
+    class AbstractOperation
     {
         public:
         //// The number of return variables for AbstractExecute.
@@ -26,14 +26,14 @@ namespace OperationArchitecture
          * @param numberOfReturnVariables The number of return variables for AbstractExecute. This value is stored into NumberOfReturnVariables.
          * @param numberOfParameters The number of parameters for AbstractExecute. This value is stored into NumberOfParameters.
 		 */
-        IOperationBase(uint8_t numberOfReturnVariables, uint8_t numberOfParameters);
+        AbstractOperation(uint8_t numberOfReturnVariables, uint8_t numberOfParameters);
 
 		/**
 		 * @brief Default constructor for an operation with no parameters or return variables
 		 */
-        IOperationBase();
+        AbstractOperation();
 
-        virtual ~IOperationBase();
+        virtual ~AbstractOperation();
         
 		/**
 		 * @brief This template takes the return and parameters and formats them into variables

@@ -1,4 +1,4 @@
-#include "Operations/IOperation.h"
+#include "Operations/Operation.h"
 #include "Interpolation.h"
 #include "Variable.h"
 #include "Config.h"
@@ -42,13 +42,13 @@ namespace OperationArchitecture
 	};
 
 	template<typename a_t>
-	class Operation_Polynomial : public IOperationBase
+	class Operation_Polynomial : public AbstractOperation
 	{
 	protected:
 		const Operation_PolynomialConfig<a_t> *_config;
 	public:		
         Operation_Polynomial(const Operation_PolynomialConfig<a_t> * const &config) :
-			IOperationBase(1, 1)
+			AbstractOperation(1, 1)
 		{
 			_config = config;
 		}
@@ -67,7 +67,7 @@ namespace OperationArchitecture
 			variables[0]->Set(val);
 		}
 
-		static IOperationBase *Create(const void *config, size_t &sizeOut)
+		static AbstractOperation *Create(const void *config, size_t &sizeOut)
 		{
 			const Operation_PolynomialConfig<a_t> *polynomialConfig = Config::CastConfigAndOffset<Operation_PolynomialConfig<a_t>>(config, sizeOut);
 			return new Operation_Polynomial<a_t>(polynomialConfig);
