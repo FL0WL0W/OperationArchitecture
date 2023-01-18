@@ -16,7 +16,6 @@ namespace UnitTests
 
 		Operation_GroupTests() 
 		{
-			size_t size = 0;
 			_operationAdd = new Operation_Add();
 			_operationSubtract = new Operation_Subtract();
 			AbstractOperation **operations = new AbstractOperation*[2];

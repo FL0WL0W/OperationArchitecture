@@ -62,8 +62,6 @@ namespace OperationArchitecture
 
     AbstractOperation *Operation_Package::Create(const void *config, size_t &sizeOut, OperationFactory *factory, GeneratorMap<Variable> *variableMap)
     {
-        const uint32_t factoryId = Config::Cast<uint32_t>(config);
-
         //Create operation
         size_t size = 0;
         AbstractOperation *operation = factory->Create(config, size);
