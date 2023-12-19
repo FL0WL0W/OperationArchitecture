@@ -10,6 +10,7 @@ namespace OperationArchitecture
     protected:
         AbstractOperation * const * const _operations;
         const uint16_t _numberOfOperations;
+        Variable** _operationVariables;
     public:
         Operation_Group(AbstractOperation * const * const operations, const uint16_t &numberOfOperations);
         ~Operation_Group();

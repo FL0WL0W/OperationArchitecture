@@ -31,9 +31,9 @@ namespace OperationArchitecture
     Operation_Package::Operation_Package(AbstractOperation *operation, Variable **executionvariables) :
         AbstractOperation(totalReturnVariables(operation, executionvariables), totalParameters(operation, executionvariables)),
         _operation(operation),
-        _executionvariables(executionvariables)
+        _executionvariables(executionvariables),
+        _variableInMap(new uint8_t[NumberOfParameters + NumberOfReturnVariables])
     {
-        _variableInMap = new uint8_t[NumberOfParameters + NumberOfReturnVariables];
         uint8_t v = 0;
         for(uint8_t i = 0; i < operation->NumberOfParameters + operation->NumberOfReturnVariables; i++)
         {
@@ -47,7 +47,7 @@ namespace OperationArchitecture
 
     Operation_Package::~Operation_Package()
     {
-        delete _executionvariables;
+        delete[] _executionvariables;
         delete[] _variableInMap;
     }
 
