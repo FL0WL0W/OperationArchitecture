@@ -66,9 +66,7 @@ namespace OperationArchitecture
 
         for(uint16_t i = 0; i < numberOfOperations; i++)
         {
-            size_t size = 0;
-            operations[i] = factory->Create(config, size);
-            Config::OffsetConfig(config, sizeOut, size);
+            operations[i] = factory->Create(config, sizeOut);
         }
 
         return new Operation_Group(operations, numberOfOperations);
