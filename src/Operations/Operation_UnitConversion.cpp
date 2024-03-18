@@ -10,7 +10,7 @@ namespace OperationArchitecture
 
 	void Operation_UnitConversion::AbstractExecute(Variable **variables)
 	{
-		variables[0]->Set(variables[1]->To<float>() * _multiplier + _adder);
+		*variables[0] = (*variables[1]) * _multiplier + _adder;
 	}
 
 	AbstractOperation * Operation_UnitConversion::Create(const void *config, size_t &sizeOut)

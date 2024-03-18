@@ -16,23 +16,23 @@ namespace UnitTests
 
 		Operation_PackageTests() 
 		{	
-			_variables[0] = new Variable(0);
-			_variables[1] = new Variable(0);
-			_variables[2] = new Variable(0);
+			_variables[0] = new Variable();
+			_variables[1] = new Variable();
+			_variables[2] = new Variable();
 			_operation = new Operation_Package(new Operation_Add(), _variables);
 		}
 	};
 
 	TEST_F(Operation_PackageTests, WhenExecutingOperation_VariableIsStored)
 	{
-		_variables[1]->Set(20);
-		_variables[2]->Set(2);
+		*_variables[1] = 20;
+		*_variables[2] = 2;
 		_operation->Execute();
-		ASSERT_EQ(22, _variables[0]->To<int>());
+		ASSERT_EQ(*_variables[0], 22);
 
-		_variables[1]->Set(5);
-		_variables[2]->Set(2);
+		*_variables[1] = 5;
+		*_variables[2] = 2;
 		_operation->Execute();
-		ASSERT_EQ(7, _variables[0]->To<int>());
+		ASSERT_EQ(*_variables[0], 7);
 	}
 }

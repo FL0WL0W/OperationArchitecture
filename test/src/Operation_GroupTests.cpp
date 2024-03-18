@@ -33,11 +33,11 @@ namespace UnitTests
 		Variable **variables = new Variable*[4];
 		for(int i = 0; i < 4; i++)
 			variables[i] = new Variable();
-		variables[2]->Set(5);
-		variables[3]->Set(2);
+		*variables[2] = 5;
+		*variables[3] = 2;
 		_operation->AbstractExecute(variables);
 
-		ASSERT_EQ(7, variables[0]->To<int>());
-		ASSERT_EQ(3, variables[1]->To<int>());
+		ASSERT_EQ(*variables[0], 7);
+		ASSERT_EQ(*variables[1], 3);
 	}
 }

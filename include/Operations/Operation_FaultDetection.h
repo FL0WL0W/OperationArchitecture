@@ -34,43 +34,43 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override
 		{
-			compare_t test = variables[1]->To<compare_t>();
+			compare_t test = *variables[1];
 			if(test < _config->MinValue || test > _config->MaxValue)
 			{
 				switch(variables[1]->Type)
 				{
 					case UINT8:
-						variables[0]->Set<uint8_t>(_config->DefaultValue);
+						*variables[0] = static_cast<uint8_t>(_config->DefaultValue);
 						break;
 					case UINT16:
-						variables[0]->Set<uint16_t>(_config->DefaultValue);
+						*variables[0] = static_cast<uint16_t>(_config->DefaultValue);
 						break;
 					case UINT32:
-						variables[0]->Set<uint32_t>(_config->DefaultValue);
+						*variables[0] = static_cast<uint32_t>(_config->DefaultValue);
 						break;
 					case UINT64:
-						variables[0]->Set<uint64_t>(_config->DefaultValue);
+						*variables[0] = static_cast<uint64_t>(_config->DefaultValue);
 						break;
 					case INT8:
-						variables[0]->Set<int8_t>(_config->DefaultValue);
+						*variables[0] = static_cast<int8_t>(_config->DefaultValue);
 						break;
 					case INT16:
-						variables[0]->Set<int16_t>(_config->DefaultValue);
+						*variables[0] = static_cast<int16_t>(_config->DefaultValue);
 						break;
 					case INT32:
-						variables[0]->Set<int32_t>(_config->DefaultValue);
+						*variables[0] = static_cast<int32_t>(_config->DefaultValue);
 						break;
 					case INT64:
-						variables[0]->Set<int64_t>(_config->DefaultValue);
+						*variables[0] = static_cast<int64_t>(_config->DefaultValue);
 						break;
 					case FLOAT:
-						variables[0]->Set<float>(_config->DefaultValue);
+						*variables[0] = static_cast<float>(_config->DefaultValue);
 						break;
 					case DOUBLE:
-						variables[0]->Set<double>(_config->DefaultValue);
+						*variables[0] = static_cast<double>(_config->DefaultValue);
 						break;
 					case BOOLEAN:
-						variables[0]->Set<bool>(_config->DefaultValue);
+						*variables[0] = static_cast<bool>(_config->DefaultValue);
 						break;
 					default:
 						//should throw here
@@ -79,7 +79,7 @@ namespace OperationArchitecture
 			}
 			else
 			{
-				variables[0]->Set(*variables[1]);
+				*variables[0] = *variables[1];
 			}
 		}
 

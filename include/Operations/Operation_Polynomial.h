@@ -55,7 +55,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override
 		{
-			const a_t x = variables[1]->To<a_t>();
+			const a_t x = *variables[1];
 			const a_t * a = _config->A();
 			a_t val = a[0];
 			for (uint8_t i = 1; i <= _config->Degree; i++)
@@ -64,7 +64,7 @@ namespace OperationArchitecture
 				val = _config->MinValue;
 			else if (val > _config->MaxValue)
 				val = _config->MaxValue;
-			variables[0]->Set(val);
+			*variables[0] = val;
 		}
 
 		static AbstractOperation *Create(const void *config, size_t &sizeOut)

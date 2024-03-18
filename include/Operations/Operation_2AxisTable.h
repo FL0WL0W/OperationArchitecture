@@ -68,7 +68,7 @@ namespace OperationArchitecture
 
 		void AbstractExecute(Variable **variables) override
 		{
-			variables[0]->Set(Interpolation::InterpolateTable2<TABLE_TYPE>(variables[1]->To<float>(), _config->XAxis(), _config->XResolution, variables[2]->To<float>(), _config->YAxis(), _config->YResolution, _config->Table<TABLE_TYPE>()));
+			*variables[0] = Interpolation::InterpolateTable2<TABLE_TYPE>(*variables[1], _config->XAxis(), _config->XResolution, *variables[2], _config->YAxis(), _config->YResolution, _config->Table<TABLE_TYPE>());
 		}
 	};
 	

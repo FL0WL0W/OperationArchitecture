@@ -44,16 +44,15 @@ namespace OperationArchitecture
         template<typename RET, int..., typename... PARAMS>
         RET Execute(PARAMS... params)
         {
-            Variable parameters[sizeof...(PARAMS) + 1] = { Variable::Create(0), Variable::Create(params)... };
+            Variable parameters[sizeof...(PARAMS) + 1] = { 0, params... };
             Variable *variables[sizeof...(PARAMS) + 1];
             for(size_t i = 0; i < sizeof...(PARAMS) + 1; i++)
             {
                 variables[i] = &parameters[i];
             } 
-            Variable * const ret = variables[0];
 
             AbstractExecute(variables);
-            return ret->To<RET>();
+            return *variables[0];
         }
 
 		/**
@@ -64,7 +63,7 @@ namespace OperationArchitecture
         template<int..., typename... PARAMS>
         void Execute(PARAMS... params)
         {
-            Variable parameters[sizeof...(PARAMS)] = { Variable::Create(params)... };
+            Variable parameters[sizeof...(PARAMS)] = { params... };
             Variable *variables[sizeof...(PARAMS)];
             for(size_t i = 0; i < sizeof...(PARAMS); i++)
             {

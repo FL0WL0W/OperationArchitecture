@@ -52,7 +52,7 @@ namespace OperationArchitecture
 
         template<std::size_t... ParamIndex>
         void AbstractExecuteImpl(index_sequence<ParamIndex...>, Variable **variables) {
-            variables[0]->Set(Execute(variables[ParamIndex + 1]->To<PARAMS>()...));
+            *variables[0] = Execute(*variables[ParamIndex + 1]...);
         }
     };
     
@@ -71,7 +71,7 @@ namespace OperationArchitecture
 
         template<std::size_t... ParamIndex>
         void AbstractExecuteImpl(index_sequence<ParamIndex...>, Variable **variables) {
-            Execute(variables[ParamIndex]->To<PARAMS>()...);
+            Execute(*variables[ParamIndex]...);
         }
     };
     
@@ -91,9 +91,9 @@ namespace OperationArchitecture
 
         template<std::size_t... RetIndex, std::size_t... ParamIndex>
         void AbstractExecuteImpl(index_sequence<RetIndex...>, index_sequence<ParamIndex...>, Variable **variables) {
-            std::tuple<RETs...> rets = Execute(variables[ParamIndex + NumberOfReturnVariables]->template To<PARAMS>()...);
+            std::tuple<RETs...> rets = Execute(*variables[ParamIndex + NumberOfReturnVariables]...);
             //this is fucking stupid, why can't i just "variables[RetIndex]->Set(std::get<RetIndex>(rets))...;" ?
-            int expand_type[] = { (variables[RetIndex]->Set(std::get<RetIndex>(rets)), 0)... };
+            int expand_type[] = { (* variables[RetIndex] = std::get<RetIndex>(rets), 0)... };
         }
     };
 }

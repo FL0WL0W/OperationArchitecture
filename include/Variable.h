@@ -33,21 +33,21 @@ namespace OperationArchitecture
     struct Variable;
 
     template<typename K>
-    K VariableBaseTo(VariableBase *variable)
+    const K VariableBaseTo(const VariableBase *variable)
     {
         switch(variable->Type)
         {
-            case VariableType::UINT8: return static_cast<K>(*reinterpret_cast<uint8_t *>(variable->Value));
-            case VariableType::UINT16: return static_cast<K>(*reinterpret_cast<uint16_t *>(variable->Value));
-            case VariableType::UINT32: return static_cast<K>(*reinterpret_cast<uint32_t *>(variable->Value));
-            case VariableType::UINT64: return static_cast<K>(*reinterpret_cast<uint64_t *>(variable->Value));
-            case VariableType::INT8: if(static_cast<K>(-1) > 0 && *reinterpret_cast<int8_t *>(variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<int8_t *>(variable->Value));
-            case VariableType::INT16: if(static_cast<K>(-1) > 0 && *reinterpret_cast<int16_t *>(variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<int16_t *>(variable->Value));
-            case VariableType::INT32: if(static_cast<K>(-1) > 0 && *reinterpret_cast<int32_t *>(variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<int32_t *>(variable->Value));
-            case VariableType::INT64: if(static_cast<K>(-1) > 0 && *reinterpret_cast<int64_t *>(variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<int64_t *>(variable->Value));
-            case VariableType::FLOAT: if(static_cast<K>(-1) > 0 && *reinterpret_cast<float *>(variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<float *>(variable->Value));
-            case VariableType::DOUBLE: if(static_cast<K>(-1) > 0 && *reinterpret_cast<double *>(variable->Value) < 0) return 0; return static_cast<K>(*reinterpret_cast<double *>(variable->Value));
-            case VariableType::BOOLEAN: return static_cast<K>(*reinterpret_cast<bool *>(variable->Value));
+            case VariableType::UINT8: return static_cast<const K>(*reinterpret_cast<const uint8_t *>(variable->Value));
+            case VariableType::UINT16: return static_cast<const K>(*reinterpret_cast<const uint16_t *>(variable->Value));
+            case VariableType::UINT32: return static_cast<const K>(*reinterpret_cast<const uint32_t *>(variable->Value));
+            case VariableType::UINT64: return static_cast<const K>(*reinterpret_cast<const uint64_t *>(variable->Value));
+            case VariableType::INT8: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int8_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int8_t *>(variable->Value));
+            case VariableType::INT16: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int16_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int16_t *>(variable->Value));
+            case VariableType::INT32: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int32_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int32_t *>(variable->Value));
+            case VariableType::INT64: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int64_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int64_t *>(variable->Value));
+            case VariableType::FLOAT: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const float *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const float *>(variable->Value));
+            case VariableType::DOUBLE: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const double *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const double *>(variable->Value));
+            case VariableType::BOOLEAN: return static_cast<const K>(*reinterpret_cast<const bool *>(variable->Value));
             default:
                 return 0;
         }
@@ -56,54 +56,56 @@ namespace OperationArchitecture
 #pragma GCC push_options
 #pragma GCC optimize("O0")
     template<typename K>
-    K VariableTo(VariableBase *variable)
+    K VariableTo(const VariableBase *variable)
     {
         switch(variable->Type)
         {
             case VariableType::BIGOTHER:
             case VariableType::POINTER:
                 if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
-                    return *reinterpret_cast<K *>(variable);
-                return **reinterpret_cast<K **>(variable); //otherwise, return the value stored in the pointer
+                    return *reinterpret_cast<const K *>(variable->Value);
+                return **reinterpret_cast<K * const *>(variable->Value); //otherwise, return the value stored in the pointer
             case VariableType::OTHER:
-                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
-                    return *reinterpret_cast<K *>(&variable);
-                return *reinterpret_cast<K *>(variable);
+                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer 
+                {
+                    //probably a better, 1 liner way to do this
+                    const uint8_t *intermediatePointer = &variable->Value[0];
+                    return *reinterpret_cast<const K*>(reinterpret_cast<const void *>(&intermediatePointer));
+                }
+                return *reinterpret_cast<const K *>(variable->Value);
             case VariableType::VOID:
-                VariableSet(variable, K());
-                if(variable->Type != VariableType::VOID)
-                    return VariableTo<K>(variable);
+                return K();
             default: 
-                return *reinterpret_cast<K *>(0);
+                return *reinterpret_cast<const K *>(0);
         }
     }
 #pragma GCC pop_options
     template<>
-    uint8_t VariableTo<uint8_t>(VariableBase *variable);
+    uint8_t VariableTo<uint8_t>(const VariableBase *variable);
     template<>
-    uint16_t VariableTo<uint16_t>(VariableBase *variable);
+    uint16_t VariableTo<uint16_t>(const VariableBase *variable);
     template<>
-    uint32_t VariableTo<uint32_t>(VariableBase *variable);
+    uint32_t VariableTo<uint32_t>(const VariableBase *variable);
     template<>
-    uint64_t VariableTo<uint64_t>(VariableBase *variable);
+    uint64_t VariableTo<uint64_t>(const VariableBase *variable);
     template<>
-    int8_t VariableTo<int8_t>(VariableBase *variable);
+    int8_t VariableTo<int8_t>(const VariableBase *variable);
     template<>
-    int16_t VariableTo<int16_t>(VariableBase *variable);
+    int16_t VariableTo<int16_t>(const VariableBase *variable);
     template<>
-    int32_t VariableTo<int32_t>(VariableBase *variable);
+    int32_t VariableTo<int32_t>(const VariableBase *variable);
     template<>
-    int64_t VariableTo<int64_t>(VariableBase *variable);
+    int64_t VariableTo<int64_t>(const VariableBase *variable);
     template<>
-    float VariableTo<float>(VariableBase *variable);
+    float VariableTo<float>(const VariableBase *variable);
     template<>
-    double VariableTo<double>(VariableBase *variable);
+    double VariableTo<double>(const VariableBase *variable);
     template<>
-    bool VariableTo<bool>(VariableBase *variable);
+    bool VariableTo<bool>(const VariableBase *variable);
     template<>
-    VariableBase VariableTo<VariableBase>(VariableBase *variable);
+    VariableBase VariableTo<VariableBase>(const VariableBase *variable);
     template<>
-    Variable VariableTo<Variable>(VariableBase *variable);
+    Variable VariableTo<Variable>(const VariableBase *variable);
 
     template<typename K>
     void VariableSet(VariableBase *variable, K value)
@@ -175,44 +177,28 @@ namespace OperationArchitecture
 
     struct Variable : public VariableBase
     {
+        template<typename K>
+        Variable(K variable)
+        {
+            VariableSet(this, variable);
+        }
+
         Variable()
         {
             Type = VOID;
             for(size_t i = 0; i < sizeof(Value); i++)
                 Value[i] = 0;
         }
-        Variable(VariableBase variable) { Set(variable); }
-        Variable(uint8_t variable) { Set(variable); }
-        Variable(uint16_t variable) { Set(variable); }
-        Variable(uint32_t variable) { Set(variable); }
-        Variable(uint64_t variable) { Set(variable); }
-        Variable(int8_t variable) { Set(variable); }
-        Variable(int16_t variable) { Set(variable); }
-        Variable(int32_t variable) { Set(variable); }
-        Variable(int64_t variable) { Set(variable); }
-        Variable(float variable) { Set(variable); }
-        Variable(double variable) { Set(variable); }
-        Variable(bool variable) { Set(variable); }
 
         template<typename K>
-        static Variable Create(K value) 
-        { 
-            Variable variable;
-            variable.Set(value); 
-            return variable;
-        }
-
-        template<typename K>
-        void Set(K value)
+        Variable operator=(K value)
         {
             VariableSet(this, value);
+            return *this;
         }
 
         template<typename K>
-        K To()
-        {
-            return VariableTo<K>(this);
-        }
+        operator K() const { return VariableTo<K>(this); }
 
 		size_t Size() const
 		{
@@ -229,230 +215,230 @@ namespace OperationArchitecture
             {
                 case UINT8:
                     if(result > static_cast<int64_t>(4294967295))
-                        return Create(static_cast<uint64_t>(result));
+                        return static_cast<uint64_t>(result);
                     if(result > 65535)
-                        return Create(static_cast<uint32_t>(result));
+                        return static_cast<uint32_t>(result);
                     if(result > 255)
-                        return Create(static_cast<uint16_t>(result));
+                        return static_cast<uint16_t>(result);
                     if(result < -static_cast<int64_t>(2147483648))
-                        return Create(static_cast<int64_t>(result));
+                        return static_cast<int64_t>(result);
                     if(result < -32768)
-                        return Create(static_cast<int32_t>(result));
+                        return static_cast<int32_t>(result);
                     if(result < -128)
-                        return Create(static_cast<int16_t>(result));
+                        return static_cast<int16_t>(result);
                     if(result < 0)
-                        return Create(static_cast<int8_t>(result));
-                    return Create(static_cast<uint8_t>(result));
+                        return static_cast<int8_t>(result);
+                    return static_cast<uint8_t>(result);
                 case INT8:
                     if(result > static_cast<int64_t>(2147483648) || result < -static_cast<int64_t>(2147483648))
-                        return Create(result);
+                        return result;
                     if(result > 32767 || result < -32768)
-                        return Create(static_cast<int32_t>(result));
+                        return static_cast<int32_t>(result);
                     if(result > 127 || result < -128)
-                        return Create(static_cast<int16_t>(result));
-                    return Create(static_cast<int8_t>(result));
+                        return static_cast<int16_t>(result);
+                    return static_cast<int8_t>(result);
                 case UINT16:
                     if(result > static_cast<int64_t>(4294967295))
-                        return Create(static_cast<uint64_t>(result));
+                        return static_cast<uint64_t>(result);
                     if(result < -static_cast<int64_t>(2147483648))
-                        return Create(static_cast<int64_t>(result));
+                        return static_cast<int64_t>(result);
                     if(result > 65535)
-                        return Create(static_cast<uint32_t>(result));
+                        return static_cast<uint32_t>(result);
                     if(result < -32768)
-                        return Create(static_cast<int32_t>(result));
+                        return static_cast<int32_t>(result);
                     if(result < 0)
-                        return Create(static_cast<int16_t>(result));
-                    return Create(static_cast<uint16_t>(result));
+                        return static_cast<int16_t>(result);
+                    return static_cast<uint16_t>(result);
                 case INT16:
                     if(result > static_cast<int64_t>(2147483648) || result < -static_cast<int64_t>(2147483648))
-                        return Create(result);
+                        return result;
                     if(result > 32767 || result < -32768)
-                        return Create(static_cast<int32_t>(result));
-                    return Create(static_cast<int16_t>(result));
+                        return static_cast<int32_t>(result);
+                    return static_cast<int16_t>(result);
                 case UINT32:
                     if(result > static_cast<int64_t>(4294967295))
-                        return Create(static_cast<uint64_t>(result));
+                        return static_cast<uint64_t>(result);
                     if(result < -static_cast<int64_t>(2147483648))
-                        return Create(static_cast<int64_t>(result));
+                        return static_cast<int64_t>(result);
                     if(result < 0)
-                        return Create(static_cast<int32_t>(result));
-                    return Create(static_cast<uint32_t>(result));
+                        return static_cast<int32_t>(result);
+                    return static_cast<uint32_t>(result);
                 case INT32:
                     if(result > static_cast<int64_t>(2147483648) || result < -static_cast<int64_t>(2147483648))
-                        return Create(result);
-                    return Create(static_cast<int32_t>(result));
+                        return result;
+                    return static_cast<int32_t>(result);
                 case UINT64:
                     if(result < 0)
-                        return Create(static_cast<int64_t>(result));
-                    return Create(static_cast<uint64_t>(result));
+                        return static_cast<int64_t>(result);
+                    return static_cast<uint64_t>(result);
                 case INT64:
-                    return Create(result);
+                    return result;
                 default:
                     return Variable();//its bad if this happens
             }
         }
 
-        Variable operator+(Variable a)
+        Variable operator+(Variable a) const
         {
             if(Type == BOOLEAN || a.Type == BOOLEAN)
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Create(To<bool>() || a.To<bool>());
+                    return static_cast<bool>(*this) || static_cast<bool>(a);
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Create(To<double>() + a.To<double>());
+                return static_cast<double>(*this) + static_cast<double>(a);
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Create(To<float>() + a.To<float>());
+                return static_cast<float>(*this) + static_cast<float>(a);
             }
-            uint64_t preResult = To<uint64_t>() + a.To<uint64_t>();
+            uint64_t preResult = static_cast<uint64_t>(*this) + static_cast<uint64_t>(a);
             if(preResult > 9223372036854775807)
-                return Create(static_cast<uint64_t>(preResult));
-            int64_t result = To<int64_t>() + a.To<int64_t>();
+                return static_cast<uint64_t>(preResult);
+            int64_t result = static_cast<int64_t>(*this) + static_cast<int64_t>(a);
             return Int64ToVariable(result, Type);
         }
-        Variable operator-(Variable a)
+        Variable operator-(Variable a) const
         {
             if(Type == BOOLEAN || a.Type == BOOLEAN)
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Create(To<bool>() || !a.To<bool>());
+                    return static_cast<bool>(*this) || !static_cast<bool>(a);
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Create(To<double>() - a.To<double>());
+                return static_cast<double>(*this) - static_cast<double>(a);
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Create(To<float>() - a.To<float>());
+                return static_cast<float>(*this) - static_cast<float>(a);
             }
-            if(To<uint64_t>() > a.To<uint64_t>())
+            if(static_cast<uint64_t>(*this) > static_cast<uint64_t>(a))
             {
-                uint64_t preResult = To<uint64_t>() - a.To<uint64_t>();
+                uint64_t preResult = static_cast<uint64_t>(*this) - static_cast<uint64_t>(a);
                 if(preResult > 9223372036854775807)
-                    return Create(static_cast<uint64_t>(preResult));
+                    return static_cast<uint64_t>(preResult);
             }
-            int64_t result = To<int64_t>() - a.To<int64_t>();
+            int64_t result = static_cast<int64_t>(*this) - static_cast<int64_t>(a);
             return Int64ToVariable(result, Type);
         }
-        Variable operator*(Variable a)
+        Variable operator*(Variable a) const
         {
             if(Type == BOOLEAN || a.Type == BOOLEAN)
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Create(To<bool>() && a.To<bool>());
+                    return static_cast<bool>(*this) && static_cast<bool>(a);
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Create(To<double>() * a.To<double>());
+                return static_cast<double>(*this) * static_cast<double>(a);
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Create(To<float>() * a.To<float>());
+                return static_cast<float>(*this) * static_cast<float>(a);
             }
-            uint64_t preResult = To<uint64_t>() * a.To<uint64_t>();
+            uint64_t preResult = static_cast<uint64_t>(*this) * static_cast<uint64_t>(a);
             if(preResult > 9223372036854775807)
-                return Create(static_cast<uint64_t>(preResult));
-            int64_t result = To<int64_t>() * a.To<int64_t>();
+                return static_cast<uint64_t>(preResult);
+            int64_t result = static_cast<int64_t>(*this) * static_cast<int64_t>(a);
             return Int64ToVariable(result, Type);
         }
-        Variable operator/(Variable a)
+        Variable operator/(Variable a) const
         {
             if(Type == BOOLEAN || a.Type == BOOLEAN)
             {
                 if(Type == BOOLEAN && a.Type == BOOLEAN)
                 {
-                    return Create(To<bool>() && !a.To<bool>());
+                    return static_cast<bool>(*this) && !static_cast<bool>(a);
                 }
             }
             if(Type == DOUBLE || a.Type == DOUBLE)
             {
-                return Create(To<double>() / a.To<double>());
+                return static_cast<double>(*this) / static_cast<double>(a);
             }
             if(Type == FLOAT || a.Type == FLOAT)
             {
-                return Create(To<float>() / a.To<float>());
+                return static_cast<float>(*this) / static_cast<float>(a);
             }
-            if(a.To<uint64_t>() != 0)
+            if(static_cast<uint64_t>(a) != 0)
             {
-                uint64_t preResult = To<uint64_t>() / a.To<uint64_t>();
+                uint64_t preResult = static_cast<uint64_t>(*this) / static_cast<uint64_t>(a);
                 if(preResult > 9223372036854775807)
-                    return Create(static_cast<uint64_t>(preResult));
+                    return static_cast<uint64_t>(preResult);
             }
-            if(a.To<int64_t>() == 0)
-                return Create(false);
-            int64_t result = To<int64_t>() / a.To<int64_t>();
+            if(static_cast<int64_t>(a) == 0)
+                return false;
+            int64_t result = static_cast<int64_t>(*this) / static_cast<int64_t>(a);
             return Int64ToVariable(result, Type);
         }
-        Variable operator&(Variable a)
+        Variable operator&(Variable a) const
         {
             if(Type == BIGOTHER || Type == OTHER || Type == POINTER ||
                 a.Type == BIGOTHER || a.Type == OTHER || a.Type == POINTER)
-                return Variable(static_cast<uint8_t>(0));
+                return static_cast<uint8_t>(0);
             
             Variable ret = *this;
             *reinterpret_cast<int64_t *>(&ret.Value) &= *reinterpret_cast<int64_t *>(&a.Value);
             return ret;
         }
-        Variable operator|(Variable a)
+        Variable operator|(Variable a) const
         {
             if(Type == BIGOTHER || Type == OTHER || Type == POINTER ||
                 a.Type == BIGOTHER || a.Type == OTHER || a.Type == POINTER)
-                return Variable(static_cast<uint8_t>(0));
+                return static_cast<uint8_t>(0);
 
             Variable ret = *this;
             *reinterpret_cast<int64_t *>(&ret.Value) |= *reinterpret_cast<int64_t *>(&a.Value);
             return ret;
         }
-        bool operator==(Variable a)
+        bool operator==(Variable a) const
         {
             if(Type == DOUBLE || a.Type == DOUBLE)
-                return To<double>() == a.To<double>();
+                return static_cast<double>(*this) == static_cast<double>(a);
             if(Type == FLOAT || a.Type == FLOAT)
-                return To<float>() == a.To<float>();
+                return static_cast<float>(*this) == static_cast<float>(a);
             if(Type == UINT64 && a.Type == UINT64)
-                return To<uint64_t>() == a.To<uint64_t>();
-            if(Type == UINT64 && To<uint64_t>() > 9223372036854775807)
+                return static_cast<uint64_t>(*this) == static_cast<uint64_t>(a);
+            if(Type == UINT64 && static_cast<uint64_t>(*this) > 9223372036854775807)
                 return false;
-            if(a.Type == UINT64 && a.To<uint64_t>() > 9223372036854775807)
+            if(a.Type == UINT64 && static_cast<uint64_t>(a) > 9223372036854775807)
                 return false;
             if(Type == BOOLEAN || a.Type == BOOLEAN)
-                return To<bool>() == a.To<bool>();
-            return To<int64_t>() == a.To<int64_t>();
+                return static_cast<bool>(*this) == static_cast<bool>(a);
+            return static_cast<int64_t>(*this) == static_cast<int64_t>(a);
         }
-        bool operator<(Variable a)
+        bool operator<(Variable a) const
         {
             if(Type == DOUBLE || a.Type == DOUBLE)
-                return To<double>() < a.To<double>();
+                return static_cast<double>(*this) < static_cast<double>(a);
             if(Type == FLOAT || a.Type == FLOAT)
-                return To<float>() < a.To<float>();
+                return static_cast<float>(*this) < static_cast<float>(a);
             if(Type == UINT64 && a.Type == UINT64)
-                return To<uint64_t>() < a.To<uint64_t>();
-            if(Type == UINT64 && To<uint64_t>() >= 9223372036854775807)
+                return static_cast<uint64_t>(*this) < static_cast<uint64_t>(a);
+            if(Type == UINT64 && static_cast<uint64_t>(*this) >= 9223372036854775807)
                 return false;
-            if(a.Type == UINT64 && a.To<uint64_t>() >= 9223372036854775807)
+            if(a.Type == UINT64 && static_cast<uint64_t>(a) >= 9223372036854775807)
                 return true;
             if(Type == BOOLEAN || a.Type == BOOLEAN)
                 return static_cast<bool>(0);
-            return To<int64_t>() < a.To<int64_t>();
+            return static_cast<int64_t>(*this) < static_cast<int64_t>(a);
         }
-        bool operator>(Variable a)
+        bool operator>(Variable a) const
         {
             return a < *this;
         }
-        bool operator>=(Variable a)
+        bool operator>=(Variable a) const
         {
             return !(*this < a);
         }
-        bool operator<=(Variable a)
+        bool operator<=(Variable a) const
         {
             return !(a < *this);
         }

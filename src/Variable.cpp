@@ -4,36 +4,36 @@
 namespace OperationArchitecture
 {
     template<>
-    uint8_t VariableTo<uint8_t>(VariableBase *variable) { return VariableBaseTo<uint8_t>(variable); }
+    uint8_t VariableTo<uint8_t>(const VariableBase *variable)  { return VariableBaseTo<uint8_t>(variable); }
     template<>
-    uint16_t VariableTo<uint16_t>(VariableBase *variable) { return VariableBaseTo<uint16_t>(variable); }
+    uint16_t VariableTo<uint16_t>(const VariableBase *variable) { return VariableBaseTo<uint16_t>(variable); }
     template<>
-    uint32_t VariableTo<uint32_t>(VariableBase *variable) { return VariableBaseTo<uint32_t>(variable); }
+    uint32_t VariableTo<uint32_t>(const VariableBase *variable) { return VariableBaseTo<uint32_t>(variable); }
     template<>
-    uint64_t VariableTo<uint64_t>(VariableBase *variable) { return VariableBaseTo<uint64_t>(variable); }
+    uint64_t VariableTo<uint64_t>(const VariableBase *variable) { return VariableBaseTo<uint64_t>(variable); }
     template<>
-    int8_t VariableTo<int8_t>(VariableBase *variable) { return VariableBaseTo<int8_t>(variable); }
+    int8_t VariableTo<int8_t>(const VariableBase *variable) { return VariableBaseTo<int8_t>(variable); }
     template<>
-    int16_t VariableTo<int16_t>(VariableBase *variable) { return VariableBaseTo<int16_t>(variable); }
+    int16_t VariableTo<int16_t>(const VariableBase *variable) { return VariableBaseTo<int16_t>(variable); }
     template<>
-    int32_t VariableTo<int32_t>(VariableBase *variable) { return VariableBaseTo<int32_t>(variable); }
+    int32_t VariableTo<int32_t>(const VariableBase *variable) { return VariableBaseTo<int32_t>(variable); }
     template<>
-    int64_t VariableTo<int64_t>(VariableBase *variable) { return VariableBaseTo<int64_t>(variable); }
+    int64_t VariableTo<int64_t>(const VariableBase *variable) { return VariableBaseTo<int64_t>(variable); }
     template<>
-    float VariableTo<float>(VariableBase *variable) { return VariableBaseTo<float>(variable); }
+    float VariableTo<float>(const VariableBase *variable) { return VariableBaseTo<float>(variable); }
     template<>
-    double VariableTo<double>(VariableBase *variable) { return VariableBaseTo<double>(variable); }
+    double VariableTo<double>(const VariableBase *variable) { return VariableBaseTo<double>(variable); }
     template<>
-    bool VariableTo<bool>(VariableBase *Variable)
+    bool VariableTo<bool>(const VariableBase *Variable)
     {
         if(Variable->Type == VariableType::BOOLEAN)
-            return *reinterpret_cast<bool *>(&Variable->Value);
+            return *reinterpret_cast<const bool *>(&Variable->Value);
         return false;
     }
     template<>
-    VariableBase VariableTo<VariableBase>(VariableBase *variable) { return *variable; }
+    VariableBase VariableTo<VariableBase>(const VariableBase *variable) { return *variable; }
     template<>
-    Variable VariableTo<Variable>(VariableBase *variable) { return *variable; }
+    Variable VariableTo<Variable>(const VariableBase *variable) { return *variable; }
 
 
     template<>
