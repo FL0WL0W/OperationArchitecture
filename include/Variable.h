@@ -7,28 +7,12 @@
 #define VARIABLE_H
 namespace OperationArchitecture
 {
-    template<bool b, typename K2>
-    struct size_of2 { const static size_t value = sizeof(K2); };
-
-    template<typename K2>
-    struct size_of2<true, K2> { const static K2 k; const static size_t value = sizeof(*k); };
-
-    template<>
-    struct size_of2<true, const void *> { const static size_t value = 0; };
-
-    template<>
-    struct size_of2<true, void *> { const static size_t value = 0; };
-
-    template<typename K>
-    struct size_of 
-    {
-        const static size_t value = size_of2<std::is_pointer<K>::value, K>::value;
-    };
-
     struct Variable;
 
     template<typename K>
     K VariableTo(const Variable *variable);
+    template<typename K>
+    void VariableSet(Variable *variable, K value);
     
     struct alignas(VARIABLE_ALIGN) Variable
     {
@@ -304,7 +288,7 @@ namespace OperationArchitecture
 #pragma GCC push_options
 #pragma GCC optimize("O0")
     template<typename K>
-    K VariableTo(const Variable *variable)
+    inline K VariableTo(const Variable *variable)
     {
         switch(variable->Type)
         {
@@ -328,35 +312,76 @@ namespace OperationArchitecture
         }
     }
 #pragma GCC pop_options
+    template<typename K>
+    inline const K VariableScalarTo(const Variable *variable)
+    {
+        switch(variable->Type)
+        {
+            case VariableType::UINT8: return static_cast<const K>(*reinterpret_cast<const uint8_t *>(variable->Value));
+            case VariableType::UINT16: return static_cast<const K>(*reinterpret_cast<const uint16_t *>(variable->Value));
+            case VariableType::UINT32: return static_cast<const K>(*reinterpret_cast<const uint32_t *>(variable->Value));
+            case VariableType::UINT64: return static_cast<const K>(*reinterpret_cast<const uint64_t *>(variable->Value));
+            case VariableType::INT8: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int8_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int8_t *>(variable->Value));
+            case VariableType::INT16: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int16_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int16_t *>(variable->Value));
+            case VariableType::INT32: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int32_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int32_t *>(variable->Value));
+            case VariableType::INT64: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int64_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int64_t *>(variable->Value));
+            case VariableType::FLOAT: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const float *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const float *>(variable->Value));
+            case VariableType::DOUBLE: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const double *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const double *>(variable->Value));
+            case VariableType::BOOLEAN: return static_cast<const K>(*reinterpret_cast<const bool *>(variable->Value));
+            default:
+                return 0;
+        }
+    }
     template<>
-    uint8_t VariableTo<uint8_t>(const Variable *variable);
+    inline uint8_t VariableTo<uint8_t>(const Variable *variable)  { return VariableScalarTo<uint8_t>(variable); }
     template<>
-    uint16_t VariableTo<uint16_t>(const Variable *variable);
+    inline uint16_t VariableTo<uint16_t>(const Variable *variable) { return VariableScalarTo<uint16_t>(variable); }
     template<>
-    uint32_t VariableTo<uint32_t>(const Variable *variable);
+    inline uint32_t VariableTo<uint32_t>(const Variable *variable) { return VariableScalarTo<uint32_t>(variable); }
     template<>
-    uint64_t VariableTo<uint64_t>(const Variable *variable);
+    inline uint64_t VariableTo<uint64_t>(const Variable *variable) { return VariableScalarTo<uint64_t>(variable); }
     template<>
-    int8_t VariableTo<int8_t>(const Variable *variable);
+    inline int8_t VariableTo<int8_t>(const Variable *variable) { return VariableScalarTo<int8_t>(variable); }
     template<>
-    int16_t VariableTo<int16_t>(const Variable *variable);
+    inline int16_t VariableTo<int16_t>(const Variable *variable) { return VariableScalarTo<int16_t>(variable); }
     template<>
-    int32_t VariableTo<int32_t>(const Variable *variable);
+    inline int32_t VariableTo<int32_t>(const Variable *variable) { return VariableScalarTo<int32_t>(variable); }
     template<>
-    int64_t VariableTo<int64_t>(const Variable *variable);
+    inline int64_t VariableTo<int64_t>(const Variable *variable) { return VariableScalarTo<int64_t>(variable); }
     template<>
-    float VariableTo<float>(const Variable *variable);
+    inline float VariableTo<float>(const Variable *variable) { return VariableScalarTo<float>(variable); }
     template<>
-    double VariableTo<double>(const Variable *variable);
+    inline double VariableTo<double>(const Variable *variable) { return VariableScalarTo<double>(variable); }
     template<>
-    bool VariableTo<bool>(const Variable *variable);
+    inline bool VariableTo<bool>(const Variable *Variable)
+    {
+        if(Variable->Type == VariableType::BOOLEAN)
+            return *reinterpret_cast<const bool *>(&Variable->Value);
+        return false;
+    }
     template<>
-    Variable VariableTo<Variable>(const Variable *variable);
+    inline Variable VariableTo<Variable>(const Variable *variable) { return *variable; }
+
+    template<bool b, typename K2>
+    struct size_of2 { const static size_t value = sizeof(K2); };
+
+    template<typename K2>
+    struct size_of2<true, K2> { const static K2 k; const static size_t value = sizeof(*k); };
+
     template<>
-    Variable VariableTo<Variable>(const Variable *variable);
+    struct size_of2<true, const void *> { const static size_t value = 0; };
+
+    template<>
+    struct size_of2<true, void *> { const static size_t value = 0; };
 
     template<typename K>
-    void VariableSet(Variable *variable, K value)
+    struct size_of 
+    {
+        const static size_t value = size_of2<std::is_pointer<K>::value, K>::value;
+    };
+    
+    template<typename K>
+    inline void VariableSet(Variable *variable, K value)
     {
         if(sizeof(value) > VARIABLE_VALUE_SIZE - 1)
         {
@@ -397,28 +422,76 @@ namespace OperationArchitecture
         }
     }
     template<>
-    void VariableSet<uint8_t>(Variable *variable, uint8_t value);
+    inline void VariableSet(Variable *variable, uint8_t value)
+    {
+        variable->Type = VariableType::UINT8;
+        *reinterpret_cast<uint8_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<uint16_t>(Variable *variable, uint16_t value);
+    inline void VariableSet(Variable *variable, uint16_t value)
+    {
+        variable->Type = VariableType::UINT16;
+        *reinterpret_cast<uint16_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<uint32_t>(Variable *variable, uint32_t value);
+    inline void VariableSet(Variable *variable, uint32_t value)
+    {
+        variable->Type = VariableType::UINT32;
+        *reinterpret_cast<uint32_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<uint64_t>(Variable *variable, uint64_t value);
+    inline void VariableSet(Variable *variable, uint64_t value)
+    {
+        variable->Type = VariableType::UINT64;
+        *reinterpret_cast<uint64_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<int8_t>(Variable *variable, int8_t value);
+    inline void VariableSet(Variable *variable, int8_t value)
+    {
+        variable->Type = VariableType::INT8;
+        *reinterpret_cast<int8_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<int16_t>(Variable *variable, int16_t value);
+    inline void VariableSet(Variable *variable, int16_t value)
+    {
+        variable->Type = VariableType::INT16;
+        *reinterpret_cast<int16_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<int32_t>(Variable *variable, int32_t value);
+    inline void VariableSet(Variable *variable, int32_t value)
+    {
+        variable->Type = VariableType::INT32;
+        *reinterpret_cast<int32_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<int64_t>(Variable *variable, int64_t value);
+    inline void VariableSet(Variable *variable, int64_t value)
+    {
+        variable->Type = VariableType::INT64;
+        *reinterpret_cast<int64_t *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<float>(Variable *variable, float value);
+    inline void VariableSet(Variable *variable, float value)
+    {
+        variable->Type = VariableType::FLOAT;
+        *reinterpret_cast<float *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<double>(Variable *variable, double value);
+    inline void VariableSet(Variable *variable, double value)
+    {
+        variable->Type = VariableType::DOUBLE;
+        *reinterpret_cast<double *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<bool>(Variable *variable, bool value);
+    inline void VariableSet(Variable *variable, bool value)
+    {
+        variable->Type = VariableType::BOOLEAN;
+        *reinterpret_cast<bool *>(variable->Value) = value;
+    }
     template<>
-    void VariableSet<Variable>(Variable *variable, Variable value);
+    inline void VariableSet(Variable *variable, Variable value)
+    {
+        variable->Type = value.Type;
+        std::memcpy(variable->Value, &value.Value, sizeof(Variable::Value));
+    }
 }
 #endif
