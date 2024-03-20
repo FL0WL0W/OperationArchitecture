@@ -41,7 +41,7 @@ namespace OperationArchitecture
     template<typename RET, typename... PARAMS>
     class Operation : public AbstractOperation
     {
-        public:
+    public:
         Operation() : AbstractOperation(1, sizeof...(PARAMS)) {}
         virtual RET Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
@@ -50,8 +50,9 @@ namespace OperationArchitecture
             AbstractExecuteImpl(paramIndex, variables);
         }
 
+    private:
         template<std::size_t... ParamIndex>
-        void AbstractExecuteImpl(index_sequence<ParamIndex...>, Variable **variables) {
+        inline void AbstractExecuteImpl(index_sequence<ParamIndex...>, Variable **variables) {
             *variables[0] = Execute(*variables[ParamIndex + 1]...);
         }
     };
@@ -60,7 +61,7 @@ namespace OperationArchitecture
     template<typename... PARAMS>
     class Operation<void, PARAMS...> : public AbstractOperation
     {
-        public:
+    public:
         Operation() : AbstractOperation(0, sizeof...(PARAMS)) {}
         virtual void Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
@@ -69,8 +70,9 @@ namespace OperationArchitecture
             AbstractExecuteImpl(paramIndex, variables);
         }
 
+    private:
         template<std::size_t... ParamIndex>
-        void AbstractExecuteImpl(index_sequence<ParamIndex...>, Variable **variables) {
+        inline void AbstractExecuteImpl(index_sequence<ParamIndex...>, Variable **variables) {
             Execute(*variables[ParamIndex]...);
         }
     };
@@ -79,7 +81,7 @@ namespace OperationArchitecture
     template<typename... RETs, typename... PARAMS>
     class Operation<std::tuple<RETs...>, PARAMS...> : public AbstractOperation
     {
-        public:
+    public:
         Operation() : AbstractOperation(sizeof...(RETs), sizeof...(PARAMS)) {}
         virtual std::tuple<RETs...> Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
@@ -88,12 +90,15 @@ namespace OperationArchitecture
             index_sequence_for<PARAMS...> paramIndex = index_sequence_for<PARAMS...>{};
             AbstractExecuteImpl(retIndex, paramIndex, variables);
         }
-
+        
+    private:
+        template< typename... P>
+        inline void func(P ...p) {}
+        
         template<std::size_t... RetIndex, std::size_t... ParamIndex>
-        void AbstractExecuteImpl(index_sequence<RetIndex...>, index_sequence<ParamIndex...>, Variable **variables) {
+        inline void AbstractExecuteImpl(index_sequence<RetIndex...>, index_sequence<ParamIndex...>, Variable **variables) {
             std::tuple<RETs...> rets = Execute(*variables[ParamIndex + NumberOfReturnVariables]...);
-            //this is fucking stupid, why can't i just "variables[RetIndex]->Set(std::get<RetIndex>(rets))...;" ?
-            int expand_type[] = { (* variables[RetIndex] = std::get<RetIndex>(rets), 0)... };
+            func((*variables[RetIndex] = std::get<RetIndex>(rets))...);
         }
     };
 }

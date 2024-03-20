@@ -25,158 +25,16 @@ namespace OperationArchitecture
         const static size_t value = size_of2<std::is_pointer<K>::value, K>::value;
     };
 
-    struct alignas(VARIABLE_ALIGN) VariableBase
-    {
-        uint8_t Value[VARIABLE_VALUE_SIZE];
-        VariableType Type;
-    };
     struct Variable;
 
     template<typename K>
-    const K VariableBaseTo(const VariableBase *variable)
+    K VariableTo(const Variable *variable);
+    
+    struct alignas(VARIABLE_ALIGN) Variable
     {
-        switch(variable->Type)
-        {
-            case VariableType::UINT8: return static_cast<const K>(*reinterpret_cast<const uint8_t *>(variable->Value));
-            case VariableType::UINT16: return static_cast<const K>(*reinterpret_cast<const uint16_t *>(variable->Value));
-            case VariableType::UINT32: return static_cast<const K>(*reinterpret_cast<const uint32_t *>(variable->Value));
-            case VariableType::UINT64: return static_cast<const K>(*reinterpret_cast<const uint64_t *>(variable->Value));
-            case VariableType::INT8: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int8_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int8_t *>(variable->Value));
-            case VariableType::INT16: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int16_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int16_t *>(variable->Value));
-            case VariableType::INT32: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int32_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int32_t *>(variable->Value));
-            case VariableType::INT64: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int64_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int64_t *>(variable->Value));
-            case VariableType::FLOAT: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const float *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const float *>(variable->Value));
-            case VariableType::DOUBLE: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const double *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const double *>(variable->Value));
-            case VariableType::BOOLEAN: return static_cast<const K>(*reinterpret_cast<const bool *>(variable->Value));
-            default:
-                return 0;
-        }
-    }
-//optimization screws this up. casting a uint64_t to a pointer is most likely undefined behavior
-#pragma GCC push_options
-#pragma GCC optimize("O0")
-    template<typename K>
-    K VariableTo(const VariableBase *variable)
-    {
-        switch(variable->Type)
-        {
-            case VariableType::BIGOTHER:
-            case VariableType::POINTER:
-                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
-                    return *reinterpret_cast<const K *>(variable->Value);
-                return **reinterpret_cast<K * const *>(variable->Value); //otherwise, return the value stored in the pointer
-            case VariableType::OTHER:
-                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer 
-                {
-                    //probably a better, 1 liner way to do this
-                    const uint8_t *intermediatePointer = &variable->Value[0];
-                    return *reinterpret_cast<const K*>(reinterpret_cast<const void *>(&intermediatePointer));
-                }
-                return *reinterpret_cast<const K *>(variable->Value);
-            case VariableType::VOID:
-                return K();
-            default: 
-                return *reinterpret_cast<const K *>(variable->Value);
-        }
-    }
-#pragma GCC pop_options
-    template<>
-    uint8_t VariableTo<uint8_t>(const VariableBase *variable);
-    template<>
-    uint16_t VariableTo<uint16_t>(const VariableBase *variable);
-    template<>
-    uint32_t VariableTo<uint32_t>(const VariableBase *variable);
-    template<>
-    uint64_t VariableTo<uint64_t>(const VariableBase *variable);
-    template<>
-    int8_t VariableTo<int8_t>(const VariableBase *variable);
-    template<>
-    int16_t VariableTo<int16_t>(const VariableBase *variable);
-    template<>
-    int32_t VariableTo<int32_t>(const VariableBase *variable);
-    template<>
-    int64_t VariableTo<int64_t>(const VariableBase *variable);
-    template<>
-    float VariableTo<float>(const VariableBase *variable);
-    template<>
-    double VariableTo<double>(const VariableBase *variable);
-    template<>
-    bool VariableTo<bool>(const VariableBase *variable);
-    template<>
-    VariableBase VariableTo<VariableBase>(const VariableBase *variable);
-    template<>
-    Variable VariableTo<Variable>(const VariableBase *variable);
+        uint8_t Value[VARIABLE_VALUE_SIZE];
+        VariableType Type;
 
-    template<typename K>
-    void VariableSet(VariableBase *variable, K value)
-    {
-        if(sizeof(value) > VARIABLE_VALUE_SIZE - 1)
-        {
-            if(variable->Type != VariableType::BIGOTHER)
-            {
-                void * dyn = malloc(sizeof(value));
-                *reinterpret_cast<void **>(variable->Value) = dyn;
-                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
-            }
-            if(*reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) != sizeof(value))
-            {
-                free(*reinterpret_cast<void **>(variable->Value));
-                void * dyn = malloc(sizeof(value));
-                *reinterpret_cast<void **>(variable->Value) = dyn;
-                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
-            }
-            variable->Type = VariableType::BIGOTHER;
-            std::memcpy(*reinterpret_cast<K **>(variable->Value), &value, sizeof(K));
-        }
-        else
-        {
-            if(variable->Type == VariableType::BIGOTHER)
-            {
-                free(*reinterpret_cast<void **>(variable->Value));
-            }
-            if(std::is_pointer<K>::value)
-            {
-                variable->Type = VariableType::POINTER;
-                *reinterpret_cast<K *>(variable->Value) = value;
-                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = size_of<K>::value;
-            }
-            else
-            {
-                variable->Type = VariableType::OTHER;
-                *reinterpret_cast<K *>(variable->Value) = value;
-                variable->Value[VARIABLE_VALUE_SIZE - 1] = sizeof(value);
-            }
-        }
-    }
-    template<>
-    void VariableSet<uint8_t>(VariableBase *variable, uint8_t value);
-    template<>
-    void VariableSet<uint16_t>(VariableBase *variable, uint16_t value);
-    template<>
-    void VariableSet<uint32_t>(VariableBase *variable, uint32_t value);
-    template<>
-    void VariableSet<uint64_t>(VariableBase *variable, uint64_t value);
-    template<>
-    void VariableSet<int8_t>(VariableBase *variable, int8_t value);
-    template<>
-    void VariableSet<int16_t>(VariableBase *variable, int16_t value);
-    template<>
-    void VariableSet<int32_t>(VariableBase *variable, int32_t value);
-    template<>
-    void VariableSet<int64_t>(VariableBase *variable, int64_t value);
-    template<>
-    void VariableSet<float>(VariableBase *variable, float value);
-    template<>
-    void VariableSet<double>(VariableBase *variable, double value);
-    template<>
-    void VariableSet<bool>(VariableBase *variable, bool value);
-    template<>
-    void VariableSet<VariableBase>(VariableBase *variable, VariableBase value);
-    template<>
-    void VariableSet<Variable>(VariableBase *variable, Variable value);
-
-    struct Variable : public VariableBase
-    {
         template<typename K>
         Variable(K variable)
         {
@@ -443,5 +301,125 @@ namespace OperationArchitecture
             return !(a < *this);
         }
     };
+//optimization screws this up. casting a uint64_t to a pointer is most likely undefined behavior
+#pragma GCC push_options
+#pragma GCC optimize("O0")
+    template<typename K>
+    K VariableTo(const Variable *variable)
+    {
+        switch(variable->Type)
+        {
+            case VariableType::BIGOTHER:
+            case VariableType::POINTER:
+                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
+                    return *reinterpret_cast<const K *>(variable->Value);
+                return **reinterpret_cast<K * const *>(variable->Value); //otherwise, return the value stored in the pointer
+            case VariableType::OTHER:
+                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer 
+                {
+                    //probably a better, 1 liner way to do this
+                    const uint8_t *intermediatePointer = &variable->Value[0];
+                    return *reinterpret_cast<const K*>(reinterpret_cast<const void *>(&intermediatePointer));
+                }
+                return *reinterpret_cast<const K *>(variable->Value);
+            case VariableType::VOID:
+                return K();
+            default: 
+                return *reinterpret_cast<const K *>(variable->Value);
+        }
+    }
+#pragma GCC pop_options
+    template<>
+    uint8_t VariableTo<uint8_t>(const Variable *variable);
+    template<>
+    uint16_t VariableTo<uint16_t>(const Variable *variable);
+    template<>
+    uint32_t VariableTo<uint32_t>(const Variable *variable);
+    template<>
+    uint64_t VariableTo<uint64_t>(const Variable *variable);
+    template<>
+    int8_t VariableTo<int8_t>(const Variable *variable);
+    template<>
+    int16_t VariableTo<int16_t>(const Variable *variable);
+    template<>
+    int32_t VariableTo<int32_t>(const Variable *variable);
+    template<>
+    int64_t VariableTo<int64_t>(const Variable *variable);
+    template<>
+    float VariableTo<float>(const Variable *variable);
+    template<>
+    double VariableTo<double>(const Variable *variable);
+    template<>
+    bool VariableTo<bool>(const Variable *variable);
+    template<>
+    Variable VariableTo<Variable>(const Variable *variable);
+    template<>
+    Variable VariableTo<Variable>(const Variable *variable);
+
+    template<typename K>
+    void VariableSet(Variable *variable, K value)
+    {
+        if(sizeof(value) > VARIABLE_VALUE_SIZE - 1)
+        {
+            if(variable->Type != VariableType::BIGOTHER)
+            {
+                void * dyn = malloc(sizeof(value));
+                *reinterpret_cast<void **>(variable->Value) = dyn;
+                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
+            }
+            if(*reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) != sizeof(value))
+            {
+                free(*reinterpret_cast<void **>(variable->Value));
+                void * dyn = malloc(sizeof(value));
+                *reinterpret_cast<void **>(variable->Value) = dyn;
+                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
+            }
+            variable->Type = VariableType::BIGOTHER;
+            std::memcpy(*reinterpret_cast<K **>(variable->Value), &value, sizeof(K));
+        }
+        else
+        {
+            if(variable->Type == VariableType::BIGOTHER)
+            {
+                free(*reinterpret_cast<void **>(variable->Value));
+            }
+            if(std::is_pointer<K>::value)
+            {
+                variable->Type = VariableType::POINTER;
+                *reinterpret_cast<K *>(variable->Value) = value;
+                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = size_of<K>::value;
+            }
+            else
+            {
+                variable->Type = VariableType::OTHER;
+                *reinterpret_cast<K *>(variable->Value) = value;
+                variable->Value[VARIABLE_VALUE_SIZE - 1] = sizeof(value);
+            }
+        }
+    }
+    template<>
+    void VariableSet<uint8_t>(Variable *variable, uint8_t value);
+    template<>
+    void VariableSet<uint16_t>(Variable *variable, uint16_t value);
+    template<>
+    void VariableSet<uint32_t>(Variable *variable, uint32_t value);
+    template<>
+    void VariableSet<uint64_t>(Variable *variable, uint64_t value);
+    template<>
+    void VariableSet<int8_t>(Variable *variable, int8_t value);
+    template<>
+    void VariableSet<int16_t>(Variable *variable, int16_t value);
+    template<>
+    void VariableSet<int32_t>(Variable *variable, int32_t value);
+    template<>
+    void VariableSet<int64_t>(Variable *variable, int64_t value);
+    template<>
+    void VariableSet<float>(Variable *variable, float value);
+    template<>
+    void VariableSet<double>(Variable *variable, double value);
+    template<>
+    void VariableSet<bool>(Variable *variable, bool value);
+    template<>
+    void VariableSet<Variable>(Variable *variable, Variable value);
 }
 #endif

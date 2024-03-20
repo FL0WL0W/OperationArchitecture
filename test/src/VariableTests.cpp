@@ -69,7 +69,6 @@ namespace UnitTests
 	TEST(VariableTests, WhenCasting_ThenCorrectValueReturned)
 	{
 		ASSERT_EQ(							 Variable(static_cast<uint8_t>(10)).Type, 	UINT8	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<uint8_t>(10))).Type, 	UINT8	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<uint8_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<uint8_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<uint8_t>(10))), 		10		);
@@ -81,7 +80,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<uint8_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<uint8_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<uint16_t>(10)).Type, 	UINT16	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<uint16_t>(10))).Type,	UINT16	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<uint16_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<uint16_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<uint16_t>(10))), 		10		);
@@ -93,7 +91,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<uint16_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<uint16_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<uint32_t>(10)).Type, 	UINT32	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<uint32_t>(10))).Type, UINT32	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<uint32_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<uint32_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<uint32_t>(10))), 		10		);
@@ -105,7 +102,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<uint32_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<uint32_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<uint64_t>(10)).Type, 	UINT64	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<uint64_t>(10))).Type, UINT64	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<uint64_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<uint64_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<uint64_t>(10))), 		10		);
@@ -117,7 +113,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<uint64_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<uint64_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<int8_t>(10)).Type, 	INT8	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<int8_t>(10))).Type, 	INT8	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<int8_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<int8_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<int8_t>(10))), 		10		);
@@ -129,7 +124,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<int8_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<int8_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<int16_t>(10)).Type, 	INT16	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<int16_t>(10))).Type,	INT16	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<int16_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<int16_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<int16_t>(10))), 		10		);
@@ -141,7 +135,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<int16_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<int16_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<int32_t>(10)).Type, 	INT32	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<int32_t>(10))).Type,  INT32	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<int32_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<int32_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<int32_t>(10))), 		10		);
@@ -153,7 +146,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<int32_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<int32_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<int64_t>(10)).Type, 	INT64	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<int64_t>(10))).Type,  INT64	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<int64_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<int64_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<int64_t>(10))), 		10		);
@@ -165,7 +157,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<int64_t>(10))), 		10		);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<int64_t>(10))), 		10		);
 		ASSERT_EQ(							 Variable(static_cast<float>(10.5f)).Type, 	FLOAT	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<float>(10.5f))).Type, FLOAT	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<float>(10.5f))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<float>(10.5f))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<float>(10.5f))), 		10		);
@@ -177,7 +168,6 @@ namespace UnitTests
 		ASSERT_EQ(static_cast<float		>	(Variable(static_cast<float>(10.5f))), 		10.5f	);
 		ASSERT_EQ(static_cast<double	>	(Variable(static_cast<float>(10.5f))), 		10.5	);
 		ASSERT_EQ(							 Variable(static_cast<double>(10.5)).Type, 	DOUBLE	);
-		ASSERT_EQ(static_cast<VariableBase>	(Variable(static_cast<double>(10.5))).Type, DOUBLE	);
 		ASSERT_EQ(static_cast<uint8_t	>	(Variable(static_cast<double>(10.5))), 		10		);
 		ASSERT_EQ(static_cast<uint16_t	>	(Variable(static_cast<double>(10.5))), 		10		);
 		ASSERT_EQ(static_cast<uint32_t	>	(Variable(static_cast<double>(10.5))), 		10		);
