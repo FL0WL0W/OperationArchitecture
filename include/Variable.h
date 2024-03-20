@@ -76,7 +76,7 @@ namespace OperationArchitecture
             case VariableType::VOID:
                 return K();
             default: 
-                return *reinterpret_cast<const K *>(0);
+                return *reinterpret_cast<const K *>(variable->Value);
         }
     }
 #pragma GCC pop_options
