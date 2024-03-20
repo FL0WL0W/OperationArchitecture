@@ -36,6 +36,16 @@ namespace OperationArchitecture
 		}
 		
 		template<typename T>
+		static const T* CastAndOffsetPointer(const void *&config, size_t &size)
+		{
+			AlignConfig(config, size, alignof(const T));
+			const T *casted = reinterpret_cast<const T *>(config);
+			OffsetConfig(config, size, sizeof(T));
+			
+			return casted;
+		}
+		
+		template<typename T>
 		static const T Cast(const void *&config)
 		{
 			size_t size = 0;
