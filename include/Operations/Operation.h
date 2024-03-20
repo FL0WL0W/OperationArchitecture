@@ -98,7 +98,7 @@ namespace OperationArchitecture
         template<std::size_t... RetIndex, std::size_t... ParamIndex>
         inline void AbstractExecuteImpl(index_sequence<RetIndex...>, index_sequence<ParamIndex...>, Variable **variables) {
             std::tuple<RETs...> rets = Execute(*variables[ParamIndex + NumberOfReturnVariables]...);
-            func((*variables[RetIndex] = std::get<RetIndex>(rets))...);
+            func((*variables[RetIndex] = std::get<RetIndex>(rets), 0)...);
         }
     };
 }

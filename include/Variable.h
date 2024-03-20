@@ -49,10 +49,9 @@ namespace OperationArchitecture
         }
 
         template<typename K>
-        Variable operator=(K value)
+        void operator=(K value)
         {
             VariableSet(this, value);
-            return *this;
         }
 
         template<typename K>
