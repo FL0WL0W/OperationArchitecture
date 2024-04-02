@@ -20,6 +20,9 @@ file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS ${SRCS_DIR}/*.cpp)
 add_library(${TARGET} STATIC ${HDRS} ${SRCS})
 target_include_directories(${TARGET} PUBLIC ${HDR_DIR})
 
+# install library
+install(TARGETS ${TARGET} LIBRARY DESTINATION lib
+        PUBLIC_HEADER DESTINATION ${HDR_DIR})
 
 if(OperationArchitecture_build_tests)
     # Include google tests
