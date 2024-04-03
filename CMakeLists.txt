@@ -20,11 +20,6 @@ file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS ${SRCS_DIR}/*.cpp)
 add_library(${TARGET} STATIC ${HDRS} ${SRCS})
 target_include_directories(${TARGET} PUBLIC ${HDR_DIR})
 
-# install library
-set_target_properties(${TARGET} PROPERTIES PUBLIC_HEADER "${HDRS}")
-install(TARGETS ${TARGET} LIBRARY DESTINATION lib
-        PUBLIC_HEADER DESTINATION include)
-
 if(OperationArchitecture_build_tests)
     # Include google tests
     if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/libs/googletest/CMakeLists.txt)
@@ -35,3 +30,7 @@ if(OperationArchitecture_build_tests)
     # include tests
     add_subdirectory (test)
 endif()
+
+# install library
+install(TARGETS ${TARGET} LIBRARY DESTINATION lib)
+install(DIRECTORY "$HDR_DIR" DESTINATION include)
