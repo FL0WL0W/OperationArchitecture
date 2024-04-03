@@ -21,8 +21,9 @@ add_library(${TARGET} STATIC ${HDRS} ${SRCS})
 target_include_directories(${TARGET} PUBLIC ${HDR_DIR})
 
 # install library
+set_target_properties(${TARGET} PROPERTIES PUBLIC_HEADER ${HDRS})
 install(TARGETS ${TARGET} LIBRARY DESTINATION lib
-        PUBLIC_HEADER DESTINATION ${HDR_DIR})
+        PUBLIC_HEADER DESTINATION include)
 
 if(OperationArchitecture_build_tests)
     # Include google tests
