@@ -21,10 +21,6 @@ add_library(${TARGET} STATIC ${HDRS} ${SRCS})
 target_include_directories(${TARGET} PUBLIC ${HDR_DIR})
 
 if(OperationArchitecture_build_tests)
-    # Include google tests
-    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/libs/googletest/CMakeLists.txt)
-        add_subdirectory (libs/googletest)
-    endif()
     #include mock
     add_subdirectory (mock)
     # include tests

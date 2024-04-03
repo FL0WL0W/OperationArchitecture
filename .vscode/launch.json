@@ -8,7 +8,7 @@
             "name": "OperationArchitecure Tests",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/GCC 9.3.0/test/OperationArchitectureUnitTests",
+            "program": "${workspaceFolder}/build/GCC11.3.0/test/OperationArchitectureUnitTests",
             "cwd": "${workspaceFolder}"
         }
     ]
