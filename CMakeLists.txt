@@ -33,4 +33,4 @@ endif()
 
 # install library
 install(TARGETS ${TARGET} LIBRARY DESTINATION lib)
-install(DIRECTORY "${HDR_DIR}" DESTINATION include)
+install(DIRECTORY "${HDR_DIR}/" DESTINATION include)
