@@ -21,6 +21,7 @@ add_executable(${TARGET} ${SRCS})
 # link static libraries
 target_link_libraries(${TARGET} OperationArchitecture)
 target_link_libraries(${TARGET} OperationArchitectureMockedObjects)
+Set(FETCHCONTENT_QUIET FALSE)
 include(FetchContent)
 FetchContent_Declare(
     gtest
