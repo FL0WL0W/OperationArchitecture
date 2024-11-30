@@ -16,7 +16,7 @@ namespace OperationArchitecture
     
     struct alignas(VARIABLE_ALIGN) Variable
     {
-        uint8_t Value[VARIABLE_VALUE_SIZE];
+        uint8_t Value[VARIABLE_VALUE_SIZE] = {};
         VariableType Type;
 
         template<typename K>
