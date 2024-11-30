@@ -1,0 +1,6 @@
+{
+    "testMate.cpp.test.advancedExecutables": [
+        "${command:cmake.buildDirectory}/test/OperationArchitectureUnitTests",
+    ],
+    "cmake.ctest.testExplorerIntegrationEnabled": false
+}
