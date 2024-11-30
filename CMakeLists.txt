@@ -26,7 +26,3 @@ if(OperationArchitecture_build_tests)
     # include tests
     add_subdirectory (test)
 endif()
-
-# install library
-install(TARGETS ${TARGET} LIBRARY DESTINATION lib)
-install(DIRECTORY "${HDR_DIR}/" DESTINATION include)
