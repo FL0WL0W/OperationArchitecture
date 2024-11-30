@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : CMake project for OperationArchitecture, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.30[3.30)
 option(OperationArchitecture_build_tests "Build all of OperationArchitecture tests" OFF)
 
 set(TARGET		OperationArchitecture)
