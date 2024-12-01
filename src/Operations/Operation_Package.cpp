@@ -67,6 +67,10 @@ namespace OperationArchitecture
         AbstractOperation *operation = factory->Create(config, size);
         Config::OffsetConfig(config, sizeOut, size);
 
+        //check to make sure operation is valid
+        if(operation == 0)
+            return 0;
+
         //Create Execute Variables
         Variable **executeVariables = new Variable*[operation->NumberOfReturnVariables + operation->NumberOfParameters];
         for(int i = 0; i < operation->NumberOfReturnVariables + operation->NumberOfParameters; i++)

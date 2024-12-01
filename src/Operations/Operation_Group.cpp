@@ -45,9 +45,6 @@ namespace OperationArchitecture
         uint32_t returnVariableLocation = 0;
         for(uint16_t i = 0; i < _numberOfOperations; i++)
         {
-            if(_operations[i] == 0)
-                continue;
-                
             //copy return variables
             std::memcpy(_operationVariables, variables + returnVariableLocation, sizeof(Variable *) * _operations[i]->NumberOfReturnVariables);
             returnVariableLocation += _operations[i]->NumberOfReturnVariables;
@@ -61,7 +58,7 @@ namespace OperationArchitecture
     
     AbstractOperation *Operation_Group::Create(const void *config, size_t &sizeOut, OperationFactory *factory)
     {
-        const uint16_t numberOfOperations = Config::CastAndOffset<uint16_t>(config, sizeOut);
+        uint16_t numberOfOperations = Config::CastAndOffset<uint16_t>(config, sizeOut);
         AbstractOperation **operations = new AbstractOperation*[numberOfOperations];
 
         for(uint16_t i = 0; i < numberOfOperations; i++)
@@ -69,6 +66,12 @@ namespace OperationArchitecture
             size_t size = 0;
             operations[i] = factory->Create(config, size);
             Config::OffsetConfig(config, sizeOut, size);
+            //remove operation if it is invalid
+            if(operations[i] == 0)
+            {
+                i--;
+                numberOfOperations--;
+            }
         }
 
         return new Operation_Group(operations, numberOfOperations);
