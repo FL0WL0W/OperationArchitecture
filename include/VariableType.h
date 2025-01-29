@@ -48,8 +48,7 @@ namespace OperationArchitecture
             case VariableType::OTHER: return VARIABLE_VALUE_SIZE;
             case VariableType::BIGOTHER:
             case VariableType::VOID: 
-                break;
-                //this is bad 
+                return 0;
         }
         return 0;
     }
