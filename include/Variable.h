@@ -16,7 +16,25 @@ namespace OperationArchitecture
     
     struct alignas(VARIABLE_ALIGN) Variable
     {
-        uint8_t Value[VARIABLE_VALUE_SIZE] = {};
+        union
+        {
+            uint8_t     ValueArray[VARIABLE_VALUE_SIZE] = {};
+            uint8_t     UINT8Value;
+            uint16_t    UINT16Value;
+            uint32_t    UINT32Value;
+            uint64_t    UINT64Value;
+            int8_t      INT8Value;
+            int16_t     INT16Value;
+            int32_t     INT32Value;
+            int64_t     INT64Value;
+            float       FLOATValue;
+            double      DOUBLEValue;
+            bool        BOOLEANValue;
+            struct{
+                void*   POINTERValue;
+                size_t  POINTERValueSize;
+            };
+        };
         VariableType Type;
 
         template<typename K>
@@ -28,8 +46,8 @@ namespace OperationArchitecture
         Variable()
         {
             Type = VOID;
-            for(size_t i = 0; i < sizeof(Value); i++)
-                Value[i] = 0;
+            for(size_t i = 0; i < sizeof(ValueArray); i++)
+                ValueArray[i] = 0;
         }
 
         template<typename K>
@@ -44,9 +62,9 @@ namespace OperationArchitecture
 		size_t Size() const
 		{
             if(Type == BIGOTHER || Type == POINTER)
-                return *reinterpret_cast<const size_t *>(reinterpret_cast<void * const *>(Value) + 1);
+                return POINTERValueSize;
             if(Type == OTHER)
-                return Value[VARIABLE_VALUE_SIZE-1];
+                return ValueArray[VARIABLE_VALUE_SIZE-1];
 			return VariableTypeSizeOf(Type);
 		}
 
@@ -226,7 +244,7 @@ namespace OperationArchitecture
                 return static_cast<uint8_t>(0);
             
             Variable ret = *this;
-            *reinterpret_cast<int64_t *>(&ret.Value) &= *reinterpret_cast<int64_t *>(&a.Value);
+            ret.INT64Value &= a.INT64Value;
             return ret;
         }
         Variable operator|(Variable a) const
@@ -236,7 +254,7 @@ namespace OperationArchitecture
                 return static_cast<uint8_t>(0);
 
             Variable ret = *this;
-            *reinterpret_cast<int64_t *>(&ret.Value) |= *reinterpret_cast<int64_t *>(&a.Value);
+            ret.INT64Value |= a.INT64Value;
             return ret;
         }
         bool operator==(Variable a) const
@@ -295,20 +313,20 @@ namespace OperationArchitecture
             case VariableType::BIGOTHER:
             case VariableType::POINTER:
                 if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
-                    return *reinterpret_cast<const K *>(variable->Value);
-                return **reinterpret_cast<K * const *>(variable->Value); //otherwise, return the value stored in the pointer
+                    return *reinterpret_cast<const K *>(&variable->POINTERValue);
+                return *reinterpret_cast<const K *>(variable->POINTERValue); //otherwise, return the value stored in the pointer
             case VariableType::OTHER:
-                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer 
+                if(std::is_pointer<K>::value) //if typename is a pointer, return the pointer
                 {
                     //probably a better, 1 liner way to do this
-                    const uint8_t *intermediatePointer = &variable->Value[0];
+                    const uint8_t *intermediatePointer = &variable->ValueArray[0];
                     return *reinterpret_cast<const K*>(reinterpret_cast<const void *>(&intermediatePointer));
                 }
-                return *reinterpret_cast<const K *>(variable->Value);
+                return *reinterpret_cast<const K *>(&variable->ValueArray);
             case VariableType::VOID:
                 return K();
             default: 
-                return *reinterpret_cast<const K *>(variable->Value);
+                return *reinterpret_cast<const K *>(&variable->ValueArray);
         }
     }
 #pragma GCC pop_options
@@ -317,17 +335,17 @@ namespace OperationArchitecture
     {
         switch(variable->Type)
         {
-            case VariableType::UINT8: return static_cast<const K>(*reinterpret_cast<const uint8_t *>(variable->Value));
-            case VariableType::UINT16: return static_cast<const K>(*reinterpret_cast<const uint16_t *>(variable->Value));
-            case VariableType::UINT32: return static_cast<const K>(*reinterpret_cast<const uint32_t *>(variable->Value));
-            case VariableType::UINT64: return static_cast<const K>(*reinterpret_cast<const uint64_t *>(variable->Value));
-            case VariableType::INT8: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int8_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int8_t *>(variable->Value));
-            case VariableType::INT16: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int16_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int16_t *>(variable->Value));
-            case VariableType::INT32: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int32_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int32_t *>(variable->Value));
-            case VariableType::INT64: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const int64_t *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const int64_t *>(variable->Value));
-            case VariableType::FLOAT: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const float *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const float *>(variable->Value));
-            case VariableType::DOUBLE: if(static_cast<const K>(-1) > 0 && *reinterpret_cast<const double *>(variable->Value) < 0) return 0; return static_cast<const K>(*reinterpret_cast<const double *>(variable->Value));
-            case VariableType::BOOLEAN: return static_cast<const K>(*reinterpret_cast<const bool *>(variable->Value));
+            case VariableType::UINT8: return static_cast<const K>(variable->UINT8Value);
+            case VariableType::UINT16: return static_cast<const K>(variable->UINT16Value);
+            case VariableType::UINT32: return static_cast<const K>(variable->UINT32Value);
+            case VariableType::UINT64: return static_cast<const K>(variable->UINT64Value);
+            case VariableType::INT8: if(static_cast<const K>(-1) > 0 && variable->INT8Value < 0) return 0; return static_cast<const K>(variable->INT8Value);
+            case VariableType::INT16: if(static_cast<const K>(-1) > 0 && variable->INT16Value < 0) return 0; return static_cast<const K>(variable->INT16Value);
+            case VariableType::INT32: if(static_cast<const K>(-1) > 0 && variable->INT32Value < 0) return 0; return static_cast<const K>(variable->INT32Value);
+            case VariableType::INT64: if(static_cast<const K>(-1) > 0 && variable->INT64Value < 0) return 0; return static_cast<const K>(variable->INT64Value);
+            case VariableType::FLOAT: if(static_cast<const K>(-1) > 0 && variable->FLOATValue < 0) return 0; return static_cast<const K>(variable->FLOATValue);
+            case VariableType::DOUBLE: if(static_cast<const K>(-1) > 0 && variable->DOUBLEValue < 0) return 0; return static_cast<const K>(variable->DOUBLEValue);
+            case VariableType::BOOLEAN: return static_cast<const K>(variable->BOOLEANValue);
             default:
                 return 0;
         }
@@ -356,7 +374,7 @@ namespace OperationArchitecture
     inline bool VariableTo<bool>(const Variable *Variable)
     {
         if(Variable->Type == VariableType::BOOLEAN)
-            return *reinterpret_cast<const bool *>(&Variable->Value);
+            return Variable->BOOLEANValue;
         return false;
     }
     template<>
@@ -388,36 +406,36 @@ namespace OperationArchitecture
             if(variable->Type != VariableType::BIGOTHER)
             {
                 void * dyn = malloc(sizeof(value));
-                *reinterpret_cast<void **>(variable->Value) = dyn;
-                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
+                variable->POINTERValue = dyn;
+                variable->POINTERValueSize = sizeof(value);
             }
-            if(*reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) != sizeof(value))
+            if(variable->POINTERValueSize != sizeof(value))
             {
-                free(*reinterpret_cast<void **>(variable->Value));
+                free(variable->POINTERValue);
                 void * dyn = malloc(sizeof(value));
-                *reinterpret_cast<void **>(variable->Value) = dyn;
-                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = sizeof(value);
+                variable->POINTERValue = dyn;
+                variable->POINTERValueSize = sizeof(value);
             }
             variable->Type = VariableType::BIGOTHER;
-            std::memcpy(*reinterpret_cast<K **>(variable->Value), &value, sizeof(K));
+            std::memcpy(variable->POINTERValue, &value, sizeof(K));
         }
         else
         {
             if(variable->Type == VariableType::BIGOTHER)
             {
-                free(*reinterpret_cast<void **>(variable->Value));
+                free(variable->POINTERValue);
             }
             if(std::is_pointer<K>::value)
             {
                 variable->Type = VariableType::POINTER;
-                *reinterpret_cast<K *>(variable->Value) = value;
-                *reinterpret_cast<size_t *>(reinterpret_cast<void **>(variable->Value) + 1) = size_of<K>::value;
+                *reinterpret_cast<K *>(variable->ValueArray) = value;
+                variable->POINTERValueSize = size_of<K>::value;
             }
             else
             {
                 variable->Type = VariableType::OTHER;
-                *reinterpret_cast<K *>(variable->Value) = value;
-                variable->Value[VARIABLE_VALUE_SIZE - 1] = sizeof(value);
+                *reinterpret_cast<K *>(variable->ValueArray) = value;
+                variable->ValueArray[VARIABLE_VALUE_SIZE - 1] = sizeof(value);
             }
         }
     }
@@ -425,73 +443,73 @@ namespace OperationArchitecture
     inline void VariableSet(Variable *variable, uint8_t value)
     {
         variable->Type = VariableType::UINT8;
-        *reinterpret_cast<uint8_t *>(variable->Value) = value;
+        variable->UINT8Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, uint16_t value)
     {
         variable->Type = VariableType::UINT16;
-        *reinterpret_cast<uint16_t *>(variable->Value) = value;
+        variable->UINT16Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, uint32_t value)
     {
         variable->Type = VariableType::UINT32;
-        *reinterpret_cast<uint32_t *>(variable->Value) = value;
+        variable->UINT32Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, uint64_t value)
     {
         variable->Type = VariableType::UINT64;
-        *reinterpret_cast<uint64_t *>(variable->Value) = value;
+        variable->UINT64Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, int8_t value)
     {
         variable->Type = VariableType::INT8;
-        *reinterpret_cast<int8_t *>(variable->Value) = value;
+        variable->INT8Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, int16_t value)
     {
         variable->Type = VariableType::INT16;
-        *reinterpret_cast<int16_t *>(variable->Value) = value;
+        variable->INT16Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, int32_t value)
     {
         variable->Type = VariableType::INT32;
-        *reinterpret_cast<int32_t *>(variable->Value) = value;
+        variable->INT32Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, int64_t value)
     {
         variable->Type = VariableType::INT64;
-        *reinterpret_cast<int64_t *>(variable->Value) = value;
+        variable->INT64Value = value;
     }
     template<>
     inline void VariableSet(Variable *variable, float value)
     {
         variable->Type = VariableType::FLOAT;
-        *reinterpret_cast<float *>(variable->Value) = value;
+        variable->FLOATValue = value;
     }
     template<>
     inline void VariableSet(Variable *variable, double value)
     {
         variable->Type = VariableType::DOUBLE;
-        *reinterpret_cast<double *>(variable->Value) = value;
+        variable->DOUBLEValue = value;
     }
     template<>
     inline void VariableSet(Variable *variable, bool value)
     {
         variable->Type = VariableType::BOOLEAN;
-        *reinterpret_cast<bool *>(variable->Value) = value;
+        variable->BOOLEANValue = value;
     }
     template<>
     inline void VariableSet(Variable *variable, Variable value)
     {
         variable->Type = value.Type;
-        std::memcpy(variable->Value, &value.Value, sizeof(Variable::Value));
+        std::memcpy(variable->ValueArray, &value.ValueArray, sizeof(Variable::ValueArray));
     }
 }
 #endif
