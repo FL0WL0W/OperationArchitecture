@@ -24,5 +24,9 @@
                 }
             }
         ]
-    }
+    },
+    "gtest-adapter-new.debugConfig": [
+        "Launch OperationArchitectureUnitTests"
+    ],
+    "gtest-adapter-new.supportLocation": true
 }
