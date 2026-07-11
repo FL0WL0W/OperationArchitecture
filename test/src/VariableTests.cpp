@@ -808,4 +808,39 @@ namespace UnitTests
 		uint8test = test;
 		ASSERT_EQ(uint8test, 10);
 	}
+
+	TEST(VariableTests, BigOtherCopyOwnsIndependentStorage)
+	{
+		struct BigValue
+		{
+			uint8_t bytes[VARIABLE_VALUE_SIZE + 1];
+		};
+		BigValue value = {};
+		value.bytes[0] = 0x12;
+
+		Variable original(value);
+		Variable copy(original);
+		ASSERT_EQ(copy.Type, BIGOTHER);
+		EXPECT_NE(copy.POINTERValue, original.POINTERValue);
+		EXPECT_EQ(std::memcmp(copy.POINTERValue, original.POINTERValue, sizeof(value)), 0);
+
+		static_cast<BigValue *>(original.POINTERValue)->bytes[0] = 0x34;
+		EXPECT_EQ(static_cast<const BigValue *>(copy.POINTERValue)->bytes[0], 0x12);
+	}
+
+	TEST(VariableTests, BigOtherMoveTransfersStorage)
+	{
+		struct BigValue
+		{
+			uint8_t bytes[VARIABLE_VALUE_SIZE + 1];
+		};
+		BigValue value = {};
+		Variable original(value);
+		void *storage = original.POINTERValue;
+
+		Variable moved(static_cast<Variable &&>(original));
+		EXPECT_EQ(moved.Type, BIGOTHER);
+		EXPECT_EQ(moved.POINTERValue, storage);
+		EXPECT_EQ(original.Type, VOID);
+	}
 }

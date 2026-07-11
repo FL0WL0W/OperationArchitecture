@@ -59,8 +59,13 @@ namespace OperationArchitecture
 			{
 				uint32_t length = Config::CastAndOffset<uint32_t>(config, sizeOut);
 				Config::AlignConfig(config, sizeOut, alignof(max_align_t));
-				staticValue = config;
-				staticValue.Type = BIGOTHER;
+				staticValue.POINTERValue = malloc(length);
+				staticValue.POINTERValueSize = length;
+				if(staticValue.POINTERValue != nullptr)
+				{
+					staticValue.Type = BIGOTHER;
+					std::memcpy(staticValue.POINTERValue, config, length);
+				}
 				Config::OffsetConfig(config, sizeOut, length);
 				break;
 			}

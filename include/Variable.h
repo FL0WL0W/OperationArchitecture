@@ -37,11 +37,26 @@ namespace OperationArchitecture
         };
         VariableType Type;
 
-        template<typename K>
+        template<typename K, typename std::enable_if<!std::is_same<typename std::decay<K>::type, Variable>::value, int>::type = 0>
         Variable(K variable)
         {
+			Type = VOID;
             VariableSet(this, variable);
         }
+
+		Variable(const Variable &variable)
+		{
+			Type = VOID;
+			CopyFrom(variable);
+		}
+
+		Variable(Variable &&variable) noexcept
+		{
+			Type = variable.Type;
+			std::memcpy(ValueArray, variable.ValueArray, sizeof(ValueArray));
+			variable.Type = VOID;
+			std::memset(variable.ValueArray, 0, sizeof(variable.ValueArray));
+		}
 
         Variable()
         {
@@ -50,11 +65,39 @@ namespace OperationArchitecture
                 ValueArray[i] = 0;
         }
 
-        template<typename K>
+		~Variable()
+		{
+			Release();
+		}
+
+        template<typename K, typename std::enable_if<!std::is_same<typename std::decay<K>::type, Variable>::value, int>::type = 0>
         void operator=(K value)
         {
             VariableSet(this, value);
         }
+
+		Variable &operator=(const Variable &variable)
+		{
+			if(this != &variable)
+			{
+				Release();
+				CopyFrom(variable);
+			}
+			return *this;
+		}
+
+		Variable &operator=(Variable &&variable) noexcept
+		{
+			if(this != &variable)
+			{
+				Release();
+				Type = variable.Type;
+				std::memcpy(ValueArray, variable.ValueArray, sizeof(ValueArray));
+				variable.Type = VOID;
+				std::memset(variable.ValueArray, 0, sizeof(variable.ValueArray));
+			}
+			return *this;
+		}
 
         template<typename K>
         operator K() const { return VariableTo<K>(this); }
@@ -67,6 +110,35 @@ namespace OperationArchitecture
                 return ValueArray[VARIABLE_VALUE_SIZE-1];
 			return VariableTypeSizeOf(Type);
 		}
+
+	private:
+		void Release()
+		{
+			if(Type == BIGOTHER)
+				free(POINTERValue);
+			Type = VOID;
+		}
+
+		void CopyFrom(const Variable &variable)
+		{
+			Type = variable.Type;
+			if(variable.Type == BIGOTHER)
+			{
+				POINTERValueSize = variable.POINTERValueSize;
+				POINTERValue = malloc(POINTERValueSize);
+				if(POINTERValue != nullptr)
+					std::memcpy(POINTERValue, variable.POINTERValue, POINTERValueSize);
+				else
+				{
+					POINTERValueSize = 0;
+					Type = VOID;
+				}
+			}
+			else
+				std::memcpy(ValueArray, variable.ValueArray, sizeof(ValueArray));
+		}
+
+	public:
 
         static Variable Int64ToVariable(int64_t result, VariableType targetType)
         {
@@ -508,8 +580,7 @@ namespace OperationArchitecture
     template<>
     inline void VariableSet(Variable *variable, Variable value)
     {
-        variable->Type = value.Type;
-        std::memcpy(variable->ValueArray, &value.ValueArray, sizeof(Variable::ValueArray));
+		*variable = value;
     }
 }
 #endif
