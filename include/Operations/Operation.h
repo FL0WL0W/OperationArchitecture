@@ -42,8 +42,6 @@ namespace OperationArchitecture
     class Operation : public AbstractOperation
     {
     private:
-        const index_sequence_for<PARAMS...> paramIndex = index_sequence_for<PARAMS...>{};
-
         template<std::size_t... ParamIndex>
         inline void AbstractExecuteImpl(index_sequence<ParamIndex...>, Variable **variables) 
         {
@@ -55,7 +53,7 @@ namespace OperationArchitecture
         virtual RET Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
-            AbstractExecuteImpl(paramIndex, variables);
+            AbstractExecuteImpl(index_sequence_for<PARAMS...>{}, variables);
         }
     };
     
@@ -64,8 +62,6 @@ namespace OperationArchitecture
     class Operation<void, PARAMS...> : public AbstractOperation
     {
     private:
-        const index_sequence_for<PARAMS...> paramIndex = index_sequence_for<PARAMS...>{};
-
         template<std::size_t... ParamIndex>
         inline void AbstractExecuteImpl(const index_sequence<ParamIndex...>, Variable **variables) 
         {
@@ -77,7 +73,7 @@ namespace OperationArchitecture
         virtual void Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
-            AbstractExecuteImpl(paramIndex, variables);
+            AbstractExecuteImpl(index_sequence_for<PARAMS...>{}, variables);
         }
     };
     
@@ -89,9 +85,6 @@ namespace OperationArchitecture
         template< typename... P>
         inline void func(P ...p) {}
         
-        const index_sequence_for<RETs...> retIndex = index_sequence_for<RETs...>{};
-        const index_sequence_for<PARAMS...> paramIndex = index_sequence_for<PARAMS...>{};
-
         template<std::size_t... RetIndex, std::size_t... ParamIndex>
         inline void AbstractExecuteImpl(const index_sequence<RetIndex...>, const index_sequence<ParamIndex...>, Variable **variables) 
         {
@@ -104,7 +97,7 @@ namespace OperationArchitecture
         virtual std::tuple<RETs...> Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
-            AbstractExecuteImpl(retIndex, paramIndex, variables);
+            AbstractExecuteImpl(index_sequence_for<RETs...>{}, index_sequence_for<PARAMS...>{}, variables);
         }
     };
 }
