@@ -49,7 +49,6 @@ namespace OperationArchitecture
         }
 
     public:
-        Operation() : AbstractOperation(1, sizeof...(PARAMS)) {}
         virtual RET Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
@@ -69,7 +68,6 @@ namespace OperationArchitecture
         }
 
     public:
-        Operation() : AbstractOperation(0, sizeof...(PARAMS)) {}
         virtual void Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {
@@ -84,16 +82,15 @@ namespace OperationArchitecture
     private:
         template< typename... P>
         inline void func(P ...p) {}
-        
+
         template<std::size_t... RetIndex, std::size_t... ParamIndex>
         inline void AbstractExecuteImpl(const index_sequence<RetIndex...>, const index_sequence<ParamIndex...>, Variable **variables) 
         {
-            std::tuple<RETs...> rets = Execute(*variables[ParamIndex + NumberOfReturnVariables]...);
+            std::tuple<RETs...> rets = Execute(*variables[ParamIndex + sizeof...(RETs)]...);
             func((*variables[RetIndex] = std::get<RetIndex>(rets), 0)...);
         }
 
     public:
-        Operation() : AbstractOperation(sizeof...(RETs), sizeof...(PARAMS)) {}
         virtual std::tuple<RETs...> Execute(PARAMS...) = 0;
         void AbstractExecute(Variable **variables) override
         {

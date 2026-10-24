@@ -10,27 +10,27 @@ namespace OperationArchitecture
 		switch(tableConfig->TableType)
 		{
 			case VariableType::UINT8:
-				return new Operation_2AxisTable<uint8_t>(tableConfig);;
+				return new Operation_2AxisTable<uint8_t>(*tableConfig);
 			case VariableType::UINT16:
-				return new Operation_2AxisTable<uint16_t>(tableConfig);;
+				return new Operation_2AxisTable<uint16_t>(*tableConfig);
 			case VariableType::UINT32:
-				return new Operation_2AxisTable<uint32_t>(tableConfig);;
+				return new Operation_2AxisTable<uint32_t>(*tableConfig);
 			case VariableType::UINT64:
-				return new Operation_2AxisTable<uint64_t>(tableConfig);;
+				return new Operation_2AxisTable<uint64_t>(*tableConfig);
 			case VariableType::INT8:
-				return new Operation_2AxisTable<int8_t>(tableConfig);;
+				return new Operation_2AxisTable<int8_t>(*tableConfig);
 			case VariableType::INT16:
-				return new Operation_2AxisTable<int16_t>(tableConfig);;
+				return new Operation_2AxisTable<int16_t>(*tableConfig);
 			case VariableType::INT32:
-				return new Operation_2AxisTable<int32_t>(tableConfig);;
+				return new Operation_2AxisTable<int32_t>(*tableConfig);
 			case VariableType::INT64:
-				return new Operation_2AxisTable<int64_t>(tableConfig);;
+				return new Operation_2AxisTable<int64_t>(*tableConfig);
 			case VariableType::FLOAT:
-				return new Operation_2AxisTable<float>(tableConfig);;
+				return new Operation_2AxisTable<float>(*tableConfig);
 			case VariableType::DOUBLE:
-				return new Operation_2AxisTable<double>(tableConfig);;
+				return new Operation_2AxisTable<double>(*tableConfig);
 			case VariableType::BOOLEAN:
-				return new Operation_2AxisTable<bool>(tableConfig);;
+				return new Operation_2AxisTable<bool>(*tableConfig);
 			default:
 				//should throw here
 				return 0;

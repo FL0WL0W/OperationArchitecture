@@ -4,8 +4,7 @@
 #ifdef OPERATION_STATICVARIABLE_H
 namespace OperationArchitecture
 {
-	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue) :
-		AbstractOperation(1, 0), _staticValue(staticValue) {}
+	Operation_StaticVariable::Operation_StaticVariable(const Variable &staticValue) : _staticValue(staticValue) { }
 
 	void Operation_StaticVariable::AbstractExecute(Variable **variables)
 	{

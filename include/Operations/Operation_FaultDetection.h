@@ -30,7 +30,7 @@ namespace OperationArchitecture
 	protected:
 		const Operation_FaultDetectionConfig<compare_t> * const _config;
 	public:		
-        Operation_FaultDetection(const Operation_FaultDetectionConfig<compare_t> * const &config) : AbstractOperation(1, 1), _config(config) {}
+        Operation_FaultDetection(const Operation_FaultDetectionConfig<compare_t> * const &config) : _config(config) { }
 
 		void AbstractExecute(Variable **variables) override
 		{

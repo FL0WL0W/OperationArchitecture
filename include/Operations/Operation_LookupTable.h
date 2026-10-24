@@ -56,7 +56,7 @@ namespace OperationArchitecture
 	protected:
 		const Operation_LookupTableConfig *_config;
 	public:		
-        Operation_LookupTable(const Operation_LookupTableConfig * const &config) : AbstractOperation(1, 1), _config(config) { }
+        Operation_LookupTable(const Operation_LookupTableConfig * const &config) : _config(config) { }
 
 		void AbstractExecute(Variable **variables) override
 		{

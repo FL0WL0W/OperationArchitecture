@@ -4,8 +4,8 @@
 #ifdef OPERATION_UNITCONVERSION_H
 namespace OperationArchitecture
 {
-	Operation_UnitConversion::Operation_UnitConversion(const float &multiplier, const float &adder) :
-		AbstractOperation(1, 1), _multiplier(multiplier), _adder(adder) { }
+	Operation_UnitConversion::Operation_UnitConversion(const float &multiplier, const float &adder) : 
+		_multiplier(multiplier), _adder(adder) { }
 
 
 	void Operation_UnitConversion::AbstractExecute(Variable **variables)

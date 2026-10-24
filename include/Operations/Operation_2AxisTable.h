@@ -62,13 +62,13 @@ namespace OperationArchitecture
 	class Operation_2AxisTable : public AbstractOperation
 	{
 	protected:
-		const Operation_2AxisTableConfig * const _config;
+		const Operation_2AxisTableConfig &_config;
 	public:		
-        Operation_2AxisTable(const Operation_2AxisTableConfig * const &config) : AbstractOperation(1, 2), _config(config) { }
+        Operation_2AxisTable(const Operation_2AxisTableConfig &config) : _config(config) { }
 
 		void AbstractExecute(Variable **variables) override
 		{
-			*variables[0] = Interpolation::InterpolateTable2<TABLE_TYPE>(*variables[1], _config->XAxis(), _config->XResolution, *variables[2], _config->YAxis(), _config->YResolution, _config->Table<TABLE_TYPE>());
+			*variables[0] = Interpolation::InterpolateTable2<TABLE_TYPE>(*variables[1], _config.XAxis(), _config.XResolution, *variables[2], _config.YAxis(), _config.YResolution, _config.Table<TABLE_TYPE>());
 		}
 	};
 	

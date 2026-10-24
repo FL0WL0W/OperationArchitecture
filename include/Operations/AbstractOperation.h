@@ -8,11 +8,6 @@ namespace OperationArchitecture
     class AbstractOperation
     {
         public:
-        //// The number of return variables for AbstractExecute.
-        const uint8_t NumberOfReturnVariables;
-        //// The number of parameters for AbstractExecute.
-        const uint8_t NumberOfParameters;
-
 		/**
 		 * @brief This virtual function is to be implemented by the child abstraction.
          * @param variables This is an array of variables. The first <NumberOfReturnVariables> Variables
@@ -21,19 +16,7 @@ namespace OperationArchitecture
 		 */
         virtual void AbstractExecute(Variable **variables) = 0;
 
-		/**
-		 * @brief Constructor that sets the constant values for NumberOfReturnVariables and NumberOfParameters
-         * @param numberOfReturnVariables The number of return variables for AbstractExecute. This value is stored into NumberOfReturnVariables.
-         * @param numberOfParameters The number of parameters for AbstractExecute. This value is stored into NumberOfParameters.
-		 */
-        AbstractOperation(uint8_t numberOfReturnVariables, uint8_t numberOfParameters);
-
-		/**
-		 * @brief Default constructor for an operation with no parameters or return variables
-		 */
-        AbstractOperation();
-
-        virtual ~AbstractOperation();
+        virtual ~AbstractOperation() = default;
         
 		/**
 		 * @brief This template takes the return and parameters and formats them into variables
@@ -73,7 +56,10 @@ namespace OperationArchitecture
             AbstractExecute(variables);
         }
 
-        void Execute();
+        void Execute()
+        {
+            AbstractExecute(0);
+        }
     };
 }
 #endif

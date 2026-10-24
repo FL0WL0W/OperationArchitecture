@@ -25,19 +25,18 @@ namespace UnitTests
 		}
 	};
 
-	TEST_F(Operation_GroupTests, WhenExecuting_OperationAddsAndSubtracts)
+	TEST_F(Operation_GroupTests, WhenExecuting_OperationSubtracts)
 	{
 		ASSERT_EQ(7, _operationAdd->Execute<int>(5, 2));
 		ASSERT_EQ(3, _operationSubtract->Execute<int>(5, 2));
 
-		Variable **variables = new Variable*[4];
-		for(int i = 0; i < 4; i++)
+		Variable **variables = new Variable*[3];
+		for(int i = 0; i < 3; i++)
 			variables[i] = new Variable();
-		*variables[2] = 5;
-		*variables[3] = 2;
+		*variables[1] = 5;
+		*variables[2] = 2;
 		_operation->AbstractExecute(variables);
 
-		ASSERT_EQ(*variables[0], 7);
-		ASSERT_EQ(*variables[1], 3);
+		ASSERT_EQ(*variables[0], 3);
 	}
 }

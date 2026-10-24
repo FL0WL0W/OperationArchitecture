@@ -18,21 +18,19 @@ namespace UnitTests
 		{	
 			_variables[0] = new Variable();
 			_variables[1] = new Variable();
-			_variables[2] = new Variable();
-			_operation = new Operation_Package(new Operation_Add(), _variables);
+			_variables[2] = 0;
+			_operation = new Operation_Package(new Operation_Add(), _variables, 3);
 		}
 	};
 
 	TEST_F(Operation_PackageTests, WhenExecutingOperation_VariableIsStored)
 	{
 		*_variables[1] = 20;
-		*_variables[2] = 2;
-		_operation->Execute();
+		_operation->Execute(2);
 		ASSERT_EQ(*_variables[0], 22);
 
 		*_variables[1] = 5;
-		*_variables[2] = 2;
-		_operation->Execute();
+		_operation->Execute(2);
 		ASSERT_EQ(*_variables[0], 7);
 	}
 }

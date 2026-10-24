@@ -47,11 +47,7 @@ namespace OperationArchitecture
 	protected:
 		const Operation_PolynomialConfig<a_t> *_config;
 	public:		
-        Operation_Polynomial(const Operation_PolynomialConfig<a_t> * const &config) :
-			AbstractOperation(1, 1)
-		{
-			_config = config;
-		}
+        Operation_Polynomial(const Operation_PolynomialConfig<a_t> * const &config) : _config(config) { }
 
 		void AbstractExecute(Variable **variables) override
 		{

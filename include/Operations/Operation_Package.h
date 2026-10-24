@@ -12,8 +12,10 @@ namespace OperationArchitecture
         AbstractOperation *_operation;
         Variable **_executionvariables;
         uint8_t *_variableInMap;
+        const uint8_t _numberOfVariables;
+        const uint8_t _numberOfInputs;
     public:
-        Operation_Package(AbstractOperation *operation, Variable **executionvariables);
+        Operation_Package(AbstractOperation *operation, Variable **executionvariables, uint8_t numberOfVariables);
         ~Operation_Package();
 
         void AbstractExecute(Variable **variables) override;

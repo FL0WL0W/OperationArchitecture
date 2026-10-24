@@ -60,13 +60,9 @@ namespace UnitTests
 
 	TEST_F(OperationFactoryTests, CorrectOperationReturned)
 	{
-		ASSERT_EQ(2, _operation2->NumberOfParameters);
-		ASSERT_EQ(1, _operation2->NumberOfReturnVariables);
 		ASSERT_EQ(7, _operation2->Execute<int>(5, 2));
 		ASSERT_EQ(8, _operation2->Execute<int>(6, 2));
 
-		ASSERT_EQ(2, _operation3->NumberOfParameters);
-		ASSERT_EQ(1, _operation3->NumberOfReturnVariables);
 		ASSERT_EQ(3, _operation3->Execute<int>(5, 2));
 		ASSERT_EQ(3, _operation3->Execute<int>(5, 2));
 	}
