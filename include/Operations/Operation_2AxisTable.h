@@ -56,6 +56,7 @@ namespace OperationArchitecture
 		uint8_t XResolution;
 		uint8_t YResolution;
 		VariableType TableType;
+		uint8_t Reserved;
 	};
 
 	template<typename TABLE_TYPE>
