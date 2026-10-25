@@ -1,4 +1,5 @@
 #include <map>
+#include "stdint.h"
 
 #ifndef GENERATORMAP_H
 #define GENERATORMAP_H

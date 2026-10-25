@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "Operations/OperationFactory.h"
+#include "Operations/OperationFactoryRegister.h"
 #include "Operations/Operation_Math.h"
 #include "Operations/Operation_Package.h"
 #include "Config.h"
@@ -9,10 +10,15 @@ using namespace OperationArchitecture;
 
 namespace UnitTests
 {
+	static GeneratorMap<Variable> _variableMap;
+	static OperationFactory _factory;
+	static auto _factoryEntries = CombineEntries(
+		RegisterOperationArchitecture<0, &_factory, &_variableMap>()
+	);
+
 	class OperationFactoryTests : public Test
 	{
 		protected:
-		OperationFactory *_factory;
 		AbstractOperation *_operation2;
 		AbstractOperation *_operation3;
 		size_t _size = 0;
@@ -24,28 +30,26 @@ namespace UnitTests
 
 		OperationFactoryTests() 
 		{
-			_factory = new OperationFactory();
-			_factory->Register(2, new Operation_Add());
-			_factory->Register(3, new Operation_Subtract());
+			_factory.Register(_factoryEntries.data(), _factoryEntries.size());
 
 			_expectedSize = sizeof(uint32_t);
 			void *config = malloc(_expectedSize);
 			void *buildConfig = config;
 
-			//Factory ID 2
-			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize, 2);
+			//Factory ID 10
+			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize, 10);
 
-			_operation2 = _factory->Create(config, _size);
+			_operation2 = _factory.Create(config, _size);
 			free(config);
 			
 			_expectedSize2 = sizeof(uint32_t);
 			config = malloc(_expectedSize2);
 			buildConfig = config;
 
-			//Factory ID 3
-			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize2, 3);
+			//Factory ID 11
+			Config::AssignAndOffset<uint32_t>(buildConfig, _buildSize2, 11);
 
-			_operation3  = _factory->Create(config, _size2);
+			_operation3  = _factory.Create(config, _size2);
 			free(config);
 		}
 	};
