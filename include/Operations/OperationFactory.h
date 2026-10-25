@@ -38,8 +38,7 @@ namespace OperationArchitecture
 		const OperationFactoryEntry *_factories;
 		size_t _numberOfFactories;
 	public:
-		~OperationFactory();
-		void Clear();
+		void Delete();
 		void Register(const OperationFactoryEntry *factories, size_t numberOfFactories);
 		void Register(const uint32_t id, AbstractOperation* operation);
 		void Unregister(const uint32_t id);

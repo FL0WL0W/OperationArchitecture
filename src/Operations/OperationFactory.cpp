@@ -6,17 +6,15 @@
 
 namespace OperationArchitecture
 {
-	OperationFactory::~OperationFactory()
+	void OperationFactory::Delete()
 	{
+		_staticOperations.clear();
 		for (std::list<AbstractOperation*>::iterator it = _dynamicOperations.begin(); it != _dynamicOperations.end(); ++it){
 			delete *it;
 		}
-		Clear();
-	}
-
-	void OperationFactory::Clear()
-	{
-		_staticOperations.clear();
+		_dynamicOperations.clear();
+		_factories = 0;
+		_numberOfFactories = 0;
 	}
 
     void OperationFactory::Register(const OperationFactoryEntry *factories, size_t numberOfFactories)
