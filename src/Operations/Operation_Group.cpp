@@ -13,6 +13,10 @@ namespace OperationArchitecture
 
     Operation_Group::~Operation_Group()
     {
+        for(uint16_t i = 0; i < _numberOfOperations; i++)
+        {
+            delete _operations[i];
+        }
         delete[] _operations;
     }
 
@@ -32,6 +36,7 @@ namespace OperationArchitecture
         for(uint16_t i = 0; i < numberOfOperations; i++)
         {
             size_t size = 0;
+            //we own these operations now and Operation_Group will delete them when it is deleted
             operations[i] = factory->Create(config, size);
             Config::OffsetConfig(config, sizeOut, size);
             //remove operation if it is invalid

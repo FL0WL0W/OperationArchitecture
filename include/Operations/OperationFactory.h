@@ -34,7 +34,6 @@ namespace OperationArchitecture
 	{
 	protected:
 		std::map<uint32_t, AbstractOperation*> _staticOperations;
-		std::list<AbstractOperation*> _dynamicOperations;
 		const OperationFactoryEntry *_factories;
 		size_t _numberOfFactories;
 	public:
@@ -42,6 +41,8 @@ namespace OperationArchitecture
 		void Register(const OperationFactoryEntry *factories, size_t numberOfFactories);
 		void Register(const uint32_t id, AbstractOperation* operation);
 		void Unregister(const uint32_t id);
+
+		//This creates an operation that is owned by the caller and must be deleted by the caller
 		AbstractOperation *Create(const void *config, size_t &sizeOut);
 	};
 }

@@ -9,10 +9,6 @@ namespace OperationArchitecture
 	void OperationFactory::Delete()
 	{
 		_staticOperations.clear();
-		for (std::list<AbstractOperation*>::iterator it = _dynamicOperations.begin(); it != _dynamicOperations.end(); ++it){
-			delete *it;
-		}
-		_dynamicOperations.clear();
 		_factories = 0;
 		_numberOfFactories = 0;
 	}
@@ -35,7 +31,7 @@ namespace OperationArchitecture
 		if (itOp != _staticOperations.end())
 			_staticOperations.erase(itOp);
 	}
-    
+
     AbstractOperation *OperationFactory::Create(const void *config, size_t &sizeOut)
     {
         if (!config) return nullptr;
@@ -56,7 +52,6 @@ namespace OperationArchitecture
         if (it != _factories + _numberOfFactories && it->ID == factoryId)
         {
 			AbstractOperation *operation = it->Create(config, sizeOut);
-			_dynamicOperations.push_front(operation);
 			return operation;
         }
 

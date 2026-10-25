@@ -45,6 +45,7 @@ namespace OperationArchitecture
 
     Operation_Package::~Operation_Package()
     {
+        delete _operation;
         delete[] _executionvariables;
         delete[] _variableInMap;
     }
@@ -62,6 +63,7 @@ namespace OperationArchitecture
     {
         //Create operation
         size_t size = 0;
+        //we own this operation now and Operation_Package will delete it when it is deleted
         AbstractOperation *operation = factory->Create(config, size);
         Config::OffsetConfig(config, sizeOut, size);
         const uint8_t numberOfVariables = Config::CastAndOffset<uint8_t>(config, sizeOut);
