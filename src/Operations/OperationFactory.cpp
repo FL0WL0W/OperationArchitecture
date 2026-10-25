@@ -6,7 +6,7 @@
 
 namespace OperationArchitecture
 {
-	void OperationFactory::Delete()
+	void OperationFactory::Clear()
 	{
 		_staticOperations.clear();
 		_factories = 0;
