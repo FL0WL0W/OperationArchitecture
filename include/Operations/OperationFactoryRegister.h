@@ -2,6 +2,7 @@
 #include "Operations/OperationFactory.h"
 #include "Operations/Operation_Package.h"
 #include "Operations/Operation_Group.h"
+#include "Operations/Operation_ConditionExecute.h"
 #include "Operations/Operation_2AxisTable.h"
 #include "Operations/Operation_LookupTable.h"
 #include "Operations/Operation_Polynomial.h"
@@ -29,7 +30,7 @@ namespace OperationArchitecture
 
 	template<uint32_t idOffset, OperationFactory *factory, GeneratorMap<Variable> *variableMap>
 	constexpr auto RegisterOperationArchitecture = []() {
-    	return std::array<OperationFactoryEntry, 20>{{
+		return std::array<OperationFactoryEntry, 21>{{
 			{ idOffset + 0, [](const void *config, size_t &size){ return Operation_Package::Create(config, size, factory, variableMap); } },
 			{ idOffset + 1, [](const void *config, size_t &size){ return Operation_Group::Create(config, size, factory); } },
 			{ idOffset + 2, Operation_2AxisTableCreate },
@@ -49,8 +50,9 @@ namespace OperationArchitecture
 			{ idOffset + 19, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_GreaterThanOrEqualInstance); } },
 			{ idOffset + 20, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_LessThanOrEqualInstance); } },
 			{ idOffset + 21, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_NotInstance); } },
-			{ idOffset + 22, Operation_UnitConversion::Create }
-    	}};
+			{ idOffset + 22, Operation_UnitConversion::Create },
+    		{ idOffset + 23, [](const void *config, size_t &size){ return Operation_ConditionExecute::Create(config, size, factory); } }
+		}};
 	};
 }
 #endif
