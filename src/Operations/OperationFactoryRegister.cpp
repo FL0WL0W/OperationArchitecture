@@ -14,4 +14,5 @@ namespace OperationArchitecture
     Operation_GreaterThanOrEqual    Operation_GreaterThanOrEqualInstance;
     Operation_LessThanOrEqual       Operation_LessThanOrEqualInstance;
     Operation_Not                   Operation_NotInstance;
+    Operation_NotEqual              Operation_NotEqualInstance;
 }

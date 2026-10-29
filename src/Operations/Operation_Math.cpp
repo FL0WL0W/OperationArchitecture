@@ -53,5 +53,7 @@ namespace OperationArchitecture
 		else 
 			*variables[0] = !true;
 	}
+	
+	void Operation_NotEqual::AbstractExecute(Variable **variables) { *variables[0] = *variables[1] != *variables[2]; }
 }
 #endif

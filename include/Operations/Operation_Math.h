@@ -6,21 +6,6 @@
 #define OPERATION_MATH_H
 namespace OperationArchitecture
 {
-	enum MathOperation : uint8_t
-	{
-		ADD = 0,
-		SUBTRACT = 1,
-		MULTIPLY = 2,
-		DIVIDE = 3,
-		AND = 4,
-		OR = 5,
-		GREATERTHAN = 6,
-		LESSTHAN = 7,
-		EQUAL = 8,
-		GREATERTHANOREQUAL = 9,
-		LESSTHANOREQUAL = 10
-	};
-
 	class Operation_Add : public AbstractOperation
 	{
 	public:		
@@ -88,6 +73,12 @@ namespace OperationArchitecture
 	};
 
 	class Operation_Not : public AbstractOperation
+	{
+	public:		
+		void AbstractExecute(Variable **params) override;
+	};
+
+	class Operation_NotEqual : public AbstractOperation
 	{
 	public:		
 		void AbstractExecute(Variable **params) override;

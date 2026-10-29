@@ -27,10 +27,11 @@ namespace OperationArchitecture
     extern Operation_GreaterThanOrEqual    Operation_GreaterThanOrEqualInstance;
     extern Operation_LessThanOrEqual       Operation_LessThanOrEqualInstance;
     extern Operation_Not                   Operation_NotInstance;
+    extern Operation_NotEqual              Operation_NotEqualInstance;
 
 	template<uint32_t idOffset, OperationFactory *factory, GeneratorMap<Variable> *variableMap>
 	constexpr auto RegisterOperationArchitecture = []() {
-		return std::array<OperationFactoryEntry, 21>{{
+		return std::array<OperationFactoryEntry, 22>{{
 			{ idOffset + 0, [](const void *config, size_t &size){ return Operation_Package::Create(config, size, factory, variableMap); } },
 			{ idOffset + 1, [](const void *config, size_t &size){ return Operation_Group::Create(config, size, factory); } },
 			{ idOffset + 2, Operation_2AxisTableCreate },
@@ -38,6 +39,7 @@ namespace OperationArchitecture
 			{ idOffset + 4, Operation_Polynomial<float>::Create },
 			{ idOffset + 5, Operation_StaticVariable::Create },
 			{ idOffset + 6, Operation_FaultDetection<float>::Create },
+			{ idOffset + 9, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_NotEqualInstance); } },
 			{ idOffset + 10, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_AddInstance); } },
 			{ idOffset + 11, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_SubtractInstance); } },
 			{ idOffset + 12, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_MultiplyInstance); } },
