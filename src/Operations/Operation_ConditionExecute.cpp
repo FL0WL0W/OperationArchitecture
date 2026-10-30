@@ -14,8 +14,7 @@ namespace OperationArchitecture
 
     void Operation_ConditionExecute::AbstractExecute(Variable **variables)
     {
-        if(_operation != nullptr && variables != nullptr && variables[0] != nullptr &&
-            static_cast<bool>(*variables[0]))
+        if(_operation != nullptr && variables != nullptr && variables[0] != nullptr && static_cast<bool>(*variables[0]))
         {
             _operation->AbstractExecute(variables + 1);
         }

@@ -345,6 +345,10 @@ namespace OperationArchitecture
                 return static_cast<bool>(*this) == static_cast<bool>(a);
             return static_cast<int64_t>(*this) == static_cast<int64_t>(a);
         }
+        bool operator!=(Variable a) const
+        {
+            return !(*this == a);
+        }
         bool operator<(Variable a) const
         {
             if(Type == DOUBLE || a.Type == DOUBLE)
@@ -443,11 +447,24 @@ namespace OperationArchitecture
     template<>
     inline double VariableTo<double>(const Variable *variable) { return VariableScalarTo<double>(variable); }
     template<>
-    inline bool VariableTo<bool>(const Variable *Variable)
+    inline bool VariableTo<bool>(const Variable *variable)
     {
-        if(Variable->Type == VariableType::BOOLEAN)
-            return Variable->BOOLEANValue;
-        return false;
+        switch(variable->Type)
+        {
+            case VariableType::UINT8: return static_cast<bool>(variable->UINT8Value);
+            case VariableType::UINT16: return static_cast<bool>(variable->UINT16Value);
+            case VariableType::UINT32: return static_cast<bool>(variable->UINT32Value);
+            case VariableType::UINT64: return static_cast<bool>(variable->UINT64Value);
+            case VariableType::INT8: return static_cast<bool>(variable->INT8Value);
+            case VariableType::INT16: return static_cast<bool>(variable->INT16Value);
+            case VariableType::INT32: return static_cast<bool>(variable->INT32Value);
+            case VariableType::INT64: return static_cast<bool>(variable->INT64Value);
+            case VariableType::FLOAT: return static_cast<bool>(variable->FLOATValue);
+            case VariableType::DOUBLE: return static_cast<bool>(variable->DOUBLEValue);
+            case VariableType::BOOLEAN: return variable->BOOLEANValue;
+            default:
+                return false;
+        }
     }
     template<>
     inline Variable VariableTo<Variable>(const Variable *variable) { return *variable; }
