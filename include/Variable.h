@@ -144,6 +144,9 @@ namespace OperationArchitecture
         {
             switch(targetType)
             {
+                case VOID:
+                    if(result == 0)
+                        return Variable();
                 case UINT8:
                     if(result > static_cast<int64_t>(4294967295))
                         return static_cast<uint64_t>(result);
