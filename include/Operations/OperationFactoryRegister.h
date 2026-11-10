@@ -30,31 +30,29 @@ namespace OperationArchitecture
     extern Operation_NotEqual              Operation_NotEqualInstance;
 
 	template<uint32_t idOffset, OperationFactory *factory, GeneratorMap<Variable> *variableMap>
-	inline std::array<OperationFactoryEntry, 22> RegisterOperationArchitecture() {
-		return std::array<OperationFactoryEntry, 22>{{
-			{ idOffset + 0, [](const void *config, size_t &size){ return Operation_Package::Create(config, size, factory, variableMap); } },
-			{ idOffset + 1, [](const void *config, size_t &size){ return Operation_Group::Create(config, size, factory); } },
-			{ idOffset + 2, Operation_2AxisTableCreate },
-			{ idOffset + 3, Operation_LookupTableCreate },
-			{ idOffset + 4, Operation_Polynomial<float>::Create },
-			{ idOffset + 5, Operation_StaticVariable::Create },
-			{ idOffset + 6, Operation_FaultDetection<float>::Create },
-			{ idOffset + 9, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_NotEqualInstance); } },
-			{ idOffset + 10, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_AddInstance); } },
-			{ idOffset + 11, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_SubtractInstance); } },
-			{ idOffset + 12, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_MultiplyInstance); } },
-			{ idOffset + 13, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_DivideInstance); } },
-			{ idOffset + 14, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_AndInstance); } },
-			{ idOffset + 15, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_OrInstance); } },
-			{ idOffset + 16, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_GreaterThanInstance); } },
-			{ idOffset + 17, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_LessThanInstance); } },
-			{ idOffset + 18, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_EqualInstance); } },
-			{ idOffset + 19, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_GreaterThanOrEqualInstance); } },
-			{ idOffset + 20, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_LessThanOrEqualInstance); } },
-			{ idOffset + 21, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_NotInstance); } },
-			{ idOffset + 22, Operation_UnitConversion::Create },
-    		{ idOffset + 23, [](const void *config, size_t &size){ return Operation_ConditionExecute::Create(config, size, factory); } }
-		}};
-	}
+	constexpr std::array<OperationFactoryEntry, 22> OperationArchitectureFactoryEntries = {{
+		{ idOffset + 0, [](const void *config, size_t &size){ return Operation_Package::Create(config, size, factory, variableMap); } },
+		{ idOffset + 1, [](const void *config, size_t &size){ return Operation_Group::Create(config, size, factory); } },
+		{ idOffset + 2, Operation_2AxisTableCreate },
+		{ idOffset + 3, Operation_LookupTableCreate },
+		{ idOffset + 4, Operation_Polynomial<float>::Create },
+		{ idOffset + 5, Operation_StaticVariable::Create },
+		{ idOffset + 6, Operation_FaultDetection<float>::Create },
+		{ idOffset + 9, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_NotEqualInstance); } },
+		{ idOffset + 10, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_AddInstance); } },
+		{ idOffset + 11, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_SubtractInstance); } },
+		{ idOffset + 12, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_MultiplyInstance); } },
+		{ idOffset + 13, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_DivideInstance); } },
+		{ idOffset + 14, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_AndInstance); } },
+		{ idOffset + 15, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_OrInstance); } },
+		{ idOffset + 16, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_GreaterThanInstance); } },
+		{ idOffset + 17, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_LessThanInstance); } },
+		{ idOffset + 18, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_EqualInstance); } },
+		{ idOffset + 19, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_GreaterThanOrEqualInstance); } },
+		{ idOffset + 20, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_LessThanOrEqualInstance); } },
+		{ idOffset + 21, [](const void *config, size_t &size){ return static_cast<AbstractOperation *>(&Operation_NotInstance); } },
+		{ idOffset + 22, Operation_UnitConversion::Create },
+		{ idOffset + 23, [](const void *config, size_t &size){ return Operation_ConditionExecute::Create(config, size, factory); } }
+	}};
 }
 #endif

@@ -13,58 +13,21 @@ namespace OperationArchitecture
 		OperationFactoryCreate Create;
 	};
 
-	// Helper to compute the sum of template parameters (C++11 compatible)
 	template<std::size_t... Sizes>
-	struct SumSizes;
-	
-	template<>
-	struct SumSizes<> {
-		static constexpr std::size_t value = 0;
-	};
-	
-	template<std::size_t Head, std::size_t... Tail>
-	struct SumSizes<Head, Tail...> {
-		static constexpr std::size_t value = Head + SumSizes<Tail...>::value;
-	};
-
-	// Helper to copy entries - uses recursion  on template parameters
-	namespace detail {
-		// Base case: no arrays to combine
-		template<std::size_t Total>
-		inline std::array<OperationFactoryEntry, Total> combine_arrays(std::array<OperationFactoryEntry, Total> result)
-		{
-			return result;
-		}
-		
-		// Recursive case: combine first array with rest
-		template<std::size_t Head, std::size_t... Tail>
-		inline std::array<OperationFactoryEntry, Head + SumSizes<Tail...>::value> 
-		combine_arrays(const std::array<OperationFactoryEntry, Head>& first,
-					   const std::array<OperationFactoryEntry, Tail>&... rest)
-		{
-			// Create the result array
-			std::array<OperationFactoryEntry, Head + SumSizes<Tail...>::value> result = {};
-			
-			// Copy the first array
-			for (std::size_t i = 0; i < Head; ++i) {
-				result[i] = first[i];
-			}
-			
-			// Recursively combine the rest
-			auto rest_combined = combine_arrays(rest...);
-			for (std::size_t i = 0; i < SumSizes<Tail...>::value; ++i) {
-				result[Head + i] = rest_combined[i];
-			}
-			
-			return result;
-		}
-	}
-
-	// Combine multiple arrays into a single array
-	template<std::size_t... Sizes>
-	inline std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
+	constexpr std::array<OperationFactoryEntry, (Sizes + ...)> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
 	{
-		return detail::combine_arrays(entries...);
+		std::array<OperationFactoryEntry, (Sizes + ...)> combinedEntries;
+		std::size_t offset = 0;
+
+		// A simple fold expression to copy each array into combinedEntries
+		auto copy_elements = [&combinedEntries, &offset](const auto& arr) {
+			for (std::size_t i = 0; i < arr.size(); ++i) {
+				combinedEntries[offset++] = arr[i];
+			}
+		};
+		(copy_elements(entries), ...);
+
+		return combinedEntries;
 	}
 
 	class OperationFactory
