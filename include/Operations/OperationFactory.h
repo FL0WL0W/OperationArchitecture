@@ -27,54 +27,44 @@ namespace OperationArchitecture
 		static constexpr std::size_t value = Head + SumSizes<Tail...>::value;
 	};
 
-	// Helper to copy entries recursively - constexpr compatible with recursion instead of loops
+	// Helper to copy entries - uses recursion  on template parameters
 	namespace detail {
-		// Copy a single element at index i from source array to destination at offset
-		template<std::size_t Total, std::size_t Head, std::size_t I>
-		constexpr void copy_element(std::array<OperationFactoryEntry, Total>& combined,
-									 std::size_t offset,
-									 const std::array<OperationFactoryEntry, Head>& first)
-		{
-			combined[offset + I] = first[I];
-		}
-		
-		// Unroll copying of all elements from a single array
-		template<std::size_t Total, std::size_t Head>
-		constexpr void copy_single_array(std::array<OperationFactoryEntry, Total>& combined,
-										 std::size_t offset,
-										 const std::array<OperationFactoryEntry, Head>& arr,
-										 std::size_t index)
-		{
-			if (index < Head) {
-				combined[offset + index] = arr[index];
-				copy_single_array(combined, offset, arr, index + 1);
-			}
-		}
-		
-		// Base case: no more arrays to copy
+		// Base case: no arrays to combine
 		template<std::size_t Total>
-		constexpr void copy_arrays(std::array<OperationFactoryEntry, Total>&, std::size_t) {}
-		
-		// Recursive case: copy one array and then the rest
-		template<std::size_t Total, std::size_t Head, std::size_t... Tail>
-		constexpr void copy_arrays(std::array<OperationFactoryEntry, Total>& combined,
-								   std::size_t offset,
-								   const std::array<OperationFactoryEntry, Head>& first,
-								   const std::array<OperationFactoryEntry, Tail>&... rest)
+		inline std::array<OperationFactoryEntry, Total> combine_arrays(std::array<OperationFactoryEntry, Total> result)
 		{
-			// Copy the first array element by element using recursion
-			copy_single_array(combined, offset, first, 0);
-			// Recursively copy the rest
-			copy_arrays(combined, offset + Head, rest...);
+			return result;
+		}
+		
+		// Recursive case: combine first array with rest
+		template<std::size_t Head, std::size_t... Tail>
+		inline std::array<OperationFactoryEntry, Head + SumSizes<Tail...>::value> 
+		combine_arrays(const std::array<OperationFactoryEntry, Head>& first,
+					   const std::array<OperationFactoryEntry, Tail>&... rest)
+		{
+			// Create the result array
+			std::array<OperationFactoryEntry, Head + SumSizes<Tail...>::value> result = {};
+			
+			// Copy the first array
+			for (std::size_t i = 0; i < Head; ++i) {
+				result[i] = first[i];
+			}
+			
+			// Recursively combine the rest
+			auto rest_combined = combine_arrays(rest...);
+			for (std::size_t i = 0; i < SumSizes<Tail...>::value; ++i) {
+				result[Head + i] = rest_combined[i];
+			}
+			
+			return result;
 		}
 	}
 
+	// Combine multiple arrays into a single array
 	template<std::size_t... Sizes>
-	constexpr std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
+	inline std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
 	{
-		std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> combinedEntries = {};
-		detail::copy_arrays(combinedEntries, 0, entries...);
-		return combinedEntries;
+		return detail::combine_arrays(entries...);
 	}
 
 	class OperationFactory
