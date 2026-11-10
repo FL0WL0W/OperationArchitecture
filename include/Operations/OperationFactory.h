@@ -27,36 +27,33 @@ namespace OperationArchitecture
 		static constexpr std::size_t value = Head + SumSizes<Tail...>::value;
 	};
 
-	// Helper to copy entries recursively
+	// Helper to copy entries recursively - constexpr compatible
 	namespace detail {
-		template<std::size_t... Sizes>
-		struct CombineEntryImpl;
+		// Base case: no more arrays to copy
+		template<std::size_t Total>
+		constexpr void copy_array_impl(std::array<OperationFactoryEntry, Total>&, std::size_t) {}
 		
-		template<>
-		struct CombineEntryImpl<> {
-			static void copy(std::array<OperationFactoryEntry, 0>&, std::size_t&) {}
-		};
-		
-		template<std::size_t Head, std::size_t... Tail>
-		struct CombineEntryImpl<Head, Tail...> {
-			static void copy(std::array<OperationFactoryEntry, SumSizes<Head, Tail...>::value>& combined,
-							  std::size_t& offset,
-							  const std::array<OperationFactoryEntry, Head>& first,
-							  const std::array<OperationFactoryEntry, Tail>&... rest) {
-				for (std::size_t i = 0; i < Head; ++i) {
-					combined[offset++] = first[i];
-				}
-				CombineEntryImpl<Tail...>::copy(combined, offset, rest...);
+		// Recursive case: copy one array and then the rest
+		template<std::size_t Total, std::size_t Head, std::size_t... Tail>
+		constexpr void copy_array_impl(std::array<OperationFactoryEntry, Total>& combined,
+									   std::size_t offset,
+									   const std::array<OperationFactoryEntry, Head>& first,
+									   const std::array<OperationFactoryEntry, Tail>&... rest)
+		{
+			// Copy the first array element by element
+			for (std::size_t i = 0; i < Head; ++i) {
+				combined[offset + i] = first[i];
 			}
-		};
+			// Recursively copy the rest
+			copy_array_impl(combined, offset + Head, rest...);
+		}
 	}
 
 	template<std::size_t... Sizes>
-	std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
+	constexpr std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
 	{
 		std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> combinedEntries = {};
-		std::size_t offset = 0;
-		detail::CombineEntryImpl<Sizes...>::copy(combinedEntries, offset, entries...);
+		detail::copy_array_impl(combinedEntries, 0, entries...);
 		return combinedEntries;
 	}
 
