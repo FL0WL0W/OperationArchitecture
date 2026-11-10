@@ -13,20 +13,50 @@ namespace OperationArchitecture
 		OperationFactoryCreate Create;
 	};
 
+	// Helper to compute the sum of template parameters (C++11 compatible)
 	template<std::size_t... Sizes>
-	constexpr std::array<OperationFactoryEntry, (Sizes + ...)> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
-	{
-		std::array<OperationFactoryEntry, (Sizes + ...)> combinedEntries;
-		std::size_t offset = 0;
+	struct SumSizes;
+	
+	template<>
+	struct SumSizes<> {
+		static constexpr std::size_t value = 0;
+	};
+	
+	template<std::size_t Head, std::size_t... Tail>
+	struct SumSizes<Head, Tail...> {
+		static constexpr std::size_t value = Head + SumSizes<Tail...>::value;
+	};
 
-		// A simple fold expression to copy each array into combinedEntries
-		auto copy_elements = [&combinedEntries, &offset](const auto& arr) {
-			for (std::size_t i = 0; i < arr.size(); ++i) {
-				combinedEntries[offset++] = arr[i];
+	// Helper to copy entries recursively
+	namespace detail {
+		template<std::size_t... Sizes>
+		struct CombineEntryImpl;
+		
+		template<>
+		struct CombineEntryImpl<> {
+			static void copy(std::array<OperationFactoryEntry, 0>&, std::size_t&) {}
+		};
+		
+		template<std::size_t Head, std::size_t... Tail>
+		struct CombineEntryImpl<Head, Tail...> {
+			static void copy(std::array<OperationFactoryEntry, SumSizes<Head, Tail...>::value>& combined,
+							  std::size_t& offset,
+							  const std::array<OperationFactoryEntry, Head>& first,
+							  const std::array<OperationFactoryEntry, Tail>&... rest) {
+				for (std::size_t i = 0; i < Head; ++i) {
+					combined[offset++] = first[i];
+				}
+				CombineEntryImpl<Tail...>::copy(combined, offset, rest...);
 			}
 		};
-		(copy_elements(entries), ...);
+	}
 
+	template<std::size_t... Sizes>
+	std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
+	{
+		std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> combinedEntries = {};
+		std::size_t offset = 0;
+		detail::CombineEntryImpl<Sizes...>::copy(combinedEntries, offset, entries...);
 		return combinedEntries;
 	}
 

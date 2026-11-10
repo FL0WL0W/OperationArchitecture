@@ -30,7 +30,7 @@ namespace OperationArchitecture
     extern Operation_NotEqual              Operation_NotEqualInstance;
 
 	template<uint32_t idOffset, OperationFactory *factory, GeneratorMap<Variable> *variableMap>
-	constexpr auto RegisterOperationArchitecture = []() {
+	inline std::array<OperationFactoryEntry, 22> RegisterOperationArchitecture() {
 		return std::array<OperationFactoryEntry, 22>{{
 			{ idOffset + 0, [](const void *config, size_t &size){ return Operation_Package::Create(config, size, factory, variableMap); } },
 			{ idOffset + 1, [](const void *config, size_t &size){ return Operation_Group::Create(config, size, factory); } },
@@ -55,6 +55,6 @@ namespace OperationArchitecture
 			{ idOffset + 22, Operation_UnitConversion::Create },
     		{ idOffset + 23, [](const void *config, size_t &size){ return Operation_ConditionExecute::Create(config, size, factory); } }
 		}};
-	};
+	}
 }
 #endif
