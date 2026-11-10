@@ -27,25 +27,45 @@ namespace OperationArchitecture
 		static constexpr std::size_t value = Head + SumSizes<Tail...>::value;
 	};
 
-	// Helper to copy entries recursively - constexpr compatible
+	// Helper to copy entries recursively - constexpr compatible with recursion instead of loops
 	namespace detail {
+		// Copy a single element at index i from source array to destination at offset
+		template<std::size_t Total, std::size_t Head, std::size_t I>
+		constexpr void copy_element(std::array<OperationFactoryEntry, Total>& combined,
+									 std::size_t offset,
+									 const std::array<OperationFactoryEntry, Head>& first)
+		{
+			combined[offset + I] = first[I];
+		}
+		
+		// Unroll copying of all elements from a single array
+		template<std::size_t Total, std::size_t Head>
+		constexpr void copy_single_array(std::array<OperationFactoryEntry, Total>& combined,
+										 std::size_t offset,
+										 const std::array<OperationFactoryEntry, Head>& arr,
+										 std::size_t index)
+		{
+			if (index < Head) {
+				combined[offset + index] = arr[index];
+				copy_single_array(combined, offset, arr, index + 1);
+			}
+		}
+		
 		// Base case: no more arrays to copy
 		template<std::size_t Total>
-		constexpr void copy_array_impl(std::array<OperationFactoryEntry, Total>&, std::size_t) {}
+		constexpr void copy_arrays(std::array<OperationFactoryEntry, Total>&, std::size_t) {}
 		
 		// Recursive case: copy one array and then the rest
 		template<std::size_t Total, std::size_t Head, std::size_t... Tail>
-		constexpr void copy_array_impl(std::array<OperationFactoryEntry, Total>& combined,
-									   std::size_t offset,
-									   const std::array<OperationFactoryEntry, Head>& first,
-									   const std::array<OperationFactoryEntry, Tail>&... rest)
+		constexpr void copy_arrays(std::array<OperationFactoryEntry, Total>& combined,
+								   std::size_t offset,
+								   const std::array<OperationFactoryEntry, Head>& first,
+								   const std::array<OperationFactoryEntry, Tail>&... rest)
 		{
-			// Copy the first array element by element
-			for (std::size_t i = 0; i < Head; ++i) {
-				combined[offset + i] = first[i];
-			}
+			// Copy the first array element by element using recursion
+			copy_single_array(combined, offset, first, 0);
 			// Recursively copy the rest
-			copy_array_impl(combined, offset + Head, rest...);
+			copy_arrays(combined, offset + Head, rest...);
 		}
 	}
 
@@ -53,7 +73,7 @@ namespace OperationArchitecture
 	constexpr std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
 	{
 		std::array<OperationFactoryEntry, SumSizes<Sizes...>::value> combinedEntries = {};
-		detail::copy_array_impl(combinedEntries, 0, entries...);
+		detail::copy_arrays(combinedEntries, 0, entries...);
 		return combinedEntries;
 	}
 
