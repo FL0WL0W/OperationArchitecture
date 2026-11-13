@@ -1,3 +1,4 @@
+#include <array>
 #include <map>
 #include <list>
 #include "Operations/AbstractOperation.h"
@@ -16,7 +17,7 @@ namespace OperationArchitecture
 	template<std::size_t... Sizes>
 	constexpr std::array<OperationFactoryEntry, (Sizes + ...)> CombineEntries(const std::array<OperationFactoryEntry, Sizes>&... entries)
 	{
-		std::array<OperationFactoryEntry, (Sizes + ...)> combinedEntries;
+		std::array<OperationFactoryEntry, (Sizes + ...)> combinedEntries{};
 		std::size_t offset = 0;
 
 		// A simple fold expression to copy each array into combinedEntries
